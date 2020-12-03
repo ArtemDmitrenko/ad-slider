@@ -1,0 +1,16 @@
+{
+  "name": "ad-slider",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "parcel src/index.pug --out-dir dist --open"
+  },
+  "author": "ArtemDmitrenko",
+  "license": "ISC",
+  "devDependencies": {
+    "pug": "^3.0.0",
+    "sass": "^1.29.0"
+  }
+}
