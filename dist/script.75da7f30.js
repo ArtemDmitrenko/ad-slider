@@ -117,79 +117,57 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
-var bundleURL = null;
+})({"script.js":[function(require,module,exports) {
+'use strict';
 
-function getBundleURLCached() {
-  if (!bundleURL) {
-    bundleURL = getBundleURL();
+window.addEventListener('DOMContentLoaded', function () {
+  var slider = document.querySelector('.ad-slider');
+  var sliderWidth = parseInt(getComputedStyle(slider).width, 10);
+  var roller = document.querySelector('.ad-slider__roller');
+  var rollerWidth = parseInt(getComputedStyle(roller).width, 10);
+  var value = document.querySelector('.ad-slider__value');
+  var isScrolling = false;
+  var x;
+  var x2 = 0;
+
+  function startScrolling(e) {
+    x = e.clientX;
+    isScrolling = true;
   }
 
-  return bundleURL;
-}
+  function scrolling(e) {
+    if (isScrolling) {
+      var move = e.clientX - x + x2;
 
-function getBundleURL() {
-  // Attempt to find the URL of the current script and use that as the base URL
-  try {
-    throw new Error();
-  } catch (err) {
-    var matches = ('' + err.stack).match(/(https?|file|ftp|chrome-extension|moz-extension):\/\/[^)\n]+/g);
-
-    if (matches) {
-      return getBaseURL(matches[0]);
-    }
-  }
-
-  return '/';
-}
-
-function getBaseURL(url) {
-  return ('' + url).replace(/^((?:https?|file|ftp|chrome-extension|moz-extension):\/\/.+)\/[^/]+$/, '$1') + '/';
-}
-
-exports.getBundleURL = getBundleURLCached;
-exports.getBaseURL = getBaseURL;
-},{}],"../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
-var bundle = require('./bundle-url');
-
-function updateLink(link) {
-  var newLink = link.cloneNode();
-
-  newLink.onload = function () {
-    link.remove();
-  };
-
-  newLink.href = link.href.split('?')[0] + '?' + Date.now();
-  link.parentNode.insertBefore(newLink, link.nextSibling);
-}
-
-var cssTimeout = null;
-
-function reloadCSS() {
-  if (cssTimeout) {
-    return;
-  }
-
-  cssTimeout = setTimeout(function () {
-    var links = document.querySelectorAll('link[rel="stylesheet"]');
-
-    for (var i = 0; i < links.length; i++) {
-      if (bundle.getBaseURL(links[i].href) === bundle.getBundleURL()) {
-        updateLink(links[i]);
+      if (move < 0) {
+        roller.style.left = "0px";
+        value.style.left = "0px";
+      } else if (move > sliderWidth - rollerWidth) {
+        roller.style.left = "".concat(sliderWidth - rollerWidth, "px");
+        value.style.left = "".concat(sliderWidth - rollerWidth, "px");
+      } else {
+        roller.style.left = "".concat(move, "px");
+        value.style.left = "".concat(move, "px");
       }
     }
+  }
 
-    cssTimeout = null;
-  }, 50);
-}
+  function stopScrolling() {
+    isScrolling = false;
+    x2 = parseInt(getComputedStyle(roller).left, 10);
+  }
 
-module.exports = reloadCSS;
-},{"./bundle-url":"../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"main.scss":[function(require,module,exports) {
-var reloadCSS = require('_css_loader');
-
-module.hot.dispose(reloadCSS);
-module.hot.accept(reloadCSS);
-},{"_css_loader":"../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+  roller.addEventListener('mousedown', function (e) {
+    return startScrolling(e);
+  });
+  document.addEventListener('mousemove', function (e) {
+    return scrolling(e);
+  });
+  document.addEventListener('mouseup', function () {
+    return stopScrolling();
+  });
+});
+},{}],"../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -393,5 +371,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js"], null)
-//# sourceMappingURL=/main.39afc03c.js.map
+},{}]},{},["../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","script.js"], null)
+//# sourceMappingURL=/script.75da7f30.js.map
