@@ -1,47 +1,93 @@
 'use strict';
 window.addEventListener('DOMContentLoaded', function() {
 
-  const slider = document.querySelector('.ad-slider');
-  const sliderWidth = parseInt(getComputedStyle(slider).width, 10);
+  class Slider {
+    constructor(selector, options) {
+      this.$el = document.querySelector(selector);
+      this.minValue = options.minValue;
+      this.maxValue = options.maxValue;
+      this.curValue = options.curValue;
+      this.render();
+      this.$sliderLine = this.$el.querySelector('.ad-slider__line');
+      this.$roller = this.$el.querySelector('.ad-slider__roller');
+      this.$sliderValue = this.$el.querySelector('.ad-slider__number');
+      this.$sliderTable = this.$el.querySelector('.ad-slider__value');
+      this.$input = this.$el.querySelector('.ad-slider__input');
+      this.initCurValue();
+      this.scroll();
+    }
 
-  const roller = document.querySelector('.ad-slider__roller');
-  const rollerWidth = parseInt(getComputedStyle(roller).width, 10);
+    render() {
+      this.$el.insertAdjacentHTML('afterbegin', `
+      <div class="ad-slider__input"></div>
+      <div class="ad-slider">
+        <div class="ad-slider__line">
+          <div class="ad-slider__roller"></div>
+        </div>
+        <div class="ad-slider__value">
+          <p class="ad-slider__number"></p>
+        </div>
+      </div>
+      `);
+    }
 
-  const value = document.querySelector('.ad-slider__value');
+    scroll() {
+      this.$roller.addEventListener('mousedown', e => {
+        e.preventDefault();
+        const shiftX = e.clientX - this.$roller.getBoundingClientRect().left;
+        const mouseMove = e => {
+          let newLeft = e.clientX - shiftX - this.$sliderLine.getBoundingClientRect().left;
+          let rightEdge = this.$sliderLine.offsetWidth - this.$roller.offsetWidth;
+          if (newLeft < 0) {
+            newLeft = 0;
+          }
+          if (newLeft > rightEdge) {
+            newLeft = rightEdge;
+          }
+          this.$roller.style.left = newLeft + 'px';
+          const valueOnSlider = Math.round(this.minValue + (this.maxValue - this.minValue) * (parseInt(newLeft, 10) / rightEdge));
+          this.$sliderValue.textContent = valueOnSlider;
+          this.$sliderTable.style.left = newLeft + this.$roller.offsetWidth / 2 + 'px';
+          this.$input.value = valueOnSlider;
+        };
 
-  let isScrolling = false;
-  let x;
-  let x2 = 0;
+        function mouseUp() {
+          document.removeEventListener('mouseup', mouseUp);
+          document.removeEventListener('mousemove', mouseMove);
+        }
+        document.addEventListener('mousemove', mouseMove);
+        document.addEventListener('mouseup', mouseUp);
+      });
+      document.addEventListener('dragstart', () => false);
+    }
 
-  function startScrolling(e) {
-    x = e.clientX;
-    isScrolling = true;
-  }
-
-  function scrolling(e) {
-    if (isScrolling) {
-      const move = (e.clientX - x) + x2;
-      if (move < 0) {
-        roller.style.left = `0px`;
-        value.style.left = `0px`;
-      } else if (move > (sliderWidth - rollerWidth)) {
-        roller.style.left = `${sliderWidth - rollerWidth}px`;
-        value.style.left = `${sliderWidth - rollerWidth}px`;
+    initCurValue() {
+      const rightEdge = this.$sliderLine.offsetWidth - this.$roller.offsetWidth;
+      if (this.curValue > this.maxValue || this.curValue < this.minValue) {
+        alert('Текщее значение введено вне интервала между минимальным и максимальным значением');
       } else {
-        roller.style.left = `${move}px`;
-        value.style.left = `${move}px`;
+        this.$sliderValue.textContent = this.curValue;
+        const newLeft = Math.round(rightEdge * (this.curValue - this.minValue) / (this.maxValue - this.minValue));
+        this.$roller.style.left = newLeft + 'px';
+        this.$sliderTable.style.left = newLeft + this.$roller.offsetWidth / 2 + 'px';
+        this.$input.value = this.curValue;
       }
     }
+
+
   }
 
-  function stopScrolling() {
-    isScrolling = false;
-    x2 = parseInt(getComputedStyle(roller).left, 10);
-  }
 
-  roller.addEventListener('mousedown', e => startScrolling(e));
-  document.addEventListener('mousemove', e => scrolling(e));
-  document.addEventListener('mouseup', () => stopScrolling());
+  const slider = new Slider('.container', {
+    minValue: 1000000,
+    maxValue: 1000000000,
+    curValue: 50000000
+  });
 
 
+  const slider1 = new Slider('.container1', {
+    minValue: 1,
+    maxValue: 10,
+    curValue: 5
+  });
 });

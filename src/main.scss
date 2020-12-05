@@ -5,17 +5,27 @@
 }
 .ad-slider {
   width: 100%;
-  height: 5rem;
+  height: 8rem;
   display: flex;
-  align-items: flex-end;
+  position: relative;
+  &__line {
+    width: 100%;
+    height: 0.5rem;
+    background-color: #e1e1e1;
+    border-radius: 0.375rem;
+    position: absolute;
+    bottom: 2rem;
+  }
   &__value {
-    width: 3.125rem;
+    // box-sizing: border-box;
+    min-width: 2rem;
     height: 2.1875rem;
+    padding: 0 0.25rem;
     background-color: #e34d2f;
     position: absolute;
     // left: 0;
-    transform: translate(-0.625rem, 0);
-    bottom: 2rem;
+    transform: translate(-50%, 0);
+    bottom: 4rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -25,7 +35,7 @@
       position: absolute;
       border: 0.4375rem solid transparent;
       border-top: 0.375rem solid #e34d2f;
-      left: 1.125rem;
+      // left: 1.125rem;
       top: 2.125rem;
     }
   }
@@ -34,13 +44,6 @@
     color: white;
     user-select: none;
   }
-  &__line {
-    width: 100%;
-    height: 0.5rem;
-    background-color: #e1e1e1;
-    border-radius: 0.375rem;
-    position: relative;
-  }
   &__roller {
     width: 1.875rem;
     height: 1.875rem;
@@ -48,7 +51,16 @@
     background-color: #e34d2f;
     position: absolute;
     // left: 200px;
-    top: -0.7rem;
+    top: -0.6875rem;
     cursor: pointer;
   }
+}
+.show {
+  display: block;
+}
+.hide {
+  display: none;
+}
+.container1 {
+  max-width: 200px;
 }

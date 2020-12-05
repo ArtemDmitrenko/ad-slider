@@ -120,51 +120,107 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 })({"script.js":[function(require,module,exports) {
 'use strict';
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 window.addEventListener('DOMContentLoaded', function () {
-  var slider = document.querySelector('.ad-slider');
-  var sliderWidth = parseInt(getComputedStyle(slider).width, 10);
-  var roller = document.querySelector('.ad-slider__roller');
-  var rollerWidth = parseInt(getComputedStyle(roller).width, 10);
-  var value = document.querySelector('.ad-slider__value');
-  var isScrolling = false;
-  var x;
-  var x2 = 0;
+  var Slider = /*#__PURE__*/function () {
+    function Slider(selector, options) {
+      _classCallCheck(this, Slider);
 
-  function startScrolling(e) {
-    x = e.clientX;
-    isScrolling = true;
-  }
-
-  function scrolling(e) {
-    if (isScrolling) {
-      var move = e.clientX - x + x2;
-
-      if (move < 0) {
-        roller.style.left = "0px";
-        value.style.left = "0px";
-      } else if (move > sliderWidth - rollerWidth) {
-        roller.style.left = "".concat(sliderWidth - rollerWidth, "px");
-        value.style.left = "".concat(sliderWidth - rollerWidth, "px");
-      } else {
-        roller.style.left = "".concat(move, "px");
-        value.style.left = "".concat(move, "px");
-      }
+      this.$el = document.querySelector(selector);
+      this.minValue = options.minValue;
+      this.maxValue = options.maxValue;
+      this.curValue = options.curValue;
+      this.render();
+      this.$sliderLine = this.$el.querySelector('.ad-slider__line');
+      this.$roller = this.$el.querySelector('.ad-slider__roller');
+      this.$sliderValue = this.$el.querySelector('.ad-slider__number');
+      this.$sliderTable = this.$el.querySelector('.ad-slider__value');
+      this.$input = this.$el.querySelector('.ad-slider__input');
+      this.initCurValue();
+      this.scroll();
     }
-  }
 
-  function stopScrolling() {
-    isScrolling = false;
-    x2 = parseInt(getComputedStyle(roller).left, 10);
-  }
+    _createClass(Slider, [{
+      key: "render",
+      value: function render() {
+        this.$el.insertAdjacentHTML('afterbegin', "\n      <div class=\"ad-slider__input\"></div>\n      <div class=\"ad-slider\">\n        <div class=\"ad-slider__line\">\n          <div class=\"ad-slider__roller\"></div>\n        </div>\n        <div class=\"ad-slider__value\">\n          <p class=\"ad-slider__number\"></p>\n        </div>\n      </div>\n      ");
+      }
+    }, {
+      key: "scroll",
+      value: function scroll() {
+        var _this = this;
 
-  roller.addEventListener('mousedown', function (e) {
-    return startScrolling(e);
+        this.$roller.addEventListener('mousedown', function (e) {
+          e.preventDefault();
+
+          var shiftX = e.clientX - _this.$roller.getBoundingClientRect().left;
+
+          var mouseMove = function mouseMove(e) {
+            var newLeft = e.clientX - shiftX - _this.$sliderLine.getBoundingClientRect().left;
+
+            var rightEdge = _this.$sliderLine.offsetWidth - _this.$roller.offsetWidth;
+
+            if (newLeft < 0) {
+              newLeft = 0;
+            }
+
+            if (newLeft > rightEdge) {
+              newLeft = rightEdge;
+            }
+
+            _this.$roller.style.left = newLeft + 'px';
+            var valueOnSlider = Math.round(_this.minValue + (_this.maxValue - _this.minValue) * (parseInt(newLeft, 10) / rightEdge));
+            _this.$sliderValue.textContent = valueOnSlider;
+            _this.$sliderTable.style.left = newLeft + _this.$roller.offsetWidth / 2 + 'px';
+            _this.$input.value = valueOnSlider;
+          };
+
+          function mouseUp() {
+            document.removeEventListener('mouseup', mouseUp);
+            document.removeEventListener('mousemove', mouseMove);
+          }
+
+          document.addEventListener('mousemove', mouseMove);
+          document.addEventListener('mouseup', mouseUp);
+        });
+        document.addEventListener('dragstart', function () {
+          return false;
+        });
+      }
+    }, {
+      key: "initCurValue",
+      value: function initCurValue() {
+        var rightEdge = this.$sliderLine.offsetWidth - this.$roller.offsetWidth;
+
+        if (this.curValue > this.maxValue || this.curValue < this.minValue) {
+          alert('Текщее значение введено вне интервала между минимальным и максимальным значением');
+        } else {
+          this.$sliderValue.textContent = this.curValue;
+          var newLeft = Math.round(rightEdge * (this.curValue - this.minValue) / (this.maxValue - this.minValue));
+          this.$roller.style.left = newLeft + 'px';
+          this.$sliderTable.style.left = newLeft + this.$roller.offsetWidth / 2 + 'px';
+          this.$input.value = this.curValue;
+        }
+      }
+    }]);
+
+    return Slider;
+  }();
+
+  var slider = new Slider('.container', {
+    minValue: 1000000,
+    maxValue: 1000000000,
+    curValue: 50000000
   });
-  document.addEventListener('mousemove', function (e) {
-    return scrolling(e);
-  });
-  document.addEventListener('mouseup', function () {
-    return stopScrolling();
+  var slider1 = new Slider('.container1', {
+    minValue: 1,
+    maxValue: 10,
+    curValue: 5
   });
 });
 },{}],"../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
