@@ -1,6 +1,6 @@
 .container {
   max-width: 400px;
-  margin: 100px;
+  margin: 50px;
   padding: 1rem;
 }
 .ad-slider {
@@ -17,13 +17,11 @@
     bottom: 2rem;
   }
   &__value {
-    // box-sizing: border-box;
     min-width: 2rem;
     height: 2.1875rem;
     padding: 0 0.25rem;
     background-color: #e34d2f;
     position: absolute;
-    // left: 0;
     transform: translate(-50%, 0);
     bottom: 4rem;
     display: flex;
@@ -35,7 +33,6 @@
       position: absolute;
       border: 0.4375rem solid transparent;
       border-top: 0.375rem solid #e34d2f;
-      // left: 1.125rem;
       top: 2.125rem;
     }
   }
@@ -50,7 +47,6 @@
     border-radius: 50%;
     background-color: #e34d2f;
     position: absolute;
-    // left: 200px;
     top: -0.6875rem;
     cursor: pointer;
   }

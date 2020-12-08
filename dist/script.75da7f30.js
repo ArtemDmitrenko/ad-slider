@@ -127,101 +127,196 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 window.addEventListener('DOMContentLoaded', function () {
-  var Slider = /*#__PURE__*/function () {
-    function Slider(selector, options) {
-      _classCallCheck(this, Slider);
+  // class Slider {
+  //   constructor(selector, options) {
+  //     this.$el = document.querySelector(selector);
+  //     this.range = (options.range) ? options.range : { min: 0, max: 100 };
+  //     this.defValue = options.defValue;
+  //     // this.displayValue = (options.displayValue) ? options.displayValue : false;
+  //     this.render();
+  //     this.$sliderLine = this.$el.querySelector('.ad-slider__line');
+  //     this.$roller = this.$el.querySelector('.ad-slider__roller');
+  //     this.$sliderValue = this.$el.querySelector('.ad-slider__number');
+  //     this.$sliderTable = this.$el.querySelector('.ad-slider__value');
+  //     this.$input = this.$el.querySelector('.ad-slider__input');
+  //     this.initdefValue();
+  //     this.scroll();
+  //   }
+  //   render() {
+  //     this.$el.insertAdjacentHTML('afterbegin', `
+  //     <div class="ad-slider__input"></div>
+  //     <div class="ad-slider">
+  //       <div class="ad-slider__line">
+  //         <div class="ad-slider__roller"></div>
+  //       </div>
+  //       <div class="ad-slider__value">
+  //         <p class="ad-slider__number"></p>
+  //       </div>
+  //     </div>
+  //     `);
+  //   }
+  //   scroll() {
+  //     this.$roller.addEventListener('mousedown', e => {
+  //       e.preventDefault();
+  //       const shiftX = e.clientX - this.$roller.getBoundingClientRect().left;
+  //       const mouseMove = e => {
+  //         let newLeft = e.clientX - shiftX - this.$sliderLine.getBoundingClientRect().left;
+  //         let rightEdge = this.$sliderLine.offsetWidth - this.$roller.offsetWidth;
+  //         if (newLeft < 0) {
+  //           newLeft = 0;
+  //         }
+  //         if (newLeft > rightEdge) {
+  //           newLeft = rightEdge;
+  //         }
+  //         this.$roller.style.left = newLeft + 'px';
+  //         const valueOnSlider = Math.round(this.range.min + (this.range.max - this.range.min) * (parseInt(newLeft, 10) / rightEdge));
+  //         this.$sliderValue.textContent = valueOnSlider;
+  //         this.$sliderTable.style.left = newLeft + this.$roller.offsetWidth / 2 + 'px';
+  //         this.$input.value = valueOnSlider;
+  //       };
+  //       function mouseUp() {
+  //         document.removeEventListener('mouseup', mouseUp);
+  //         document.removeEventListener('mousemove', mouseMove);
+  //       }
+  //       document.addEventListener('mousemove', mouseMove);
+  //       document.addEventListener('mouseup', mouseUp);
+  //     });
+  //     document.addEventListener('dragstart', () => false);
+  //   }
+  //   initdefValue() {
+  //     const rightEdge = this.$sliderLine.offsetWidth - this.$roller.offsetWidth;
+  //     if (this.defValue > this.range.max || this.defValue < this.range.min) {
+  //       alert('Текщее значение введено вне интервала между минимальным и максимальным значением');
+  //     } else {
+  //       this.$sliderValue.textContent = this.defValue;
+  //       const newLeft = Math.round(rightEdge * (this.defValue - this.range.min) / (this.range.max - this.range.min));
+  //       this.$roller.style.left = newLeft + 'px';
+  //       this.$sliderTable.style.left = newLeft + this.$roller.offsetWidth / 2 + 'px';
+  //       this.$input.value = this.defValue;
+  //     }
+  //   }
+  // }
+  // const slider = new Slider('.container', {
+  //   range: { min: 10, max: 1000 },
+  //   defValue: 50,
+  //   // displayValue: true
+  // });
+  // const slider1 = new Slider('.container1', {
+  //   defValue: 5,
+  //   // displayValue: true
+  // });
+  var EventObserver = /*#__PURE__*/function () {
+    function EventObserver() {
+      _classCallCheck(this, EventObserver);
 
-      this.$el = document.querySelector(selector);
-      this.minValue = options.minValue;
-      this.maxValue = options.maxValue;
-      this.curValue = options.curValue;
-      this.render();
-      this.$sliderLine = this.$el.querySelector('.ad-slider__line');
-      this.$roller = this.$el.querySelector('.ad-slider__roller');
-      this.$sliderValue = this.$el.querySelector('.ad-slider__number');
-      this.$sliderTable = this.$el.querySelector('.ad-slider__value');
-      this.$input = this.$el.querySelector('.ad-slider__input');
-      this.initCurValue();
-      this.scroll();
+      this.observers = [];
     }
 
-    _createClass(Slider, [{
-      key: "render",
-      value: function render() {
-        this.$el.insertAdjacentHTML('afterbegin', "\n      <div class=\"ad-slider__input\"></div>\n      <div class=\"ad-slider\">\n        <div class=\"ad-slider__line\">\n          <div class=\"ad-slider__roller\"></div>\n        </div>\n        <div class=\"ad-slider__value\">\n          <p class=\"ad-slider__number\"></p>\n        </div>\n      </div>\n      ");
+    _createClass(EventObserver, [{
+      key: "addObserver",
+      value: function addObserver(observer) {
+        this.observers.push(observer);
       }
     }, {
-      key: "scroll",
-      value: function scroll() {
-        var _this = this;
-
-        this.$roller.addEventListener('mousedown', function (e) {
-          e.preventDefault();
-
-          var shiftX = e.clientX - _this.$roller.getBoundingClientRect().left;
-
-          var mouseMove = function mouseMove(e) {
-            var newLeft = e.clientX - shiftX - _this.$sliderLine.getBoundingClientRect().left;
-
-            var rightEdge = _this.$sliderLine.offsetWidth - _this.$roller.offsetWidth;
-
-            if (newLeft < 0) {
-              newLeft = 0;
-            }
-
-            if (newLeft > rightEdge) {
-              newLeft = rightEdge;
-            }
-
-            _this.$roller.style.left = newLeft + 'px';
-            var valueOnSlider = Math.round(_this.minValue + (_this.maxValue - _this.minValue) * (parseInt(newLeft, 10) / rightEdge));
-            _this.$sliderValue.textContent = valueOnSlider;
-            _this.$sliderTable.style.left = newLeft + _this.$roller.offsetWidth / 2 + 'px';
-            _this.$input.value = valueOnSlider;
-          };
-
-          function mouseUp() {
-            document.removeEventListener('mouseup', mouseUp);
-            document.removeEventListener('mousemove', mouseMove);
-          }
-
-          document.addEventListener('mousemove', mouseMove);
-          document.addEventListener('mouseup', mouseUp);
+      key: "broadcast",
+      value: function broadcast(data) {
+        this.observers.forEach(function (subscriber) {
+          subscriber(data);
         });
-        document.addEventListener('dragstart', function () {
-          return false;
-        });
-      }
-    }, {
-      key: "initCurValue",
-      value: function initCurValue() {
-        var rightEdge = this.$sliderLine.offsetWidth - this.$roller.offsetWidth;
-
-        if (this.curValue > this.maxValue || this.curValue < this.minValue) {
-          alert('Текщее значение введено вне интервала между минимальным и максимальным значением');
-        } else {
-          this.$sliderValue.textContent = this.curValue;
-          var newLeft = Math.round(rightEdge * (this.curValue - this.minValue) / (this.maxValue - this.minValue));
-          this.$roller.style.left = newLeft + 'px';
-          this.$sliderTable.style.left = newLeft + this.$roller.offsetWidth / 2 + 'px';
-          this.$input.value = this.curValue;
-        }
       }
     }]);
 
-    return Slider;
+    return EventObserver;
   }();
 
-  var slider = new Slider('.container', {
-    minValue: 1000000,
-    maxValue: 1000000000,
-    curValue: 50000000
+  var View = /*#__PURE__*/function () {
+    function View(observer, model, selector) {
+      var _this = this;
+
+      _classCallCheck(this, View);
+
+      this.model = model;
+      this.$el = document.querySelector(selector);
+      this.render();
+      this.$adSlider = this.$el.querySelector('.ad-slider');
+      this.$sliderLine = this.$el.querySelector('.ad-slider__line');
+      this.$input = this.$el.querySelector('.ad-slider__input');
+      this.$sliderValue = this.$el.querySelector('.ad-slider__number');
+      this.$input = this.$el.querySelector('.example'); // this.displayValue = (options.displayValue) ? options.displayValue : false;
+
+      this.$sliderTable = this.$el.querySelector('.ad-slider__value');
+      this.$roller = this.$el.querySelector('.ad-slider__roller'); // this.initdefValue();
+
+      observer.addObserver(function () {
+        return _this.initdefValue();
+      });
+    }
+
+    _createClass(View, [{
+      key: "render",
+      value: function render() {
+        this.$el.insertAdjacentHTML('afterbegin', "\n      <div class=\"ad-slider__input\"></div>\n      <div class=\"ad-slider\">\n        <div class=\"ad-slider__line\">\n          <div class=\"ad-slider__roller\"></div>\n        </div>\n        <div class=\"ad-slider__value\">\n          <p class=\"ad-slider__number\"></p>\n        </div>\n      </div>\n      <input class=\"example\" type=\"text\"></input>\n      ");
+      }
+    }, {
+      key: "initdefValue",
+      value: function initdefValue() {
+        var rightEdge = this.$sliderLine.offsetWidth - this.$roller.offsetWidth;
+
+        if (this.model.defValue > this.model.range.max || this.model.defValue < this.model.range.min) {
+          alert('Текщее значение введено вне интервала между минимальным и максимальным значением');
+        } else {
+          this.$sliderValue.textContent = this.model.defValue;
+          var newLeft = Math.round(rightEdge * (this.model.defValue - this.model.range.min) / (this.model.range.max - this.model.range.min));
+          this.$roller.style.left = newLeft + 'px';
+          this.$sliderTable.style.left = newLeft + this.$roller.offsetWidth / 2 + 'px';
+          this.$input.value = this.model.defValue;
+        }
+      }
+    }, {
+      key: "fillInput",
+      value: function fillInput() {
+        this.$input.value = this.model.getValue();
+      }
+    }]);
+
+    return View;
+  }();
+
+  var Model = /*#__PURE__*/function () {
+    function Model(options) {
+      _classCallCheck(this, Model);
+
+      this.range = options.range ? options.range : {
+        min: 0,
+        max: 100
+      };
+      this.defValue = options.defValue ? options.defValue : 50;
+    }
+
+    _createClass(Model, [{
+      key: "value",
+      get: function get() {
+        return this.defValue;
+      },
+      set: function set(value) {
+        this.defValue = value;
+        observer.broadcast();
+      }
+    }]);
+
+    return Model;
+  }();
+
+  var observer = new EventObserver();
+  var model = new Model(observer, {
+    range: {
+      min: 0,
+      max: 100
+    },
+    defValue: 50
   });
-  var slider1 = new Slider('.container1', {
-    minValue: 1,
-    maxValue: 10,
-    curValue: 5
-  });
+  var view = new View(observer, model, '.container');
+  model.value = 120;
 });
 },{}],"../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
