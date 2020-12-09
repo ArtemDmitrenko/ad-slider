@@ -102,7 +102,7 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
   class View {
-    constructor(observer, model, selector) {
+    constructor(model, selector) {
       this.model = model;
       this.$el = document.querySelector(selector);
       this.render();
@@ -168,14 +168,14 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
   const observer = new EventObserver();
-  const model = new Model(observer, {
+  const model1 = new Model(observer, {
     range: { min: 0, max: 100 },
     defValue: 50
   });
-  const view = new View(observer, model, '.container');
+  const view = new View(model1, '.container');
 
 
-  model.value = 120;
+  model1.value = 60;
 
 
 

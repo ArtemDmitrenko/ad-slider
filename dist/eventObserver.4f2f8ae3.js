@@ -117,8 +117,13 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"script.js":[function(require,module,exports) {
-'use strict';
+})({"eventObserver/eventObserver.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -126,198 +131,53 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-window.addEventListener('DOMContentLoaded', function () {
-  // class Slider {
-  //   constructor(selector, options) {
-  //     this.$el = document.querySelector(selector);
-  //     this.range = (options.range) ? options.range : { min: 0, max: 100 };
-  //     this.defValue = options.defValue;
-  //     // this.displayValue = (options.displayValue) ? options.displayValue : false;
-  //     this.render();
-  //     this.$sliderLine = this.$el.querySelector('.ad-slider__line');
-  //     this.$roller = this.$el.querySelector('.ad-slider__roller');
-  //     this.$sliderValue = this.$el.querySelector('.ad-slider__number');
-  //     this.$sliderTable = this.$el.querySelector('.ad-slider__value');
-  //     this.$input = this.$el.querySelector('.ad-slider__input');
-  //     this.initdefValue();
-  //     this.scroll();
-  //   }
-  //   render() {
-  //     this.$el.insertAdjacentHTML('afterbegin', `
-  //     <div class="ad-slider__input"></div>
-  //     <div class="ad-slider">
-  //       <div class="ad-slider__line">
-  //         <div class="ad-slider__roller"></div>
-  //       </div>
-  //       <div class="ad-slider__value">
-  //         <p class="ad-slider__number"></p>
-  //       </div>
-  //     </div>
-  //     `);
-  //   }
-  //   scroll() {
-  //     this.$roller.addEventListener('mousedown', e => {
-  //       e.preventDefault();
-  //       const shiftX = e.clientX - this.$roller.getBoundingClientRect().left;
-  //       const mouseMove = e => {
-  //         let newLeft = e.clientX - shiftX - this.$sliderLine.getBoundingClientRect().left;
-  //         let rightEdge = this.$sliderLine.offsetWidth - this.$roller.offsetWidth;
-  //         if (newLeft < 0) {
-  //           newLeft = 0;
-  //         }
-  //         if (newLeft > rightEdge) {
-  //           newLeft = rightEdge;
-  //         }
-  //         this.$roller.style.left = newLeft + 'px';
-  //         const valueOnSlider = Math.round(this.range.min + (this.range.max - this.range.min) * (parseInt(newLeft, 10) / rightEdge));
-  //         this.$sliderValue.textContent = valueOnSlider;
-  //         this.$sliderTable.style.left = newLeft + this.$roller.offsetWidth / 2 + 'px';
-  //         this.$input.value = valueOnSlider;
-  //       };
-  //       function mouseUp() {
-  //         document.removeEventListener('mouseup', mouseUp);
-  //         document.removeEventListener('mousemove', mouseMove);
-  //       }
-  //       document.addEventListener('mousemove', mouseMove);
-  //       document.addEventListener('mouseup', mouseUp);
-  //     });
-  //     document.addEventListener('dragstart', () => false);
-  //   }
-  //   initdefValue() {
-  //     const rightEdge = this.$sliderLine.offsetWidth - this.$roller.offsetWidth;
-  //     if (this.defValue > this.range.max || this.defValue < this.range.min) {
-  //       alert('Текщее значение введено вне интервала между минимальным и максимальным значением');
-  //     } else {
-  //       this.$sliderValue.textContent = this.defValue;
-  //       const newLeft = Math.round(rightEdge * (this.defValue - this.range.min) / (this.range.max - this.range.min));
-  //       this.$roller.style.left = newLeft + 'px';
-  //       this.$sliderTable.style.left = newLeft + this.$roller.offsetWidth / 2 + 'px';
-  //       this.$input.value = this.defValue;
-  //     }
-  //   }
-  // }
-  // const slider = new Slider('.container', {
-  //   range: { min: 10, max: 1000 },
-  //   defValue: 50,
-  //   // displayValue: true
-  // });
-  // const slider1 = new Slider('.container1', {
-  //   defValue: 5,
-  //   // displayValue: true
-  // });
-  var EventObserver = /*#__PURE__*/function () {
-    function EventObserver() {
-      _classCallCheck(this, EventObserver);
+var EventObserver = /*#__PURE__*/function () {
+  function EventObserver() {
+    _classCallCheck(this, EventObserver);
 
-      this.observers = [];
-    }
+    this.observers = [];
+  }
 
-    _createClass(EventObserver, [{
-      key: "addObserver",
-      value: function addObserver(observer) {
-        this.observers.push(observer);
+  _createClass(EventObserver, [{
+    key: "addObserver",
+    value: function addObserver(newObserver) {
+      if (typeof newObserver !== 'function') {
+        console.dir(this);
+        throw new Error('Observer must be a function!');
       }
-    }, {
-      key: "broadcast",
-      value: function broadcast(data) {
-        this.observers.forEach(function (subscriber) {
-          subscriber(data);
-        });
-      }
-    }]);
 
-    return EventObserver;
-  }();
-
-  var View = /*#__PURE__*/function () {
-    function View(model, selector) {
-      var _this = this;
-
-      _classCallCheck(this, View);
-
-      this.model = model;
-      this.$el = document.querySelector(selector);
-      this.render();
-      this.$adSlider = this.$el.querySelector('.ad-slider');
-      this.$sliderLine = this.$el.querySelector('.ad-slider__line');
-      this.$input = this.$el.querySelector('.ad-slider__input');
-      this.$sliderValue = this.$el.querySelector('.ad-slider__number');
-      this.$input = this.$el.querySelector('.example'); // this.displayValue = (options.displayValue) ? options.displayValue : false;
-
-      this.$sliderTable = this.$el.querySelector('.ad-slider__value');
-      this.$roller = this.$el.querySelector('.ad-slider__roller'); // this.initdefValue();
-
-      observer.addObserver(function () {
-        return _this.initdefValue();
+      this.observers.forEach(function (observer) {
+        if (observer === newObserver) {
+          throw new Error('Observer already in the list!');
+        }
       });
+      this.observers.push(newObserver);
     }
-
-    _createClass(View, [{
-      key: "render",
-      value: function render() {
-        this.$el.insertAdjacentHTML('afterbegin', "\n      <div class=\"ad-slider__input\"></div>\n      <div class=\"ad-slider\">\n        <div class=\"ad-slider__line\">\n          <div class=\"ad-slider__roller\"></div>\n        </div>\n        <div class=\"ad-slider__value\">\n          <p class=\"ad-slider__number\"></p>\n        </div>\n      </div>\n      <input class=\"example\" type=\"text\"></input>\n      ");
-      }
-    }, {
-      key: "initdefValue",
-      value: function initdefValue() {
-        var rightEdge = this.$sliderLine.offsetWidth - this.$roller.offsetWidth;
-
-        if (this.model.defValue > this.model.range.max || this.model.defValue < this.model.range.min) {
-          alert('Текщее значение введено вне интервала между минимальным и максимальным значением');
-        } else {
-          this.$sliderValue.textContent = this.model.defValue;
-          var newLeft = Math.round(rightEdge * (this.model.defValue - this.model.range.min) / (this.model.range.max - this.model.range.min));
-          this.$roller.style.left = newLeft + 'px';
-          this.$sliderTable.style.left = newLeft + this.$roller.offsetWidth / 2 + 'px';
-          this.$input.value = this.model.defValue;
+  }, {
+    key: "removeObserver",
+    value: function removeObserver(obs) {
+      for (var i = 0; i < this.observers.length; i++) {
+        if (obs === this.observers[i]) {
+          this.observers.splice(i, 1);
+          return;
         }
       }
-    }, {
-      key: "fillInput",
-      value: function fillInput() {
-        this.$input.value = this.model.getValue();
-      }
-    }]);
 
-    return View;
-  }();
-
-  var Model = /*#__PURE__*/function () {
-    function Model(options) {
-      _classCallCheck(this, Model);
-
-      this.range = options.range ? options.range : {
-        min: 0,
-        max: 100
-      };
-      this.defValue = options.defValue ? options.defValue : 50;
+      throw new Error('No such observer in the list!');
     }
+  }, {
+    key: "broadcast",
+    value: function broadcast(data) {
+      this.observers.forEach(function (subscriber) {
+        subscriber(data);
+      });
+    }
+  }]);
 
-    _createClass(Model, [{
-      key: "value",
-      get: function get() {
-        return this.defValue;
-      },
-      set: function set(value) {
-        this.defValue = value;
-        observer.broadcast();
-      }
-    }]);
+  return EventObserver;
+}();
 
-    return Model;
-  }();
-
-  var observer = new EventObserver();
-  var model1 = new Model(observer, {
-    range: {
-      min: 0,
-      max: 100
-    },
-    defValue: 50
-  });
-  var view = new View(model1, '.container');
-  model1.value = 60;
-});
+exports.default = EventObserver;
 },{}],"../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -522,5 +382,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","script.js"], null)
-//# sourceMappingURL=/script.75da7f30.js.map
+},{}]},{},["../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","eventObserver/eventObserver.js"], null)
+//# sourceMappingURL=/eventObserver.4f2f8ae3.js.map
