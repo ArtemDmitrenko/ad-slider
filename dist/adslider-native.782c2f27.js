@@ -183,7 +183,268 @@ var EventObserver = /*#__PURE__*/function () {
 }();
 
 exports.default = EventObserver;
-},{}],"../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{}],"model/model.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _eventObserver = _interopRequireDefault(require("../eventObserver/eventObserver"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Model = /*#__PURE__*/function () {
+  function Model(options) {
+    _classCallCheck(this, Model);
+
+    this.limits = options.limits ? options.limits : {
+      min: 0,
+      max: 100
+    };
+    this.defValue = options.defValue ? options.defValue : 50; // this.showValueNote = (options.showValueNote) ? options.showValueNote : true;
+  }
+
+  _createClass(Model, [{
+    key: "setValue",
+    value: function setValue(value) {
+      this.defValue = value;
+      this.updateValue = new _eventObserver.default();
+      this.updateValue.broadcast(this.defValue);
+    }
+  }, {
+    key: "setLimits",
+    value: function setLimits(values) {
+      if (_typeof(values) !== 'object') {
+        throw new Error('It must be object');
+      } else if (values.min >= values.max) {
+        throw new Error('Min can not be more than Max');
+      }
+
+      this.limits = {
+        min: values.min,
+        max: values.max
+      };
+      this.updateLimits = new _eventObserver.default();
+      this.updateLimits.broadcast(this.limits);
+    }
+  }, {
+    key: "getvalue",
+    value: function getvalue() {
+      return this.defValue;
+    }
+  }]);
+
+  return Model;
+}(); // const model = new Model({ defValue: 70 });
+// model.setValue(60);
+// console.log(model.limits)
+// model.setLimits({ min: 50, max: 100 });
+// console.log(model.limits)
+
+
+exports.default = Model;
+},{"../eventObserver/eventObserver":"eventObserver/eventObserver.js"}],"view/handlerView/handlerView.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var HandlerView = /*#__PURE__*/function () {
+  function HandlerView(parent) {
+    _classCallCheck(this, HandlerView);
+
+    this.parent = parent;
+
+    this._render();
+  }
+
+  _createClass(HandlerView, [{
+    key: "_render",
+    value: function _render() {
+      this.$handler = document.createElement('div');
+      this.$handler.classList.add('adslider__handler');
+      this.parent.append(this.$handler);
+    }
+  }]);
+
+  return HandlerView;
+}();
+
+exports.default = HandlerView;
+},{}],"view/trackView/trackView.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var TrackView = /*#__PURE__*/function () {
+  function TrackView(parent) {
+    _classCallCheck(this, TrackView);
+
+    this.parent = parent;
+
+    this._render();
+  }
+
+  _createClass(TrackView, [{
+    key: "_render",
+    value: function _render() {
+      this.$track = document.createElement('div');
+      this.$track.classList.add('adslider__track');
+      this.parent.append(this.$track);
+    }
+  }]);
+
+  return TrackView;
+}();
+
+exports.default = TrackView;
+},{}],"view/valueNoteView/valueNoteView.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var ValueNoteView = /*#__PURE__*/function () {
+  function ValueNoteView(parent) {
+    _classCallCheck(this, ValueNoteView);
+
+    this.parent = parent;
+
+    this._render();
+  }
+
+  _createClass(ValueNoteView, [{
+    key: "_render",
+    value: function _render() {
+      this.$note = document.createElement('div');
+      this.$value = document.createElement('p');
+      this.$note.classList.add('adslider__note');
+      this.$value.classList.add('adslider__value');
+      this.$note.append(this.$value);
+      this.parent.append(this.$note);
+    }
+  }, {
+    key: "setValue",
+    value: function setValue(value) {
+      this.$value.textContent = value;
+    }
+  }]);
+
+  return ValueNoteView;
+}();
+
+exports.default = ValueNoteView;
+},{}],"view/view.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _eventObserver = _interopRequireDefault(require("../eventObserver/eventObserver"));
+
+var _handlerView = _interopRequireDefault(require("./handlerView/handlerView"));
+
+var _trackView = _interopRequireDefault(require("./trackView/trackView"));
+
+var _valueNoteView = _interopRequireDefault(require("./valueNoteView/valueNoteView"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var View = /*#__PURE__*/function () {
+  function View(selector) {
+    _classCallCheck(this, View);
+
+    this.$el = document.querySelector(selector);
+    this.render();
+  }
+
+  _createClass(View, [{
+    key: "render",
+    value: function render() {
+      this.$adslider = document.createElement('div');
+      this.$adslider.classList.add('adslider');
+      this.$el.append(this.$adslider);
+      var track = new _trackView.default(this.$adslider);
+      var handler = new _handlerView.default(track.$track);
+      var valueNote = new _valueNoteView.default(this.$adslider);
+    }
+  }]);
+
+  return View;
+}();
+
+exports.default = View;
+},{"../eventObserver/eventObserver":"eventObserver/eventObserver.js","./handlerView/handlerView":"view/handlerView/handlerView.js","./trackView/trackView":"view/trackView/trackView.js","./valueNoteView/valueNoteView":"view/valueNoteView/valueNoteView.js"}],"createAdslider.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = createAdslider;
+
+var _model = _interopRequireDefault(require("./model/model"));
+
+var _view = _interopRequireDefault(require("./view/view"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import Presenter from './presenter/presenter';
+function createAdslider(selector, userOptions) {
+  var view = new _view.default(selector);
+  var model = new _model.default(userOptions);
+}
+},{"./model/model":"model/model.js","./view/view":"view/view.js"}],"adslider-native.js":[function(require,module,exports) {
+"use strict";
+
+var _createAdslider = _interopRequireDefault(require("./createAdslider"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+window.adslider = _createAdslider.default;
+},{"./createAdslider":"createAdslider.js"}],"../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -387,5 +648,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","eventObserver/eventObserver.js"], null)
-//# sourceMappingURL=/eventObserver.4f2f8ae3.js.map
+},{}]},{},["../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","adslider-native.js"], null)
+//# sourceMappingURL=/adslider-native.782c2f27.js.map

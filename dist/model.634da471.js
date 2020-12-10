@@ -183,7 +183,77 @@ var EventObserver = /*#__PURE__*/function () {
 }();
 
 exports.default = EventObserver;
-},{}],"../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{}],"model/model.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _eventObserver = _interopRequireDefault(require("../eventObserver/eventObserver"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Model = /*#__PURE__*/function () {
+  function Model(options) {
+    _classCallCheck(this, Model);
+
+    this.eventObserver = new _eventObserver.default();
+    this.limits = options.limits ? options.limits : {
+      min: 0,
+      max: 100
+    };
+    this.defValue = options.defValue ? options.defValue : 50;
+    this.showValueNote = options.showValueNote ? options.showValueNote : true;
+  }
+
+  _createClass(Model, [{
+    key: "setValue",
+    value: function setValue(value) {
+      this.defValue = value;
+      this.eventObserver.broadcast(this.defValue);
+    }
+  }, {
+    key: "setLimits",
+    value: function setLimits(values) {
+      if (_typeof(values) !== 'object') {
+        throw new Error('It must be object');
+      } else if (values.min >= values.max) {
+        throw new Error('Min can not be more than Max');
+      }
+
+      this.limits = {
+        min: values.min,
+        max: values.max
+      };
+      this.eventObserver.broadcast(this.limits);
+    }
+  }, {
+    key: "getvalue",
+    value: function getvalue() {
+      return this.defValue;
+    }
+  }]);
+
+  return Model;
+}(); // const model = new Model({ defValue: 70 });
+// model.setValue(60);
+// console.log(model.limits)
+// model.setLimits({ min: 50, max: 100 });
+// console.log(model.limits)
+
+
+exports.default = Model;
+},{"../eventObserver/eventObserver":"eventObserver/eventObserver.js"}],"../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -387,5 +457,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","eventObserver/eventObserver.js"], null)
-//# sourceMappingURL=/eventObserver.4f2f8ae3.js.map
+},{}]},{},["../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","model/model.js"], null)
+//# sourceMappingURL=/model.634da471.js.map
