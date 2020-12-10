@@ -142,7 +142,6 @@ var EventObserver = /*#__PURE__*/function () {
     key: "addObserver",
     value: function addObserver(newObserver) {
       if (typeof newObserver !== 'function') {
-        console.dir(this);
         throw new Error('Observer must be a function!');
       }
 
@@ -169,7 +168,7 @@ var EventObserver = /*#__PURE__*/function () {
     key: "broadcast",
     value: function broadcast(data) {
       if (this.observers < 1) {
-        return false;
+        return;
       }
 
       var observersClone = this.observers.slice(0);
@@ -261,6 +260,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+var _eventObserver = _interopRequireDefault(require("../../eventObserver/eventObserver"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -274,14 +277,65 @@ var HandlerView = /*#__PURE__*/function () {
     this.parent = parent;
 
     this._render();
+
+    this.eventMousemove = new _eventObserver.default();
   }
 
   _createClass(HandlerView, [{
+    key: "_getHandlerWidth",
+    value: function _getHandlerWidth() {
+      return this.$handler.offsetWidth;
+    }
+  }, {
     key: "_render",
     value: function _render() {
       this.$handler = document.createElement('div');
       this.$handler.classList.add('adslider__handler');
       this.parent.append(this.$handler);
+    }
+  }, {
+    key: "_setPosition",
+    value: function _setPosition($track) {
+      var _this = this;
+
+      this.$handler.addEventListener('mousedown', function (e) {
+        e.preventDefault();
+
+        var shiftX = e.clientX - _this.$handler.getBoundingClientRect().left;
+
+        var mouseMove = function mouseMove(e) {
+          var newLeft = e.clientX - shiftX - $track.getBoundingClientRect().left;
+          var rightEdge = $track.offsetWidth - _this.$handler.offsetWidth;
+
+          if (newLeft < 0) {
+            newLeft = 0;
+          }
+
+          if (newLeft > rightEdge) {
+            newLeft = rightEdge;
+          }
+
+          _this.$handler.style.left = newLeft + 'px';
+          var handlerWidth = _this.$handler.offsetWidth;
+          var data = {
+            newLeft: newLeft,
+            handlerWidth: handlerWidth
+          };
+
+          _this.eventMousemove.broadcast(data);
+        };
+
+        function mouseUp() {
+          document.removeEventListener('mouseup', mouseUp);
+          document.removeEventListener('mousemove', mouseMove);
+        }
+
+        document.addEventListener('mousemove', mouseMove);
+        document.addEventListener('mouseup', mouseUp);
+      });
+      document.addEventListener('dragstart', function () {
+        return false;
+      });
     }
   }]);
 
@@ -289,7 +343,7 @@ var HandlerView = /*#__PURE__*/function () {
 }();
 
 exports.default = HandlerView;
-},{}],"view/trackView/trackView.js":[function(require,module,exports) {
+},{"../../eventObserver/eventObserver":"eventObserver/eventObserver.js"}],"view/trackView/trackView.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -357,11 +411,19 @@ var ValueNoteView = /*#__PURE__*/function () {
       this.$value.classList.add('adslider__value');
       this.$note.append(this.$value);
       this.parent.append(this.$note);
+    } // setValue(value) {
+    //   this.$value.textContent = value;
+    // }
+
+  }, {
+    key: "_alignRelHandler",
+    value: function _alignRelHandler(handlerWidth) {
+      this.$note.style.left = handlerWidth / 2 + 'px';
     }
   }, {
-    key: "setValue",
-    value: function setValue(value) {
-      this.$value.textContent = value;
+    key: "_setPosition",
+    value: function _setPosition(data) {
+      this.$note.style.left = data.newLeft + data.handlerWidth / 2 + 'px';
     }
   }]);
 
@@ -376,8 +438,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-
-var _eventObserver = _interopRequireDefault(require("../eventObserver/eventObserver"));
 
 var _handlerView = _interopRequireDefault(require("./handlerView/handlerView"));
 
@@ -398,18 +458,31 @@ var View = /*#__PURE__*/function () {
     _classCallCheck(this, View);
 
     this.$el = document.querySelector(selector);
-    this.render();
+
+    this._render();
+
+    this.track = new _trackView.default(this.$adslider);
+    this.handler = new _handlerView.default(this.track.$track);
+    this.valueNote = new _valueNoteView.default(this.$adslider);
+
+    this.valueNote._alignRelHandler(this.handler._getHandlerWidth());
+
+    this.handler._setPosition(this.track.$track);
+
+    this._addEventMousemove();
   }
 
   _createClass(View, [{
-    key: "render",
-    value: function render() {
+    key: "_render",
+    value: function _render() {
       this.$adslider = document.createElement('div');
       this.$adslider.classList.add('adslider');
       this.$el.append(this.$adslider);
-      var track = new _trackView.default(this.$adslider);
-      var handler = new _handlerView.default(track.$track);
-      var valueNote = new _valueNoteView.default(this.$adslider);
+    }
+  }, {
+    key: "_addEventMousemove",
+    value: function _addEventMousemove() {
+      this.handler.eventMousemove.addObserver(this.valueNote._setPosition.bind(this.valueNote));
     }
   }]);
 
@@ -417,7 +490,40 @@ var View = /*#__PURE__*/function () {
 }();
 
 exports.default = View;
-},{"../eventObserver/eventObserver":"eventObserver/eventObserver.js","./handlerView/handlerView":"view/handlerView/handlerView.js","./trackView/trackView":"view/trackView/trackView.js","./valueNoteView/valueNoteView":"view/valueNoteView/valueNoteView.js"}],"createAdslider.js":[function(require,module,exports) {
+},{"./handlerView/handlerView":"view/handlerView/handlerView.js","./trackView/trackView":"view/trackView/trackView.js","./valueNoteView/valueNoteView":"view/valueNoteView/valueNoteView.js"}],"presenter/presenter.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Presenter = /*#__PURE__*/function () {
+  function Presenter(model, view) {
+    _classCallCheck(this, Presenter);
+
+    this.model = model;
+    this.view = view;
+  }
+
+  _createClass(Presenter, [{
+    key: "_render",
+    value: function _render() {
+      this.view.valueNote.setValue(this.model.defValue);
+    }
+  }]);
+
+  return Presenter;
+}();
+
+exports.default = Presenter;
+},{}],"createAdslider.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -429,14 +535,16 @@ var _model = _interopRequireDefault(require("./model/model"));
 
 var _view = _interopRequireDefault(require("./view/view"));
 
+var _presenter = _interopRequireDefault(require("./presenter/presenter"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import Presenter from './presenter/presenter';
 function createAdslider(selector, userOptions) {
   var view = new _view.default(selector);
   var model = new _model.default(userOptions);
+  var presenter = new _presenter.default(model, view);
 }
-},{"./model/model":"model/model.js","./view/view":"view/view.js"}],"adslider-native.js":[function(require,module,exports) {
+},{"./model/model":"model/model.js","./view/view":"view/view.js","./presenter/presenter":"presenter/presenter.js"}],"adslider-native.js":[function(require,module,exports) {
 "use strict";
 
 var _createAdslider = _interopRequireDefault(require("./createAdslider"));

@@ -5,7 +5,6 @@ export default class EventObserver {
 
   addObserver(newObserver) {
     if (typeof newObserver !== 'function') {
-      console.dir(this);
       throw new Error('Observer must be a function!');
     }
     this.observers.forEach(observer => {
@@ -14,6 +13,7 @@ export default class EventObserver {
       }
     });
     this.observers.push(newObserver);
+
   }
 
   removeObserver(obs) {
@@ -27,7 +27,7 @@ export default class EventObserver {
   }
 
   broadcast(data) {
-    if (this.observers < 1) { return false; }
+    if (this.observers < 1) { return; }
     const observersClone = this.observers.slice(0);
     observersClone.forEach(subscriber => {
       subscriber(data);
