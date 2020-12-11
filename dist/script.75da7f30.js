@@ -120,8 +120,8 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 })({"script.js":[function(require,module,exports) {
 adslider('.container', {
   limits: {
-    min: 0,
-    max: 100
+    min: 30,
+    max: 150
   },
   defValue: 50
 });

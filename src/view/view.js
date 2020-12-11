@@ -12,9 +12,10 @@ export default class View {
     this.valueNote = new valueNoteView(this.$adslider);
 
     this.valueNote._alignRelHandler(this.handler._getHandlerWidth());
-    this.handler._setPosition(this.track.$track);
-    this._addEventMousemove();
+    this.handler._setMovePosition(this.track.$track);
 
+    // When position of handler is changing - valueNote is changing position too
+    this.handler.eventMousemove.addObserver(this.valueNote._setPosition.bind(this.valueNote));
   }
 
   _render() {
@@ -22,8 +23,4 @@ export default class View {
     this.$adslider.classList.add('adslider');
     this.$el.append(this.$adslider);
   }
-  _addEventMousemove() {
-    this.handler.eventMousemove.addObserver(this.valueNote._setPosition.bind(this.valueNote));
-  }
-
 }

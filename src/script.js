@@ -1,4 +1,4 @@
 adslider('.container', {
-  limits: { min: 0, max: 100 },
+  limits: { min: 30, max: 150 },
   defValue: 50
 });

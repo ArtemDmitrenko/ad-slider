@@ -194,8 +194,6 @@ var _eventObserver = _interopRequireDefault(require("../eventObserver/eventObser
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -211,45 +209,33 @@ var Model = /*#__PURE__*/function () {
       max: 100
     };
     this.defValue = options.defValue ? options.defValue : 50; // this.showValueNote = (options.showValueNote) ? options.showValueNote : true;
-  }
+    // Event to update value on handler when defvalue in Model is changed
+
+    this.eventUpdateValue = new _eventObserver.default();
+  } // setValue(value) {
+  //   this.defValue = value;
+  //   this.eventUpdateValue.broadcast(this.defValue);
+  // }
+  // setLimits(limits) {
+  //   if (typeof values !== 'object') {
+  //     throw new Error('It must be object');
+  //   } else if (limits.min >= limits.max) {
+  //     throw new Error('Min can not be more than Max');
+  //   }
+  //   this.limits = { min: limits.min, max: limits.max };
+  // }
+
 
   _createClass(Model, [{
-    key: "setValue",
-    value: function setValue(value) {
-      this.defValue = value;
-      this.updateValue = new _eventObserver.default();
-      this.updateValue.broadcast(this.defValue);
-    }
-  }, {
-    key: "setLimits",
-    value: function setLimits(values) {
-      if (_typeof(values) !== 'object') {
-        throw new Error('It must be object');
-      } else if (values.min >= values.max) {
-        throw new Error('Min can not be more than Max');
-      }
-
-      this.limits = {
-        min: values.min,
-        max: values.max
-      };
-      this.updateLimits = new _eventObserver.default();
-      this.updateLimits.broadcast(this.limits);
-    }
-  }, {
-    key: "getvalue",
-    value: function getvalue() {
-      return this.defValue;
+    key: "getValueFromHandlerPos",
+    value: function getValueFromHandlerPos(data) {
+      this.defValue = Math.round(this.limits.min + (this.limits.max - this.limits.min) * (parseInt(data.newLeft, 10) / data.rightEdge));
+      this.eventUpdateValue.broadcast(this.defValue);
     }
   }]);
 
   return Model;
-}(); // const model = new Model({ defValue: 70 });
-// model.setValue(60);
-// console.log(model.limits)
-// model.setLimits({ min: 50, max: 100 });
-// console.log(model.limits)
-
+}();
 
 exports.default = Model;
 },{"../eventObserver/eventObserver":"eventObserver/eventObserver.js"}],"view/handlerView/handlerView.js":[function(require,module,exports) {
@@ -294,8 +280,8 @@ var HandlerView = /*#__PURE__*/function () {
       this.parent.append(this.$handler);
     }
   }, {
-    key: "_setPosition",
-    value: function _setPosition($track) {
+    key: "_setMovePosition",
+    value: function _setMovePosition($track) {
       var _this = this;
 
       this.$handler.addEventListener('mousedown', function (e) {
@@ -319,7 +305,8 @@ var HandlerView = /*#__PURE__*/function () {
           var handlerWidth = _this.$handler.offsetWidth;
           var data = {
             newLeft: newLeft,
-            handlerWidth: handlerWidth
+            handlerWidth: handlerWidth,
+            rightEdge: rightEdge
           };
 
           _this.eventMousemove.broadcast(data);
@@ -336,6 +323,12 @@ var HandlerView = /*#__PURE__*/function () {
       document.addEventListener('dragstart', function () {
         return false;
       });
+    } // method to set position of handler due to value
+
+  }, {
+    key: "_setPosition",
+    value: function _setPosition(newLeft) {
+      this.$handler.style.left = newLeft + 'px';
     }
   }]);
 
@@ -387,6 +380,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+var _eventObserver = _interopRequireDefault(require("../../eventObserver/eventObserver"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -411,10 +408,12 @@ var ValueNoteView = /*#__PURE__*/function () {
       this.$value.classList.add('adslider__value');
       this.$note.append(this.$value);
       this.parent.append(this.$note);
-    } // setValue(value) {
-    //   this.$value.textContent = value;
-    // }
-
+    }
+  }, {
+    key: "_setValue",
+    value: function _setValue(value) {
+      this.$value.textContent = value;
+    }
   }, {
     key: "_alignRelHandler",
     value: function _alignRelHandler(handlerWidth) {
@@ -431,7 +430,7 @@ var ValueNoteView = /*#__PURE__*/function () {
 }();
 
 exports.default = ValueNoteView;
-},{}],"view/view.js":[function(require,module,exports) {
+},{"../../eventObserver/eventObserver":"eventObserver/eventObserver.js"}],"view/view.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -467,9 +466,10 @@ var View = /*#__PURE__*/function () {
 
     this.valueNote._alignRelHandler(this.handler._getHandlerWidth());
 
-    this.handler._setPosition(this.track.$track);
+    this.handler._setMovePosition(this.track.$track); // When position of handler is changing - valueNote is changing position too
 
-    this._addEventMousemove();
+
+    this.handler.eventMousemove.addObserver(this.valueNote._setPosition.bind(this.valueNote));
   }
 
   _createClass(View, [{
@@ -478,11 +478,6 @@ var View = /*#__PURE__*/function () {
       this.$adslider = document.createElement('div');
       this.$adslider.classList.add('adslider');
       this.$el.append(this.$adslider);
-    }
-  }, {
-    key: "_addEventMousemove",
-    value: function _addEventMousemove() {
-      this.handler.eventMousemove.addObserver(this.valueNote._setPosition.bind(this.valueNote));
     }
   }]);
 
@@ -498,32 +493,25 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+var _eventObserver = _interopRequireDefault(require("../eventObserver/eventObserver"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+var Presenter = function Presenter(model, view) {
+  _classCallCheck(this, Presenter);
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+  this.model = model;
+  this.view = view; // When position of handler is changing - defValue in Model is updating
 
-var Presenter = /*#__PURE__*/function () {
-  function Presenter(model, view) {
-    _classCallCheck(this, Presenter);
+  this.view.handler.eventMousemove.addObserver(this.model.getValueFromHandlerPos.bind(this.model)); // When defValue in Model is changing - value in valueNote is updating
 
-    this.model = model;
-    this.view = view;
-  }
-
-  _createClass(Presenter, [{
-    key: "_render",
-    value: function _render() {
-      this.view.valueNote.setValue(this.model.defValue);
-    }
-  }]);
-
-  return Presenter;
-}();
+  this.model.eventUpdateValue.addObserver(this.view.valueNote._setValue.bind(this.view.valueNote));
+};
 
 exports.default = Presenter;
-},{}],"createAdslider.js":[function(require,module,exports) {
+},{"../eventObserver/eventObserver":"eventObserver/eventObserver.js"}],"createAdslider.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
