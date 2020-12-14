@@ -23,4 +23,13 @@ export default class ValueNoteView {
   _setPosition(data) {
     this.$note.style.left = data.newLeft + data.handlerWidth / 2 + 'px';
   }
+  showValueNote(data) {
+    if (data === true) {
+      this.$note.classList.remove('adslider__note_hide');
+      this.$note.classList.add('adslider__note_show');
+    } else {
+      this.$note.classList.remove('adslider__note_show');
+      this.$note.classList.add('adslider__note_hide');
+    }
+  }
 }

@@ -23,4 +23,8 @@ export default class View {
     this.$adslider.classList.add('adslider');
     this.$el.append(this.$adslider);
   }
+  getRightEdge() {
+    this.rightEdge = this.track.$track.offsetWidth - this.handler.$handler.offsetWidth;
+    return this.rightEdge;
+  }
 }

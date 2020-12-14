@@ -120,10 +120,11 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 })({"script.js":[function(require,module,exports) {
 adslider('.container', {
   limits: {
-    min: 30,
+    min: 50,
     max: 150
   },
-  defValue: 50
+  defValue: 90,
+  showValueNote: true
 });
 },{}],"../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
