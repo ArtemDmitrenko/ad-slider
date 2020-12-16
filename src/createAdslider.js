@@ -1,9 +1,16 @@
-import Model from './model/model';
-import View from './view/view';
-import Presenter from './presenter/presenter';
-
-export default function createAdslider(selector, userOptions) {
-  const view = new View(selector);
-  const model = new Model(userOptions);
-  const presenter = new Presenter(model, view);
+"use strict";
+exports.__esModule = true;
+var model_1 = require("./model/model");
+var view_1 = require("./view/view");
+var presenter_1 = require("./presenter/presenter");
+function createAdslider(selector, userOptions) {
+    var view = new view_1["default"](selector);
+    var model = new model_1.Model(userOptions);
+    var presenter = new presenter_1["default"]();
 }
+exports["default"] = createAdslider;
+createAdslider('.container', {
+    limits: { min: 50, max: 150 },
+    curValue: 90,
+    showValueNote: false
+});

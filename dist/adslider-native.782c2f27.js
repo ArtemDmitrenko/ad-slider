@@ -120,496 +120,358 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 })({"eventObserver/eventObserver.js":[function(require,module,exports) {
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
+exports.__esModule = true;
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-var EventObserver = /*#__PURE__*/function () {
+var EventObserver =
+/** @class */
+function () {
   function EventObserver() {
-    _classCallCheck(this, EventObserver);
-
     this.observers = [];
-  }
+  } // constructor() {
+  //   this.observers = [];
+  // }
 
-  _createClass(EventObserver, [{
-    key: "addObserver",
-    value: function addObserver(newObserver) {
-      if (typeof newObserver !== 'function') {
-        throw new Error('Observer must be a function!');
-      }
 
-      this.observers.forEach(function (observer) {
-        if (observer === newObserver) {
-          throw new Error('Observer already in the list!');
-        }
-      });
-      this.observers.push(newObserver);
+  EventObserver.prototype.addObserver = function (newObserver) {
+    if (typeof newObserver !== 'function') {
+      throw new Error('Observer must be a function!');
     }
-  }, {
-    key: "removeObserver",
-    value: function removeObserver(obs) {
-      for (var i = 0; i < this.observers.length; i++) {
-        if (obs === this.observers[i]) {
-          this.observers.splice(i, 1);
-          return;
-        }
-      }
 
-      throw new Error('No such observer in the list!');
-    }
-  }, {
-    key: "broadcast",
-    value: function broadcast(data) {
-      if (this.observers < 1) {
+    this.observers.forEach(function (observer) {
+      if (observer === newObserver) {
+        throw new Error('Observer already in the list!');
+      }
+    });
+    this.observers.push(newObserver);
+  };
+
+  EventObserver.prototype.removeObserver = function (obs) {
+    for (var i = 0; i < this.observers.length; i++) {
+      if (obs === this.observers[i]) {
+        this.observers.splice(i, 1);
         return;
       }
-
-      var observersClone = this.observers.slice(0);
-      observersClone.forEach(function (subscriber) {
-        subscriber(data);
-      });
     }
-  }]);
+
+    throw new Error('No such observer in the list!');
+  };
+
+  EventObserver.prototype.broadcast = function (data) {
+    if (this.observers.length < 1) {
+      return;
+    }
+
+    var observersClone = this.observers.slice(0);
+    observersClone.forEach(function (subscriber) {
+      subscriber(data);
+    });
+  };
 
   return EventObserver;
 }();
 
-exports.default = EventObserver;
+exports["default"] = EventObserver;
 },{}],"model/model.js":[function(require,module,exports) {
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _eventObserver = _interopRequireDefault(require("../eventObserver/eventObserver"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var __extends = this && this.__extends || function () {
+  var _extendStatics = function extendStatics(d, b) {
+    _extendStatics = Object.setPrototypeOf || {
+      __proto__: []
+    } instanceof Array && function (d, b) {
+      d.__proto__ = b;
+    } || function (d, b) {
+      for (var p in b) {
+        if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
+      }
+    };
 
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+    return _extendStatics(d, b);
+  };
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+  return function (d, b) {
+    _extendStatics(d, b);
 
-var Model = /*#__PURE__*/function () {
+    function __() {
+      this.constructor = d;
+    }
+
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+}();
+
+exports.__esModule = true;
+exports.Model = void 0;
+
+var eventObserver_1 = require("../eventObserver/eventObserver");
+
+var Model =
+/** @class */
+function (_super) {
+  __extends(Model, _super);
+
   function Model(options) {
-    _classCallCheck(this, Model);
+    var _this = _super.call(this) || this;
 
-    this.limits = options.limits ? options.limits : {
+    _this.limits = options.limits ? options.limits : {
       min: 0,
       max: 100
     };
-    this.defValue = options.defValue ? options.defValue : 50;
-    this.showValueNote = typeof options.showValueNote === 'boolean' ? options.showValueNote : true; // Event to update value on handler when defvalue in Model is changed
-
-    this.eventUpdateValue = new _eventObserver.default();
-    this.setValue(this.defValue);
-    this.setLimits(this.limits);
+    _this.curValue = options.curValue ? options.curValue : 50;
+    _this.showValueNote = typeof options.showValueNote === 'boolean' ? options.showValueNote : true;
+    return _this;
   }
 
-  _createClass(Model, [{
-    key: "setValue",
-    value: function setValue(value) {
-      if (typeof value !== 'number') {
-        throw new Error('Value must be a number');
-      } else if (value < this.limits.min || value > this.limits.max) {
-        throw new Error('Value must be in range of min and max limits');
-      }
+  Model.prototype.setValue = function (value) {
+    if (typeof value !== 'number') {
+      throw new Error('Value must be a number');
+    } else if (value < this.limits.min || value > this.limits.max) {
+      throw new Error('Value must be in range of min and max limits');
+    }
 
-      this.defValue = value;
-      this.eventUpdateValue.broadcast(this.defValue);
-    }
-  }, {
-    key: "setLimits",
-    value: function setLimits(values) {
-      if (_typeof(values) !== 'object') {
-        throw new Error('Limits must be object');
-      } else if (values.min >= values.max) {
-        throw new Error('Min can not be more than Max');
-      }
+    this.curValue = value; // this.eventUpdateValue.broadcast(this.defValue);
+  };
 
-      this.limits = {
-        min: values.min,
-        max: values.max
-      };
+  Model.prototype.setLimits = function (values) {
+    if (_typeof(values) !== 'object') {
+      throw new Error('Limits must be object');
+    } else if (values.min >= values.max) {
+      throw new Error('Min can not be more than Max');
     }
-  }, {
-    key: "getValueFromHandlerPos",
-    value: function getValueFromHandlerPos(data) {
-      this.defValue = Math.round(this.limits.min + (this.limits.max - this.limits.min) * (parseInt(data.newLeft, 10) / data.rightEdge));
-      this.eventUpdateValue.broadcast(this.defValue);
-    }
-  }, {
-    key: "getHandlerPosFromValue",
-    value: function getHandlerPosFromValue(rightEdge) {
-      var newLeft = Math.round(rightEdge * (this.defValue - this.limits.min) / (this.limits.max - this.limits.min));
-      return newLeft;
-    }
-  }]);
+
+    this.limits = {
+      min: values.min,
+      max: values.max
+    };
+  };
 
   return Model;
-}();
+}(eventObserver_1["default"]);
 
-exports.default = Model;
+exports.Model = Model; // constructor(options) {
+//   this.limits = (options.limits) ? options.limits : { min: 0, max: 100 };
+//   this.defValue = (options.defValue) ? options.defValue : 50;
+//   this.showValueNote = (typeof options.showValueNote === 'boolean') ? options.showValueNote : true;
+//   // Event to update value on handler when defvalue in Model is changed
+//   this.eventUpdateValue = new EventObserver();
+//   this.setValue(this.defValue);
+//   this.setLimits(this.limits);
+// }
+//   getValueFromHandlerPos(data) {
+//     this.defValue = Math.round(this.limits.min + (this.limits.max - this.limits.min) * (parseInt(data.newLeft, 10) / data.rightEdge));
+//     this.eventUpdateValue.broadcast(this.defValue);
+//   }
+//   getHandlerPosFromValue(rightEdge) {
+//     const newLeft = Math.round(rightEdge * (this.defValue - this.limits.min) / (this.limits.max - this.limits.min));
+//     return newLeft;
+//   }
 },{"../eventObserver/eventObserver":"eventObserver/eventObserver.js"}],"view/handlerView/handlerView.js":[function(require,module,exports) {
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
+exports.__esModule = true;
 
-var _eventObserver = _interopRequireDefault(require("../../eventObserver/eventObserver"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-var HandlerView = /*#__PURE__*/function () {
-  function HandlerView(parent) {
-    _classCallCheck(this, HandlerView);
-
-    this.parent = parent;
-
-    this._render();
-
-    this.eventMousemove = new _eventObserver.default();
+var HandlerView =
+/** @class */
+function () {
+  function HandlerView($parent) {
+    this.render($parent);
   }
 
-  _createClass(HandlerView, [{
-    key: "_getHandlerWidth",
-    value: function _getHandlerWidth() {
-      return this.$handler.offsetWidth;
-    }
-  }, {
-    key: "_render",
-    value: function _render() {
-      this.$handler = document.createElement('div');
-      this.$handler.classList.add('adslider__handler');
-      this.parent.append(this.$handler);
-    }
-  }, {
-    key: "_setMovePosition",
-    value: function _setMovePosition($track) {
-      var _this = this;
+  HandlerView.prototype.render = function ($parent) {
+    this.$parent = $parent;
+    this.$handler = document.createElement('div');
+    this.$handler.classList.add('adslider__handler');
+    $parent.append(this.$handler);
+  };
 
-      this.$handler.addEventListener('mousedown', function (e) {
-        e.preventDefault();
+  HandlerView.prototype.setPos = function (pos) {
+    this.$handler.style.left = pos / this.$parent.offsetWidth * 100 + '%';
+  };
 
-        var shiftX = e.clientX - _this.$handler.getBoundingClientRect().left;
-
-        var mouseMove = function mouseMove(e) {
-          var newLeft = e.clientX - shiftX - $track.getBoundingClientRect().left;
-          var rightEdge = $track.offsetWidth - _this.$handler.offsetWidth;
-
-          if (newLeft < 0) {
-            newLeft = 0;
-          }
-
-          if (newLeft > rightEdge) {
-            newLeft = rightEdge;
-          }
-
-          _this.$handler.style.left = newLeft + 'px';
-          var handlerWidth = _this.$handler.offsetWidth;
-          var data = {
-            newLeft: newLeft,
-            handlerWidth: handlerWidth,
-            rightEdge: rightEdge
-          };
-
-          _this.eventMousemove.broadcast(data);
-        };
-
-        function mouseUp() {
-          document.removeEventListener('mouseup', mouseUp);
-          document.removeEventListener('mousemove', mouseMove);
-        }
-
-        document.addEventListener('mousemove', mouseMove);
-        document.addEventListener('mouseup', mouseUp);
-      });
-      document.addEventListener('dragstart', function () {
-        return false;
-      });
-    }
-  }, {
-    key: "_setPosition",
-    value: function _setPosition(newLeft) {
-      this.$handler.style.left = newLeft + 'px';
-    }
-  }]);
+  HandlerView.prototype.getHandlerWidth = function () {
+    return this.$handler.offsetWidth;
+  };
 
   return HandlerView;
 }();
 
-exports.default = HandlerView;
-},{"../../eventObserver/eventObserver":"eventObserver/eventObserver.js"}],"view/trackView/trackView.js":[function(require,module,exports) {
+exports["default"] = HandlerView;
+},{}],"view/trackView/trackView.js":[function(require,module,exports) {
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
+exports.__esModule = true;
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-var TrackView = /*#__PURE__*/function () {
-  function TrackView(parent) {
-    _classCallCheck(this, TrackView);
-
-    this.parent = parent;
-
-    this._render();
+var TrackView =
+/** @class */
+function () {
+  function TrackView($parent) {
+    this.render($parent);
   }
 
-  _createClass(TrackView, [{
-    key: "_render",
-    value: function _render() {
-      this.$track = document.createElement('div');
-      this.$track.classList.add('adslider__track');
-      this.parent.append(this.$track);
-    }
-  }]);
+  TrackView.prototype.render = function ($parent) {
+    this.$track = document.createElement('div');
+    this.$track.classList.add('adslider__track');
+    $parent.append(this.$track);
+  };
 
   return TrackView;
 }();
 
-exports.default = TrackView;
+exports["default"] = TrackView;
 },{}],"view/valueNoteView/valueNoteView.js":[function(require,module,exports) {
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
+exports.__esModule = true;
 
-var _eventObserver = _interopRequireDefault(require("../../eventObserver/eventObserver"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-var ValueNoteView = /*#__PURE__*/function () {
+var ValueNoteView =
+/** @class */
+function () {
   function ValueNoteView(parent) {
-    _classCallCheck(this, ValueNoteView);
-
-    this.parent = parent;
-
-    this._render();
+    this.render(parent);
   }
 
-  _createClass(ValueNoteView, [{
-    key: "_render",
-    value: function _render() {
-      this.$note = document.createElement('div');
-      this.$value = document.createElement('p');
-      this.$note.classList.add('adslider__note');
-      this.$value.classList.add('adslider__value');
-      this.$note.append(this.$value);
-      this.parent.append(this.$note);
-    }
-  }, {
-    key: "_setValue",
-    value: function _setValue(value) {
-      this.$value.textContent = value;
-    }
-  }, {
-    key: "_alignRelHandler",
-    value: function _alignRelHandler(handlerWidth) {
-      this.$note.style.left = handlerWidth / 2 + 'px';
-    }
-  }, {
-    key: "_setPosition",
-    value: function _setPosition(data) {
-      this.$note.style.left = data.newLeft + data.handlerWidth / 2 + 'px';
-    }
-  }, {
-    key: "showValueNote",
-    value: function showValueNote(data) {
-      if (data === true) {
-        this.$note.classList.remove('adslider__note_hide');
-        this.$note.classList.add('adslider__note_show');
-      } else {
-        this.$note.classList.remove('adslider__note_show');
-        this.$note.classList.add('adslider__note_hide');
-      }
-    }
-  }]);
+  ValueNoteView.prototype.render = function (parent) {
+    this.$note = document.createElement('div');
+    this.$value = document.createElement('p');
+    this.$note.classList.add('adslider__note');
+    this.$value.classList.add('adslider__value');
+    this.$note.append(this.$value);
+    parent.append(this.$note);
+  };
+
+  ValueNoteView.prototype.alignRelHandler = function (handlerWidth) {
+    this.$note.style.left = handlerWidth / 2 + 'px';
+  };
 
   return ValueNoteView;
 }();
 
-exports.default = ValueNoteView;
-},{"../../eventObserver/eventObserver":"eventObserver/eventObserver.js"}],"view/view.js":[function(require,module,exports) {
+exports["default"] = ValueNoteView;
+},{}],"view/view.js":[function(require,module,exports) {
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
+var __extends = this && this.__extends || function () {
+  var _extendStatics = function extendStatics(d, b) {
+    _extendStatics = Object.setPrototypeOf || {
+      __proto__: []
+    } instanceof Array && function (d, b) {
+      d.__proto__ = b;
+    } || function (d, b) {
+      for (var p in b) {
+        if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
+      }
+    };
 
-var _handlerView = _interopRequireDefault(require("./handlerView/handlerView"));
+    return _extendStatics(d, b);
+  };
 
-var _trackView = _interopRequireDefault(require("./trackView/trackView"));
+  return function (d, b) {
+    _extendStatics(d, b);
 
-var _valueNoteView = _interopRequireDefault(require("./valueNoteView/valueNoteView"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-var View = /*#__PURE__*/function () {
-  function View(selector) {
-    _classCallCheck(this, View);
-
-    this.$el = document.querySelector(selector);
-
-    this._render();
-
-    this.track = new _trackView.default(this.$adslider);
-    this.handler = new _handlerView.default(this.track.$track);
-    this.valueNote = new _valueNoteView.default(this.$adslider);
-
-    this.valueNote._alignRelHandler(this.handler._getHandlerWidth());
-
-    this.handler._setMovePosition(this.track.$track); // When position of handler is changing - valueNote is changing position too
-
-
-    this.handler.eventMousemove.addObserver(this.valueNote._setPosition.bind(this.valueNote));
-  }
-
-  _createClass(View, [{
-    key: "_render",
-    value: function _render() {
-      this.$adslider = document.createElement('div');
-      this.$adslider.classList.add('adslider');
-      this.$el.append(this.$adslider);
+    function __() {
+      this.constructor = d;
     }
-  }, {
-    key: "getRightEdge",
-    value: function getRightEdge() {
-      this.rightEdge = this.track.$track.offsetWidth - this.handler.$handler.offsetWidth;
-      return this.rightEdge;
-    }
-  }]);
 
-  return View;
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
 }();
 
-exports.default = View;
-},{"./handlerView/handlerView":"view/handlerView/handlerView.js","./trackView/trackView":"view/trackView/trackView.js","./valueNoteView/valueNoteView":"view/valueNoteView/valueNoteView.js"}],"presenter/presenter.js":[function(require,module,exports) {
-"use strict";
+exports.__esModule = true;
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
+var handlerView_1 = require("./handlerView/handlerView");
 
-var _eventObserver = _interopRequireDefault(require("../eventObserver/eventObserver"));
+var trackView_1 = require("./trackView/trackView");
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var valueNoteView_1 = require("./valueNoteView/valueNoteView");
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var eventObserver_1 = require("../eventObserver/eventObserver");
 
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+var View =
+/** @class */
+function (_super) {
+  __extends(View, _super);
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+  function View(selector) {
+    var _this = _super.call(this) || this;
 
-var Presenter = /*#__PURE__*/function () {
-  function Presenter(model, view) {
-    _classCallCheck(this, Presenter);
+    _this.render(selector);
 
-    this.model = model;
-    this.view = view; // When position of handler is changing - defValue in Model is updating
-
-    this.view.handler.eventMousemove.addObserver(this.model.getValueFromHandlerPos.bind(this.model)); // When defValue in Model is changing - value in valueNote is updating
-
-    this.model.eventUpdateValue.addObserver(this.view.valueNote._setValue.bind(this.view.valueNote));
-    this.setInitial();
+    return _this; // this.valueNote._alignRelHandler(this.handler._getHandlerWidth());
+    // this.handler._setMovePosition(this.track.$track);
+    // When position of handler is changing - valueNote is changing position too
+    // this.handler.eventMousemove.addObserver(this.valueNote._setPosition.bind(this.valueNote));
   }
 
-  _createClass(Presenter, [{
-    key: "setInitial",
-    value: function setInitial() {
-      var rightEdge = this.view.getRightEdge();
-      var newLeft = this.model.getHandlerPosFromValue(rightEdge);
+  View.prototype.render = function (selector) {
+    this.$el = document.querySelector(selector);
 
-      this.view.handler._setPosition(newLeft);
-
-      this.view.valueNote._setValue(this.model.defValue);
-
-      var handlerWidth = this.view.handler._getHandlerWidth();
-
-      this.view.valueNote._setPosition({
-        newLeft: newLeft,
-        handlerWidth: handlerWidth
-      });
-
-      this.view.valueNote.showValueNote(this.model.showValueNote);
+    if (!this.$el) {
+      throw new Error('You do not have this selector in your DOM');
     }
-  }]);
+
+    this.$adslider = document.createElement('div');
+    this.$adslider.classList.add('adslider');
+    this.$el.append(this.$adslider);
+    this.trackView = new trackView_1["default"](this.$adslider);
+    this.handlerView = new handlerView_1["default"](this.trackView.$track);
+    this.valueNoteView = new valueNoteView_1["default"](this.$adslider);
+    this.valueNoteView.$note.style.left = this.handlerView.getHandlerWidth() / 2 + 'px';
+  };
+
+  return View;
+}(eventObserver_1["default"]);
+
+exports["default"] = View;
+},{"./handlerView/handlerView":"view/handlerView/handlerView.js","./trackView/trackView":"view/trackView/trackView.js","./valueNoteView/valueNoteView":"view/valueNoteView/valueNoteView.js","../eventObserver/eventObserver":"eventObserver/eventObserver.js"}],"presenter/presenter.js":[function(require,module,exports) {
+"use strict"; // import EventObserver from '../eventObserver/eventObserver';
+
+exports.__esModule = true;
+
+var Presenter =
+/** @class */
+function () {
+  function Presenter() {}
 
   return Presenter;
 }();
 
-exports.default = Presenter;
-},{"../eventObserver/eventObserver":"eventObserver/eventObserver.js"}],"createAdslider.js":[function(require,module,exports) {
+exports["default"] = Presenter;
+},{}],"createAdslider.js":[function(require,module,exports) {
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = createAdslider;
+exports.__esModule = true;
 
-var _model = _interopRequireDefault(require("./model/model"));
+var model_1 = require("./model/model");
 
-var _view = _interopRequireDefault(require("./view/view"));
+var view_1 = require("./view/view");
 
-var _presenter = _interopRequireDefault(require("./presenter/presenter"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var presenter_1 = require("./presenter/presenter");
 
 function createAdslider(selector, userOptions) {
-  var view = new _view.default(selector);
-  var model = new _model.default(userOptions);
-  var presenter = new _presenter.default(model, view);
+  var view = new view_1["default"](selector);
+  var model = new model_1.Model(userOptions);
+  var presenter = new presenter_1["default"]();
 }
+
+exports["default"] = createAdslider;
+createAdslider('.container', {
+  limits: {
+    min: 50,
+    max: 150
+  },
+  curValue: 90,
+  showValueNote: false
+});
 },{"./model/model":"model/model.js","./view/view":"view/view.js","./presenter/presenter":"presenter/presenter.js"}],"adslider-native.js":[function(require,module,exports) {
 "use strict";
 
-var _createAdslider = _interopRequireDefault(require("./createAdslider"));
+exports.__esModule = true;
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var createAdslider_1 = require("./createAdslider");
 
-window.adslider = _createAdslider.default;
+window.adslider = createAdslider_1["default"] || {}; // window.adslider = createAdslider;
 },{"./createAdslider":"createAdslider.js"}],"../../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -638,7 +500,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64465" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56528" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

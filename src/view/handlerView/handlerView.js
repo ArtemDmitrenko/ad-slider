@@ -1,49 +1,21 @@
-import EventObserver from '../../eventObserver/eventObserver';
-
-export default class HandlerView {
-  constructor(parent) {
-    this.parent = parent;
-    this._render();
-    this.eventMousemove = new EventObserver();
-  }
-  _getHandlerWidth() {
-    return this.$handler.offsetWidth;
-  }
-  _render() {
-    this.$handler = document.createElement('div');
-    this.$handler.classList.add('adslider__handler');
-    this.parent.append(this.$handler);
-  }
-  _setMovePosition($track) {
-    this.$handler.addEventListener('mousedown', e => {
-      e.preventDefault();
-      const shiftX = e.clientX - this.$handler.getBoundingClientRect().left;
-      const mouseMove = e => {
-        let newLeft = e.clientX - shiftX - $track.getBoundingClientRect().left;
-        let rightEdge = $track.offsetWidth - this.$handler.offsetWidth;
-        if (newLeft < 0) {
-          newLeft = 0;
-        }
-        if (newLeft > rightEdge) {
-          newLeft = rightEdge;
-        }
-        this.$handler.style.left = newLeft + 'px';
-        const handlerWidth = this.$handler.offsetWidth;
-        const data = { newLeft, handlerWidth, rightEdge };
-        this.eventMousemove.broadcast(data);
-      };
-
-      function mouseUp() {
-        document.removeEventListener('mouseup', mouseUp);
-        document.removeEventListener('mousemove', mouseMove);
-      }
-      document.addEventListener('mousemove', mouseMove);
-      document.addEventListener('mouseup', mouseUp);
-    });
-    document.addEventListener('dragstart', () => false);
-  }
-  _setPosition(newLeft) {
-    this.$handler.style.left = newLeft + 'px';
-  }
-
-}
+"use strict";
+exports.__esModule = true;
+var HandlerView = /** @class */ (function () {
+    function HandlerView($parent) {
+        this.render($parent);
+    }
+    HandlerView.prototype.render = function ($parent) {
+        this.$parent = $parent;
+        this.$handler = document.createElement('div');
+        this.$handler.classList.add('adslider__handler');
+        $parent.append(this.$handler);
+    };
+    HandlerView.prototype.setPos = function (pos) {
+        this.$handler.style.left = (pos / this.$parent.offsetWidth) * 100 + '%';
+    };
+    HandlerView.prototype.getHandlerWidth = function () {
+        return this.$handler.offsetWidth;
+    };
+    return HandlerView;
+}());
+exports["default"] = HandlerView;
