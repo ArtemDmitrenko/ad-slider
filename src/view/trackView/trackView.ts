@@ -10,4 +10,7 @@ export default class TrackView {
     this.$track.classList.add('adslider__track');
     $parent.append(this.$track);
   }
+  public getLength() {
+    return this.$track.offsetWidth;
+  }
 }

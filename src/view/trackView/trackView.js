@@ -9,6 +9,9 @@ var TrackView = /** @class */ (function () {
         this.$track.classList.add('adslider__track');
         $parent.append(this.$track);
     };
+    TrackView.prototype.getLength = function () {
+        return this.$track.offsetWidth;
+    };
     return TrackView;
 }());
 exports["default"] = TrackView;

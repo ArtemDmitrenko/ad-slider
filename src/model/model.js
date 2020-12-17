@@ -19,29 +19,31 @@ var Model = /** @class */ (function (_super) {
     __extends(Model, _super);
     function Model(options) {
         var _this = _super.call(this) || this;
-        _this.limits = (options.limits) ? options.limits : { min: 0, max: 100 };
-        _this.curValue = (options.curValue) ? options.curValue : 50;
-        _this.showValueNote = (typeof options.showValueNote === 'boolean') ? options.showValueNote : true;
+        _this.limits = options.limits;
+        _this.curValue = options.curValue;
+        _this.showValueNote = true;
+        _this.init(options);
         return _this;
     }
-    Model.prototype.setValue = function (value) {
-        if (typeof value !== 'number') {
-            throw new Error('Value must be a number');
+    Model.prototype.setLimits = function (limits) {
+        if (limits.min >= limits.max) {
+            throw new Error('Min can not be the same or more than Max');
         }
-        else if (value < this.limits.min || value > this.limits.max) {
+        this.limits = { min: limits.min, max: limits.max };
+    };
+    Model.prototype.setValue = function (value) {
+        if (value < this.limits.min || value > this.limits.max) {
             throw new Error('Value must be in range of min and max limits');
         }
         this.curValue = value;
-        // this.eventUpdateValue.broadcast(this.defValue);
     };
-    Model.prototype.setLimits = function (values) {
-        if (typeof values !== 'object') {
-            throw new Error('Limits must be object');
-        }
-        else if (values.min >= values.max) {
-            throw new Error('Min can not be more than Max');
-        }
-        this.limits = { min: values.min, max: values.max };
+    Model.prototype.setShowValueNote = function (value) {
+        this.showValueNote = value;
+    };
+    Model.prototype.init = function (options) {
+        this.setLimits(options.limits);
+        this.setValue(options.curValue);
+        this.setShowValueNote(options.showValueNote);
     };
     return Model;
 }(eventObserver_1["default"]));

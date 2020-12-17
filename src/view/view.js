@@ -39,7 +39,16 @@ var View = /** @class */ (function (_super) {
         this.trackView = new trackView_1["default"](this.$adslider);
         this.handlerView = new handlerView_1["default"](this.trackView.$track);
         this.valueNoteView = new valueNoteView_1["default"](this.$adslider);
-        this.valueNoteView.$note.style.left = this.handlerView.getHandlerWidth() / 2 + 'px';
+    };
+    View.prototype.getRightEdge = function () {
+        var rightEdge = this.trackView.getLength() - this.handlerView.getHandlerWidth();
+        return rightEdge;
+    };
+    View.prototype.setPosition = function (value, limits, rightEdge) {
+        var handlerPos = rightEdge * (value - limits.min) / (limits.max - limits.min);
+        this.handlerView.$handler.style.left = handlerPos + 'px';
+        this.valueNoteView.$note.style.left = handlerPos + this.handlerView.getHandlerWidth() / 2 + 'px';
+        this.valueNoteView.setValue(value);
     };
     return View;
 }(eventObserver_1["default"]));

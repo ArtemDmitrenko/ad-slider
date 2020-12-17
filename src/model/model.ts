@@ -1,14 +1,13 @@
 import EventObserver from '../eventObserver/eventObserver';
 
 export interface Config {
-  limits?: {
-    min: number
+  limits: {
+    min: number,
     max: number
   }
-  curValue?: number;
-  showValueNote?: boolean;
+  curValue: number;
+  showValueNote: boolean;
 }
-
 
 export class Model extends EventObserver {
   public limits: {
@@ -17,32 +16,34 @@ export class Model extends EventObserver {
   }
   public curValue: number;
   public showValueNote: boolean;
-  
+
   constructor(options: Config) {
     super();
-    this.limits = (options.limits) ? options.limits : { min: 0, max: 100 };
-    this.curValue = (options.curValue) ? options.curValue : 50;
-    this.showValueNote = (typeof options.showValueNote === 'boolean') ? options.showValueNote : true;
+    this.limits = options.limits;
+    this.curValue = options.curValue;
+    this.showValueNote = true;
+    this.init(options);
   }
-  setValue(value: number): void {
-    if (typeof value !== 'number') {
-      throw new Error('Value must be a number');
-    } else if (value < this.limits.min || value > this.limits.max) {
+  private setLimits(limits: { min: number, max: number }) : void {
+    if (limits.min >= limits.max) {
+      throw new Error('Min can not be the same or more than Max');
+    }
+    this.limits = { min: limits.min, max: limits.max };
+  }
+  private setValue(value: number): void {
+    if (value < this.limits.min || value > this.limits.max) {
       throw new Error('Value must be in range of min and max limits');
     }
     this.curValue = value;
-    // this.eventUpdateValue.broadcast(this.defValue);
   }
-  setLimits(values: {
-    min: number 
-    max: number
-  }) {
-    if (typeof values !== 'object') {
-      throw new Error('Limits must be object');
-    } else if (values.min >= values.max) {
-      throw new Error('Min can not be more than Max');
-    }
-    this.limits = { min: values.min, max: values.max };
+  private setShowValueNote(value: boolean): void {
+    this.showValueNote = value;
+  }
+
+  private init(options: Config) {
+    this.setLimits(options.limits);
+    this.setValue(options.curValue);
+    this.setShowValueNote(options.showValueNote)
   }
 
 }

@@ -12,8 +12,18 @@ var ValueNoteView = /** @class */ (function () {
         this.$note.append(this.$value);
         parent.append(this.$note);
     };
-    ValueNoteView.prototype.alignRelHandler = function (handlerWidth) {
-        this.$note.style.left = handlerWidth / 2 + 'px';
+    ValueNoteView.prototype.setValue = function (value) {
+        this.$value.textContent = String(value);
+    };
+    ValueNoteView.prototype.showValueNote = function (data) {
+        if (data === true) {
+            this.$note.classList.remove('adslider__note_hide');
+            this.$note.classList.add('adslider__note_show');
+        }
+        else {
+            this.$note.classList.remove('adslider__note_show');
+            this.$note.classList.add('adslider__note_hide');
+        }
     };
     return ValueNoteView;
 }());

@@ -10,9 +10,6 @@ var HandlerView = /** @class */ (function () {
         this.$handler.classList.add('adslider__handler');
         $parent.append(this.$handler);
     };
-    HandlerView.prototype.setPos = function (pos) {
-        this.$handler.style.left = (pos / this.$parent.offsetWidth) * 100 + '%';
-    };
     HandlerView.prototype.getHandlerWidth = function () {
         return this.$handler.offsetWidth;
     };

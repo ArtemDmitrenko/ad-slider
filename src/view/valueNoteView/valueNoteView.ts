@@ -1,7 +1,7 @@
 
 export default class ValueNoteView {
   public $note: HTMLElement;
-  private $value: HTMLElement;
+  public $value: HTMLElement;
 
   constructor(parent: HTMLElement) {
     this.render(parent);
@@ -15,22 +15,19 @@ export default class ValueNoteView {
     this.$note.append(this.$value);
     parent.append(this.$note);
   }
-  public alignRelHandler(handlerWidth: number) {
-    this.$note.style.left = handlerWidth / 2 + 'px';
+  public setValue(value: number) {
+    this.$value.textContent = String(value);
   }
 
-
-
-
-  // private showValueNote(data: boolean) {
-  //   if (data === true) {
-  //     this.$note.classList.remove('adslider__note_hide');
-  //     this.$note.classList.add('adslider__note_show');
-  //   } else {
-  //     this.$note.classList.remove('adslider__note_show');
-  //     this.$note.classList.add('adslider__note_hide');
-  //   }
-  // }
+  public showValueNote(data: boolean) {
+    if (data === true) {
+      this.$note.classList.remove('adslider__note_hide');
+      this.$note.classList.add('adslider__note_show');
+    } else {
+      this.$note.classList.remove('adslider__note_show');
+      this.$note.classList.add('adslider__note_hide');
+    }
+  }
 
 
   // _setValue(value) {

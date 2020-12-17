@@ -6,11 +6,11 @@ var presenter_1 = require("./presenter/presenter");
 function createAdslider(selector, userOptions) {
     var view = new view_1["default"](selector);
     var model = new model_1.Model(userOptions);
-    var presenter = new presenter_1["default"]();
+    var presenter = new presenter_1["default"](model, view);
 }
 exports["default"] = createAdslider;
 createAdslider('.container', {
     limits: { min: 50, max: 150 },
-    curValue: 90,
-    showValueNote: false
+    curValue: 100,
+    showValueNote: true
 });

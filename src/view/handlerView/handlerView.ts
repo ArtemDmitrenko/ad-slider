@@ -1,6 +1,6 @@
 
 export default class HandlerView {
-  private $handler: HTMLElement;
+  public $handler: HTMLElement;
   private $parent: HTMLElement;
 
   constructor($parent: HTMLElement) {
@@ -12,10 +12,6 @@ export default class HandlerView {
     this.$handler = document.createElement('div');
     this.$handler.classList.add('adslider__handler');
     $parent.append(this.$handler);
-  }
-
-  public setPos(pos: number): void {
-    this.$handler.style.left = (pos / this.$parent.offsetWidth) * 100 + '%';
   }
 
   public getHandlerWidth(): number {
