@@ -1,4 +1,3 @@
-
 export default class ValueNoteView {
   public $note: HTMLElement;
   public $value: HTMLElement;
@@ -15,6 +14,7 @@ export default class ValueNoteView {
     this.$note.append(this.$value);
     parent.append(this.$note);
   }
+
   public setValue(value: number) {
     this.$value.textContent = String(value);
   }

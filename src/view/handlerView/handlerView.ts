@@ -18,6 +18,10 @@ export default class HandlerView {
     return this.$handler.offsetWidth;
   }
 
+  
+
+
+  
   // _setMovePosition($track) {
   //   this.$handler.addEventListener('mousedown', e => {
   //     e.preventDefault();

@@ -2,21 +2,21 @@ import {Model} from '../model/model';
 import View from '../view/view';
 
 export default class Presenter {
-  private model: Model
-  private view: View
+  private model: Model;
+  private view: View;
   constructor(model: Model, view: View) {
     this.model = model;
     this.view = view;
 
     this.view.setPosition(this.model.curValue, this.model.limits, this.view.getRightEdge());
-    this.view.valueNoteView.showValueNote(this.model.showValueNote)
+    this.view.valueNoteView.showValueNote(this.model.showValueNote);
 
-    // // When position of handler is changing - defValue in Model is updating
-    // this.view.handler.eventMousemove.addObserver(this.model.getValueFromHandlerPos.bind(this.model));
-    // // When defValue in Model is changing - value in valueNote is updating
-    // this.model.eventUpdateValue.addObserver(this.view.valueNote._setValue.bind(this.view.valueNote));
+    // Observer: When position of handler is changing - defValue in Model is updating
+    this.view.addObserver(this.model.setValueFromHandlerPos.bind(this.model));
+    
+    // Observer: When defValue in Model is changing - value in valueNote is updating
+    this.model.addObserver(this.view.valueNoteView.setValue.bind(this.view.valueNoteView))
   }
-
 
   // setInitial() {
   //   const rightEdge = this.view.getRightEdge();
@@ -27,6 +27,5 @@ export default class Presenter {
   //   this.view.valueNote._setPosition({ newLeft, handlerWidth });
   //   this.view.valueNote.showValueNote(this.model.showValueNote);
   // }
-
 
 }

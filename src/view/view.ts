@@ -14,14 +14,7 @@ export default class View extends EventObserver {
 
   constructor(selector: string) {
     super();
-
     this.render(selector);
-
-    // this.valueNote._alignRelHandler(this.handler._getHandlerWidth());
-    // this.handler._setMovePosition(this.track.$track);
-
-    // When position of handler is changing - valueNote is changing position too
-    // this.handler.eventMousemove.addObserver(this.valueNote._setPosition.bind(this.valueNote));
   }
 
   private render(selector: string) {
@@ -37,11 +30,14 @@ export default class View extends EventObserver {
     this.handlerView = new HandlerView(this.trackView.$track);
     this.valueNoteView = new ValueNoteView(this.$adslider);
 
+    this.setMovePosition();
   }
+
   public getRightEdge() {
     const rightEdge = this.trackView.getLength() - this.handlerView.getHandlerWidth();
     return rightEdge; 
   }
+
   public setPosition(value: number, limits: {min: number, max: number}, rightEdge: number): void {
     const handlerPos = rightEdge * (value - limits.min) / (limits.max - limits.min);
     this.handlerView.$handler.style.left = handlerPos + 'px';
@@ -49,5 +45,33 @@ export default class View extends EventObserver {
     this.valueNoteView.setValue(value);
   }
 
+  private setMovePosition(): void {
+    this.handlerView.$handler.addEventListener('mousedown', e => {
+      e.preventDefault();
+      const shiftX = e.clientX - this.handlerView.$handler.getBoundingClientRect().left;
+      const mouseMove = (e: MouseEvent) => {
+        let newLeft = e.clientX - shiftX - this.trackView.$track.getBoundingClientRect().left;
+        const rightEdge = this.getRightEdge();
+        if (newLeft < 0) {
+          newLeft = 0;
+        } else if (newLeft > rightEdge) {
+          newLeft = rightEdge;
+        }
+        this.handlerView.$handler.style.left = newLeft + 'px';
+        this.valueNoteView.$note.style.left = newLeft + this.handlerView.getHandlerWidth() / 2 + 'px';
 
+        const data = { newLeft, rightEdge };
+        this.broadcast(data);
+      };
+
+      function mouseUp() {
+        document.removeEventListener('mouseup', mouseUp);
+        document.removeEventListener('mousemove', mouseMove);
+      }
+      document.addEventListener('mousemove', mouseMove);
+      document.addEventListener('mouseup', mouseUp);
+    });
+    document.addEventListener('dragstart', () => false);
+  }
+  
 }

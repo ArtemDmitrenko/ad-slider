@@ -23,10 +23,6 @@ var View = /** @class */ (function (_super) {
         var _this = _super.call(this) || this;
         _this.render(selector);
         return _this;
-        // this.valueNote._alignRelHandler(this.handler._getHandlerWidth());
-        // this.handler._setMovePosition(this.track.$track);
-        // When position of handler is changing - valueNote is changing position too
-        // this.handler.eventMousemove.addObserver(this.valueNote._setPosition.bind(this.valueNote));
     }
     View.prototype.render = function (selector) {
         this.$el = document.querySelector(selector);
@@ -39,6 +35,7 @@ var View = /** @class */ (function (_super) {
         this.trackView = new trackView_1["default"](this.$adslider);
         this.handlerView = new handlerView_1["default"](this.trackView.$track);
         this.valueNoteView = new valueNoteView_1["default"](this.$adslider);
+        this.setMovePosition();
     };
     View.prototype.getRightEdge = function () {
         var rightEdge = this.trackView.getLength() - this.handlerView.getHandlerWidth();
@@ -49,6 +46,34 @@ var View = /** @class */ (function (_super) {
         this.handlerView.$handler.style.left = handlerPos + 'px';
         this.valueNoteView.$note.style.left = handlerPos + this.handlerView.getHandlerWidth() / 2 + 'px';
         this.valueNoteView.setValue(value);
+    };
+    View.prototype.setMovePosition = function () {
+        var _this = this;
+        this.handlerView.$handler.addEventListener('mousedown', function (e) {
+            e.preventDefault();
+            var shiftX = e.clientX - _this.handlerView.$handler.getBoundingClientRect().left;
+            var mouseMove = function (e) {
+                var newLeft = e.clientX - shiftX - _this.trackView.$track.getBoundingClientRect().left;
+                var rightEdge = _this.getRightEdge();
+                if (newLeft < 0) {
+                    newLeft = 0;
+                }
+                else if (newLeft > rightEdge) {
+                    newLeft = rightEdge;
+                }
+                _this.handlerView.$handler.style.left = newLeft + 'px';
+                _this.valueNoteView.$note.style.left = newLeft + _this.handlerView.getHandlerWidth() / 2 + 'px';
+                var data = { newLeft: newLeft, rightEdge: rightEdge };
+                _this.broadcast(data);
+            };
+            function mouseUp() {
+                document.removeEventListener('mouseup', mouseUp);
+                document.removeEventListener('mousemove', mouseMove);
+            }
+            document.addEventListener('mousemove', mouseMove);
+            document.addEventListener('mouseup', mouseUp);
+        });
+        document.addEventListener('dragstart', function () { return false; });
     };
     return View;
 }(eventObserver_1["default"]));

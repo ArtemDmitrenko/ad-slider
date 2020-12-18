@@ -45,6 +45,11 @@ var Model = /** @class */ (function (_super) {
         this.setValue(options.curValue);
         this.setShowValueNote(options.showValueNote);
     };
+    Model.prototype.setValueFromHandlerPos = function (data) {
+        var value = Math.round(this.limits.min + (this.limits.max - this.limits.min) * (data.newLeft / data.rightEdge));
+        this.setValue(value);
+        this.broadcast(this.curValue);
+    };
     return Model;
 }(eventObserver_1["default"]));
 exports.Model = Model;

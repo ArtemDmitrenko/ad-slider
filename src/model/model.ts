@@ -46,6 +46,12 @@ export class Model extends EventObserver {
     this.setShowValueNote(options.showValueNote)
   }
 
+  public setValueFromHandlerPos(data: {newLeft: number, rightEdge: number}): void {
+    const value = Math.round(this.limits.min + (this.limits.max - this.limits.min) * (data.newLeft / data.rightEdge));
+    this.setValue(value);
+    this.broadcast(this.curValue);
+  }
+
 }
 
 

@@ -29,7 +29,9 @@ export default class EventObserver {
   }
 
   broadcast(data: any) {
-    if (this.observers.length < 1) { return; }
+    if (this.observers.length < 1) { 
+      return; 
+    }
     const observersClone = this.observers.slice(0);
     observersClone.forEach(subscriber => {
       subscriber(data);
