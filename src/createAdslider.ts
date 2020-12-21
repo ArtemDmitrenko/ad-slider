@@ -1,5 +1,4 @@
-import {Config} from './model/model';
-import {Model} from './model/model';
+import { Config, Model } from './model/model';
 import View from './view/view';
 import Presenter from './presenter/presenter';
 
@@ -12,7 +11,5 @@ export default function createAdslider(selector: string, userOptions: Config) {
 createAdslider('.container', {
   limits: { min: 50, max: 150 },
   curValue: 100,
-  showValueNote: true
+  showValueNote: true,
 });
-
-

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "dev": "parcel src/index.pug --out-dir dist --open"
+    "dev": "parcel src/index.pug --out-dir dist --open",
+    "eslint": "eslint src/**"
   },
   "author": "ArtemDmitrenko",
   "license": "ISC",
@@ -14,6 +15,8 @@
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-typescript": "^7.12.7",
     "@types/jest": "^26.0.19",
+    "@typescript-eslint/eslint-plugin": "^4.10.0",
+    "@typescript-eslint/parser": "^4.10.0",
     "babel-jest": "^26.6.3",
     "eslint": "^7.2.0",
     "eslint-config-airbnb-base": "^14.2.1",
@@ -22,6 +25,7 @@
     "jest": "^26.6.3",
     "jshint": "^2.12.0",
     "pug": "^3.0.0",
-    "sass": "^1.29.0"
+    "sass": "^1.29.0",
+    "typescript": "^4.1.3"
   }
 }

@@ -1,21 +1,21 @@
 "use strict";
-exports.__esModule = true;
-var ValueNoteView = /** @class */ (function () {
-    function ValueNoteView(parent) {
+Object.defineProperty(exports, "__esModule", { value: true });
+class ValueNoteView {
+    constructor(parent) {
         this.render(parent);
     }
-    ValueNoteView.prototype.render = function (parent) {
+    render(parent) {
         this.$note = document.createElement('div');
         this.$value = document.createElement('p');
         this.$note.classList.add('adslider__note');
         this.$value.classList.add('adslider__value');
         this.$note.append(this.$value);
         parent.append(this.$note);
-    };
-    ValueNoteView.prototype.setValue = function (value) {
+    }
+    setValue(value) {
         this.$value.textContent = String(value);
-    };
-    ValueNoteView.prototype.showValueNote = function (data) {
+    }
+    showValueNote(data) {
         if (data === true) {
             this.$note.classList.remove('adslider__note_hide');
             this.$note.classList.add('adslider__note_show');
@@ -24,7 +24,6 @@ var ValueNoteView = /** @class */ (function () {
             this.$note.classList.remove('adslider__note_show');
             this.$note.classList.add('adslider__note_hide');
         }
-    };
-    return ValueNoteView;
-}());
-exports["default"] = ValueNoteView;
+    }
+}
+exports.default = ValueNoteView;

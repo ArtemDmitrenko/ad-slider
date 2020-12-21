@@ -1,17 +1,16 @@
 "use strict";
-exports.__esModule = true;
-var TrackView = /** @class */ (function () {
-    function TrackView($parent) {
+Object.defineProperty(exports, "__esModule", { value: true });
+class TrackView {
+    constructor($parent) {
         this.render($parent);
     }
-    TrackView.prototype.render = function ($parent) {
+    render($parent) {
         this.$track = document.createElement('div');
         this.$track.classList.add('adslider__track');
         $parent.append(this.$track);
-    };
-    TrackView.prototype.getLength = function () {
+    }
+    getLength() {
         return this.$track.offsetWidth;
-    };
-    return TrackView;
-}());
-exports["default"] = TrackView;
+    }
+}
+exports.default = TrackView;

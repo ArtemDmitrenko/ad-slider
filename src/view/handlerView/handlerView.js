@@ -1,18 +1,17 @@
 "use strict";
-exports.__esModule = true;
-var HandlerView = /** @class */ (function () {
-    function HandlerView($parent) {
+Object.defineProperty(exports, "__esModule", { value: true });
+class HandlerView {
+    constructor($parent) {
         this.render($parent);
     }
-    HandlerView.prototype.render = function ($parent) {
+    render($parent) {
         this.$parent = $parent;
         this.$handler = document.createElement('div');
         this.$handler.classList.add('adslider__handler');
         $parent.append(this.$handler);
-    };
-    HandlerView.prototype.getHandlerWidth = function () {
+    }
+    getHandlerWidth() {
         return this.$handler.offsetWidth;
-    };
-    return HandlerView;
-}());
-exports["default"] = HandlerView;
+    }
+}
+exports.default = HandlerView;

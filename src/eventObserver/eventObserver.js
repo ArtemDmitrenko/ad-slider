@@ -1,41 +1,40 @@
 "use strict";
-exports.__esModule = true;
-var EventObserver = /** @class */ (function () {
-    function EventObserver() {
+Object.defineProperty(exports, "__esModule", { value: true });
+class EventObserver {
+    constructor() {
         this.observers = [];
     }
     // constructor() {
     //   this.observers = [];
     // }
-    EventObserver.prototype.addObserver = function (newObserver) {
+    addObserver(newObserver) {
         if (typeof newObserver !== 'function') {
             throw new Error('Observer must be a function!');
         }
-        this.observers.forEach(function (observer) {
+        this.observers.forEach(observer => {
             if (observer === newObserver) {
                 throw new Error('Observer already in the list!');
             }
         });
         this.observers.push(newObserver);
-    };
-    EventObserver.prototype.removeObserver = function (obs) {
-        for (var i = 0; i < this.observers.length; i++) {
+    }
+    removeObserver(obs) {
+        for (let i = 0; i < this.observers.length; i++) {
             if (obs === this.observers[i]) {
                 this.observers.splice(i, 1);
                 return;
             }
         }
         throw new Error('No such observer in the list!');
-    };
-    EventObserver.prototype.broadcast = function (data) {
+    }
+    broadcast(data) {
         if (this.observers.length < 1) {
             return;
         }
-        var observersClone = this.observers.slice(0);
-        observersClone.forEach(function (subscriber) {
+        const observersClone = this.observers.slice(0);
+        observersClone.forEach(subscriber => {
             subscriber(data);
         });
-    };
-    return EventObserver;
-}());
-exports["default"] = EventObserver;
+    }
+}
+exports.default = EventObserver;

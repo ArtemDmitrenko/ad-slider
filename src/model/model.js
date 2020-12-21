@@ -1,57 +1,44 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-exports.__esModule = true;
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.Model = void 0;
-var eventObserver_1 = require("../eventObserver/eventObserver");
-var Model = /** @class */ (function (_super) {
-    __extends(Model, _super);
-    function Model(options) {
-        var _this = _super.call(this) || this;
-        _this.limits = options.limits;
-        _this.curValue = options.curValue;
-        _this.showValueNote = true;
-        _this.init(options);
-        return _this;
+const eventObserver_1 = __importDefault(require("../eventObserver/eventObserver"));
+class Model extends eventObserver_1.default {
+    constructor(options) {
+        super();
+        this.limits = options.limits;
+        this.curValue = options.curValue;
+        this.showValueNote = true;
+        this.init(options);
     }
-    Model.prototype.setLimits = function (limits) {
+    setLimits(limits) {
         if (limits.min >= limits.max) {
             throw new Error('Min can not be the same or more than Max');
         }
         this.limits = { min: limits.min, max: limits.max };
-    };
-    Model.prototype.setValue = function (value) {
+    }
+    setValue(value) {
         if (value < this.limits.min || value > this.limits.max) {
             throw new Error('Value must be in range of min and max limits');
         }
         this.curValue = value;
-    };
-    Model.prototype.setShowValueNote = function (value) {
+    }
+    setShowValueNote(value) {
         this.showValueNote = value;
-    };
-    Model.prototype.init = function (options) {
+    }
+    init(options) {
         this.setLimits(options.limits);
         this.setValue(options.curValue);
         this.setShowValueNote(options.showValueNote);
-    };
-    Model.prototype.setValueFromHandlerPos = function (data) {
-        var value = Math.round(this.limits.min + (this.limits.max - this.limits.min) * (data.newLeft / data.rightEdge));
+    }
+    setValueFromHandlerPos(data) {
+        const value = Math.round(this.limits.min + (this.limits.max - this.limits.min) * (data.newLeft / data.rightEdge));
         this.setValue(value);
         this.broadcast(this.curValue);
-    };
-    return Model;
-}(eventObserver_1["default"]));
+    }
+}
 exports.Model = Model;
 // constructor(options) {
 //   this.limits = (options.limits) ? options.limits : { min: 0, max: 100 };
