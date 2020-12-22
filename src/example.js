@@ -1,6 +1,4 @@
-'use strict';
-window.addEventListener('DOMContentLoaded', function() {
-
+window.addEventListener('DOMContentLoaded', () => {
   // class Slider {
   //   constructor(selector, options) {
   //     this.$el = document.querySelector(selector);
@@ -86,29 +84,6 @@ window.addEventListener('DOMContentLoaded', function() {
   //   // displayValue: true
   // });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   class EventObserver {
     constructor() {
       this.observers = [];
@@ -117,8 +92,9 @@ window.addEventListener('DOMContentLoaded', function() {
     addObserver(observer) {
       this.observers.push(observer);
     }
+
     broadcast(data) {
-      this.observers.forEach(subscriber => {
+      this.observers.forEach((subscriber) => {
         subscriber(data);
       });
     }
@@ -164,11 +140,12 @@ window.addEventListener('DOMContentLoaded', function() {
       } else {
         this.$sliderValue.textContent = this.model.defValue;
         const newLeft = Math.round(rightEdge * (this.model.defValue - this.model.range.min) / (this.model.range.max - this.model.range.min));
-        this.$roller.style.left = newLeft + 'px';
-        this.$sliderTable.style.left = newLeft + this.$roller.offsetWidth / 2 + 'px';
+        this.$roller.style.left = `${newLeft}px`;
+        this.$sliderTable.style.left = `${newLeft + this.$roller.offsetWidth / 2}px`;
         this.$input.value = this.model.defValue;
       }
     }
+
     fillInput() {
       this.$input.value = this.model.getValue();
     }
@@ -179,34 +156,23 @@ window.addEventListener('DOMContentLoaded', function() {
       this.range = (options.range) ? options.range : { min: 0, max: 100 };
       this.defValue = (options.defValue) ? options.defValue : 50;
     }
+
     get value() {
       return this.defValue;
     }
+
     set value(value) {
       this.defValue = value;
       observer.broadcast();
     }
-
-
   }
 
   const observer = new EventObserver();
   const model1 = new Model(observer, {
     range: { min: 0, max: 100 },
-    defValue: 50
+    defValue: 50,
   });
   const view = new View(model1, '.container');
 
-
   model1.value = 60;
-
-
-
-
-
-
-
-
-
-
 });

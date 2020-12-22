@@ -1,16 +1,21 @@
-import {Config} from '../model/model';
+import { Config } from '../model/model';
 import HandlerView from './handlerView/handlerView';
 import TrackView from './trackView/trackView';
 import ValueNoteView from './valueNoteView/valueNoteView';
 import EventObserver from '../eventObserver/eventObserver';
 
 export default class View extends EventObserver {
-  private $el: HTMLElement | null;
-  private handlerView: HandlerView;
-  private trackView: TrackView;
-  public valueNoteView: ValueNoteView;
-  private $adslider: HTMLElement;
-  private options: Config;
+  private $el!: HTMLElement | null;
+
+  private handlerView!: HandlerView;
+
+  private trackView!: TrackView;
+
+  public valueNoteView!: ValueNoteView;
+
+  private $adslider!: HTMLElement;
+
+  private options!: Config;
 
   constructor(selector: string) {
     super();
@@ -20,7 +25,7 @@ export default class View extends EventObserver {
   private render(selector: string) {
     this.$el = document.querySelector(selector);
     if (!this.$el) {
-      throw new Error('You do not have this selector in your DOM')
+      throw new Error('You do not have this selector in your DOM');
     }
     this.$adslider = document.createElement('div');
     this.$adslider.classList.add('adslider');
@@ -33,20 +38,20 @@ export default class View extends EventObserver {
     this.setMovePosition();
   }
 
-  public getRightEdge() {
+  public getRightEdge(): number {
     const rightEdge = this.trackView.getLength() - this.handlerView.getHandlerWidth();
-    return rightEdge; 
+    return rightEdge;
   }
 
-  public setPosition(value: number, limits: {min: number, max: number}, rightEdge: number): void {
-    const handlerPos = rightEdge * (value - limits.min) / (limits.max - limits.min);
-    this.handlerView.$handler.style.left = handlerPos + 'px';
-    this.valueNoteView.$note.style.left = handlerPos + this.handlerView.getHandlerWidth() / 2 + 'px';
+  public setPosition(value: number, limits: { min: number, max: number }, rightEdge: number): void {
+    const handlerPos = rightEdge * ((value - limits.min) / (limits.max - limits.min));
+    this.handlerView.$handler.style.left = `${handlerPos}px`;
+    this.valueNoteView.$note.style.left = `${handlerPos + this.handlerView.getHandlerWidth() / 2}px`;
     this.valueNoteView.setValue(value);
   }
 
   private setMovePosition(): void {
-    this.handlerView.$handler.addEventListener('mousedown', e => {
+    this.handlerView.$handler.addEventListener('mousedown', (e) => {
       e.preventDefault();
       const shiftX = e.clientX - this.handlerView.$handler.getBoundingClientRect().left;
       const mouseMove = (e: MouseEvent) => {
@@ -57,8 +62,8 @@ export default class View extends EventObserver {
         } else if (newLeft > rightEdge) {
           newLeft = rightEdge;
         }
-        this.handlerView.$handler.style.left = newLeft + 'px';
-        this.valueNoteView.$note.style.left = newLeft + this.handlerView.getHandlerWidth() / 2 + 'px';
+        this.handlerView.$handler.style.left = `${newLeft}px`;
+        this.valueNoteView.$note.style.left = `${newLeft + this.handlerView.getHandlerWidth() / 2}px`;
 
         const data = { newLeft, rightEdge };
         this.broadcast(data);
@@ -73,5 +78,4 @@ export default class View extends EventObserver {
     });
     document.addEventListener('dragstart', () => false);
   }
-  
 }

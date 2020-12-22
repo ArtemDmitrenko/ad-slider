@@ -1,9 +1,11 @@
-import {Model} from '../model/model';
+import { Model } from '../model/model';
 import View from '../view/view';
 
 export default class Presenter {
   private model: Model;
+
   private view: View;
+
   constructor(model: Model, view: View) {
     this.model = model;
     this.view = view;
@@ -13,9 +15,9 @@ export default class Presenter {
 
     // Observer: When position of handler is changing - defValue in Model is updating
     this.view.addObserver(this.model.setValueFromHandlerPos.bind(this.model));
-    
+
     // Observer: When defValue in Model is changing - value in valueNote is updating
-    this.model.addObserver(this.view.valueNoteView.setValue.bind(this.view.valueNoteView))
+    this.model.addObserver(this.view.valueNoteView.setValue.bind(this.view.valueNoteView));
   }
 
   // setInitial() {
@@ -27,5 +29,4 @@ export default class Presenter {
   //   this.view.valueNote._setPosition({ newLeft, handlerWidth });
   //   this.view.valueNote.showValueNote(this.model.showValueNote);
   // }
-
 }

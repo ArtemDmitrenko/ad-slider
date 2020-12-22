@@ -1,12 +1,13 @@
 export default class ValueNoteView {
-  public $note: HTMLElement;
-  public $value: HTMLElement;
+  public $note!: HTMLElement;
+
+  public $value!: HTMLElement;
 
   constructor(parent: HTMLElement) {
     this.render(parent);
   }
 
-  private render(parent: HTMLElement) {
+  private render(parent: HTMLElement): void {
     this.$note = document.createElement('div');
     this.$value = document.createElement('p');
     this.$note.classList.add('adslider__note');
@@ -15,11 +16,11 @@ export default class ValueNoteView {
     parent.append(this.$note);
   }
 
-  public setValue(value: number) {
+  public setValue(value: number): void {
     this.$value.textContent = String(value);
   }
 
-  public showValueNote(data: boolean) {
+  public showValueNote(data: boolean): void {
     if (data === true) {
       this.$note.classList.remove('adslider__note_hide');
       this.$note.classList.add('adslider__note_show');
@@ -28,7 +29,6 @@ export default class ValueNoteView {
       this.$note.classList.add('adslider__note_hide');
     }
   }
-
 
   // _setValue(value) {
   //   this.$value.textContent = value;
@@ -39,6 +39,4 @@ export default class ValueNoteView {
   // _setPosition(data) {
   //   this.$note.style.left = data.newLeft + data.handlerWidth / 2 + 'px';
   // }
-
-  
 }

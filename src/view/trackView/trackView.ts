@@ -1,5 +1,5 @@
 export default class TrackView {
-  public $track: HTMLElement;
+  public $track!: HTMLElement;
 
   constructor($parent: HTMLElement) {
     this.render($parent);
@@ -10,7 +10,8 @@ export default class TrackView {
     this.$track.classList.add('adslider__track');
     $parent.append(this.$track);
   }
-  public getLength() {
+
+  public getLength(): number {
     return this.$track.offsetWidth;
   }
 }

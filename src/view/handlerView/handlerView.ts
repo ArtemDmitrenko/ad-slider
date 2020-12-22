@@ -1,7 +1,7 @@
-
 export default class HandlerView {
-  public $handler: HTMLElement;
-  private $parent: HTMLElement;
+  public $handler!: HTMLElement;
+
+  private $parent!: HTMLElement;
 
   constructor($parent: HTMLElement) {
     this.render($parent);
@@ -18,10 +18,6 @@ export default class HandlerView {
     return this.$handler.offsetWidth;
   }
 
-  
-
-
-  
   // _setMovePosition($track) {
   //   this.$handler.addEventListener('mousedown', e => {
   //     e.preventDefault();
@@ -53,5 +49,4 @@ export default class HandlerView {
   // _setPosition(newLeft) {
   //   this.$handler.style.left = newLeft + 'px';
   // }
-
 }
