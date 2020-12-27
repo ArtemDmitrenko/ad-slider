@@ -35,7 +35,7 @@ export default class View extends EventObserver {
     this.handlerView = new HandlerView(this.trackView.$track);
     this.valueNoteView = new ValueNoteView(this.$adslider);
 
-    this.setMovePosition();
+    this.addListeners();
   }
 
   public getRightEdge(): number {
@@ -43,39 +43,87 @@ export default class View extends EventObserver {
     return rightEdge;
   }
 
-  public setPosition(value: number, limits: { min: number, max: number }, rightEdge: number): void {
+  public calcPosAndValue(value: number, limits: { min: number, max: number }, rightEdge: number): void {
     const handlerPos = rightEdge * ((value - limits.min) / (limits.max - limits.min));
-    this.handlerView.$handler.style.left = `${handlerPos}px`;
-    this.valueNoteView.$note.style.left = `${handlerPos + this.handlerView.getHandlerWidth() / 2}px`;
+    this.setHandlerPos(handlerPos);
     this.valueNoteView.setValue(value);
   }
 
-  private setMovePosition(): void {
-    this.handlerView.$handler.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      const shiftX = e.clientX - this.handlerView.$handler.getBoundingClientRect().left;
-      const mouseMove = (e: MouseEvent) => {
-        let newLeft = e.clientX - shiftX - this.trackView.$track.getBoundingClientRect().left;
-        const rightEdge = this.getRightEdge();
-        if (newLeft < 0) {
-          newLeft = 0;
-        } else if (newLeft > rightEdge) {
-          newLeft = rightEdge;
-        }
-        this.handlerView.$handler.style.left = `${newLeft}px`;
-        this.valueNoteView.$note.style.left = `${newLeft + this.handlerView.getHandlerWidth() / 2}px`;
-
-        const data = { newLeft, rightEdge };
-        this.broadcast(data);
-      };
-
-      function mouseUp() {
-        document.removeEventListener('mouseup', mouseUp);
-        document.removeEventListener('mousemove', mouseMove);
-      }
-      document.addEventListener('mousemove', mouseMove);
-      document.addEventListener('mouseup', mouseUp);
-    });
-    document.addEventListener('dragstart', () => false);
+  private calNewLeft(e: MouseEvent, shiftX: number): number {
+    let newLeft: number = e.clientX - shiftX - this.trackView.$track.getBoundingClientRect().left;
+    const rightEdge = this.getRightEdge();
+    if (newLeft < 0) {
+      newLeft = 0;
+    } else if (newLeft > rightEdge) {
+      newLeft = rightEdge;
+    }
+    return newLeft;
   }
+
+  private setHandlerPos(value: number): void {
+    this.handlerView.$handler.style.left = `${value}px`;
+    this.valueNoteView.$note.style.left = `${value + this.handlerView.getHandlerWidth() / 2}px`;
+  }
+
+  private addListeners(): void {
+    this.handlerView.$handler.addEventListener('mousedown', this.moveHandler.bind(this));
+    // document.addEventListener('dragstart', View.dragstart);
+  }
+
+  static dragstart(): boolean {
+    return false;
+  }
+
+  private moveHandler(event: MouseEvent): void {
+    event.preventDefault();
+    const shiftX: number = event.clientX - this.handlerView.$handler.getBoundingClientRect().left;
+    const mouseMove = (e: MouseEvent): void => {
+      let newLeft = e.clientX - shiftX - this.trackView.$track.getBoundingClientRect().left;
+      const rightEdge = this.getRightEdge();
+      if (newLeft < 0) {
+        newLeft = 0;
+      } else if (newLeft > rightEdge) {
+        newLeft = rightEdge;
+      }
+      console.log(newLeft);
+      console.log(this);
+      this.handlerView.$handler.style.left = `${newLeft}px`;
+      this.valueNoteView.$note.style.left = `${newLeft + this.handlerView.getHandlerWidth() / 2}px`;
+    };
+    function mouseUp() {
+      document.removeEventListener('mouseup', mouseUp);
+      document.removeEventListener('mousemove', mouseMove);
+    }
+    document.addEventListener('mousemove', mouseMove);
+    document.addEventListener('mouseup', mouseUp);
+  }
+
+  // private setMovePosition(): void {
+  //   this.handlerView.$handler.addEventListener('mousedown', (e) => {
+  //     e.preventDefault();
+  //     const shiftX = e.clientX - this.handlerView.$handler.getBoundingClientRect().left;
+  //     const mouseMove = (e: MouseEvent) => {
+  //       let newLeft = e.clientX - shiftX - this.trackView.$track.getBoundingClientRect().left;
+  //       const rightEdge = this.getRightEdge();
+  //       if (newLeft < 0) {
+  //         newLeft = 0;
+  //       } else if (newLeft > rightEdge) {
+  //         newLeft = rightEdge;
+  //       }
+  //       this.handlerView.$handler.style.left = `${newLeft}px`;
+  //       this.valueNoteView.$note.style.left = `${newLeft + this.handlerView.getHandlerWidth() / 2}px`;
+
+  //       const data = { newLeft, rightEdge };
+  //       this.broadcast(data);
+  //     };
+
+  //     function mouseUp() {
+  //       document.removeEventListener('mouseup', mouseUp);
+  //       document.removeEventListener('mousemove', mouseMove);
+  //     }
+  //     document.addEventListener('mousemove', mouseMove);
+  //     document.addEventListener('mouseup', mouseUp);
+  //   });
+  //   document.addEventListener('dragstart', () => false);
+  // }
 }

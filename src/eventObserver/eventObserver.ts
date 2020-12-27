@@ -1,11 +1,13 @@
-
+interface eventObserver {
+  subscribe: Function;
+}
 
 export default class EventObserver {
   private observers: Function[] = [];
 
-  constructor() {
-    this.observers = [];
-  }
+  // constructor() {
+  //   this.observers = [];
+  // }
 
   public addObserver(newObserver: Function): void {
     if (typeof newObserver !== 'function') {

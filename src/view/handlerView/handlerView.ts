@@ -18,6 +18,10 @@ export default class HandlerView {
     return this.$handler.offsetWidth;
   }
 
+  public setPos(value: number): void {
+    this.$handler.style.left = `${value}px`;
+  }
+
   // _setMovePosition($track) {
   //   this.$handler.addEventListener('mousedown', e => {
   //     e.preventDefault();

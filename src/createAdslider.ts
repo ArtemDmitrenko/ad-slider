@@ -10,6 +10,6 @@ export default function createAdslider(selector: string, userOptions: Config) {
 
 createAdslider('.container', {
   limits: { min: 50, max: 150 },
-  curValue: 100,
+  curValue: 50,
   showValueNote: true,
 });

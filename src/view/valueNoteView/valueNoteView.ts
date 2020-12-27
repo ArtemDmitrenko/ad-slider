@@ -30,6 +30,10 @@ export default class ValueNoteView {
     }
   }
 
+  // public setPos(value: number, handler: HTMLElement): void {
+  //   this.$note.style.left = `${value + handler.offsetWidth / 2}px`;
+  // }
+
   // _setValue(value) {
   //   this.$value.textContent = value;
   // }
