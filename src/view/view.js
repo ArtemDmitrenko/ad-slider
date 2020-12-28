@@ -29,25 +29,11 @@ class View extends eventObserver_1.default {
         const rightEdge = this.trackView.getLength() - this.handlerView.getHandlerWidth();
         return rightEdge;
     }
-    calcPosAndValue(value, limits, rightEdge) {
+    setHandlerPosAndValue(value, limits, rightEdge) {
         const handlerPos = rightEdge * ((value - limits.min) / (limits.max - limits.min));
-        this.setHandlerPos(handlerPos);
+        this.handlerView.setPos(handlerPos);
+        this.valueNoteView.setPos(this.handlerView.$handler);
         this.valueNoteView.setValue(value);
-    }
-    calNewLeft(e, shiftX) {
-        let newLeft = e.clientX - shiftX - this.trackView.$track.getBoundingClientRect().left;
-        const rightEdge = this.getRightEdge();
-        if (newLeft < 0) {
-            newLeft = 0;
-        }
-        else if (newLeft > rightEdge) {
-            newLeft = rightEdge;
-        }
-        return newLeft;
-    }
-    setHandlerPos(value) {
-        this.handlerView.$handler.style.left = `${value}px`;
-        this.valueNoteView.$note.style.left = `${value + this.handlerView.getHandlerWidth() / 2}px`;
     }
     addListeners() {
         this.handlerView.$handler.addEventListener('mousedown', this.moveHandler.bind(this));
@@ -68,8 +54,6 @@ class View extends eventObserver_1.default {
             else if (newLeft > rightEdge) {
                 newLeft = rightEdge;
             }
-            console.log(newLeft);
-            console.log(this);
             this.handlerView.$handler.style.left = `${newLeft}px`;
             this.valueNoteView.$note.style.left = `${newLeft + this.handlerView.getHandlerWidth() / 2}px`;
         };

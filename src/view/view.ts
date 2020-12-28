@@ -43,26 +43,11 @@ export default class View extends EventObserver {
     return rightEdge;
   }
 
-  public calcPosAndValue(value: number, limits: { min: number, max: number }, rightEdge: number): void {
-    const handlerPos = rightEdge * ((value - limits.min) / (limits.max - limits.min));
-    this.setHandlerPos(handlerPos);
+  public setHandlerPosAndValue(value: number, limits: { min: number, max: number }, rightEdge: number): void {
+    const handlerPos: number = rightEdge * ((value - limits.min) / (limits.max - limits.min));
+    this.handlerView.setPos(handlerPos);
+    this.valueNoteView.setPos(this.handlerView.$handler);
     this.valueNoteView.setValue(value);
-  }
-
-  private calNewLeft(e: MouseEvent, shiftX: number): number {
-    let newLeft: number = e.clientX - shiftX - this.trackView.$track.getBoundingClientRect().left;
-    const rightEdge = this.getRightEdge();
-    if (newLeft < 0) {
-      newLeft = 0;
-    } else if (newLeft > rightEdge) {
-      newLeft = rightEdge;
-    }
-    return newLeft;
-  }
-
-  private setHandlerPos(value: number): void {
-    this.handlerView.$handler.style.left = `${value}px`;
-    this.valueNoteView.$note.style.left = `${value + this.handlerView.getHandlerWidth() / 2}px`;
   }
 
   private addListeners(): void {
@@ -85,8 +70,6 @@ export default class View extends EventObserver {
       } else if (newLeft > rightEdge) {
         newLeft = rightEdge;
       }
-      console.log(newLeft);
-      console.log(this);
       this.handlerView.$handler.style.left = `${newLeft}px`;
       this.valueNoteView.$note.style.left = `${newLeft + this.handlerView.getHandlerWidth() / 2}px`;
     };

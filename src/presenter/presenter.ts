@@ -10,7 +10,7 @@ export default class Presenter {
     this.model = model;
     this.view = view;
 
-    this.view.calcPosAndValue(this.model.curValue, this.model.limits, this.view.getRightEdge());
+    this.view.setHandlerPosAndValue(this.model.curValue, this.model.limits, this.view.getRightEdge());
     this.view.valueNoteView.showValueNote(this.model.showValueNote);
 
     // Observer: When position of handler is changing - defValue in Model is updating
