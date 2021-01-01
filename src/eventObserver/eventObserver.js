@@ -3,10 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 class EventObserver {
     constructor() {
         this.observers = [];
+        this.observers = [];
     }
-    // constructor() {
-    //   this.observers = [];
-    // }
     addObserver(newObserver) {
         if (typeof newObserver !== 'function') {
             throw new Error('Observer must be a function!');

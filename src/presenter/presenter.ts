@@ -19,14 +19,4 @@ export default class Presenter {
     // Observer: When defValue in Model is changing - value in valueNote is updating
     this.model.addObserver(this.view.valueNoteView.setValue.bind(this.view.valueNoteView));
   }
-
-  // setInitial() {
-  //   const rightEdge = this.view.getRightEdge();
-  //   const newLeft = this.model.getHandlerPosFromValue(rightEdge);
-  //   this.view.handler._setPosition(newLeft);
-  //   this.view.valueNote._setValue(this.model.defValue);
-  //   const handlerWidth = this.view.handler._getHandlerWidth();
-  //   this.view.valueNote._setPosition({ newLeft, handlerWidth });
-  //   this.view.valueNote.showValueNote(this.model.showValueNote);
-  // }
 }

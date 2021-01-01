@@ -1,4 +1,4 @@
-import { Config } from '../model/model';
+// import { Config } from '../model/model';
 import HandlerView from './handlerView/handlerView';
 import TrackView from './trackView/trackView';
 import ValueNoteView from './valueNoteView/valueNoteView';
@@ -14,8 +14,6 @@ export default class View extends EventObserver {
   public valueNoteView!: ValueNoteView;
 
   private $adslider!: HTMLElement;
-
-  private options!: Config;
 
   constructor(selector: string) {
     super();
@@ -38,25 +36,8 @@ export default class View extends EventObserver {
     this.addListeners();
   }
 
-  public getRightEdge(): number {
-    const rightEdge = this.trackView.getLength() - this.handlerView.getHandlerWidth();
-    return rightEdge;
-  }
-
-  public setHandlerPosAndValue(value: number, limits: { min: number, max: number }, rightEdge: number): void {
-    const handlerPos: number = rightEdge * ((value - limits.min) / (limits.max - limits.min));
-    this.handlerView.setPos(handlerPos);
-    this.valueNoteView.setPos(this.handlerView.$handler);
-    this.valueNoteView.setValue(value);
-  }
-
   private addListeners(): void {
     this.handlerView.$handler.addEventListener('mousedown', this.moveHandler.bind(this));
-    // document.addEventListener('dragstart', View.dragstart);
-  }
-
-  static dragstart(): boolean {
-    return false;
   }
 
   private moveHandler(event: MouseEvent): void {
@@ -70,8 +51,10 @@ export default class View extends EventObserver {
       } else if (newLeft > rightEdge) {
         newLeft = rightEdge;
       }
-      this.handlerView.$handler.style.left = `${newLeft}px`;
-      this.valueNoteView.$note.style.left = `${newLeft + this.handlerView.getHandlerWidth() / 2}px`;
+      this.handlerView.setPos(newLeft);
+      this.valueNoteView.setPos(this.handlerView.$handler);
+      const data = { newLeft, rightEdge };
+      this.broadcast(data);
     };
     function mouseUp() {
       document.removeEventListener('mouseup', mouseUp);
@@ -81,32 +64,15 @@ export default class View extends EventObserver {
     document.addEventListener('mouseup', mouseUp);
   }
 
-  // private setMovePosition(): void {
-  //   this.handlerView.$handler.addEventListener('mousedown', (e) => {
-  //     e.preventDefault();
-  //     const shiftX = e.clientX - this.handlerView.$handler.getBoundingClientRect().left;
-  //     const mouseMove = (e: MouseEvent) => {
-  //       let newLeft = e.clientX - shiftX - this.trackView.$track.getBoundingClientRect().left;
-  //       const rightEdge = this.getRightEdge();
-  //       if (newLeft < 0) {
-  //         newLeft = 0;
-  //       } else if (newLeft > rightEdge) {
-  //         newLeft = rightEdge;
-  //       }
-  //       this.handlerView.$handler.style.left = `${newLeft}px`;
-  //       this.valueNoteView.$note.style.left = `${newLeft + this.handlerView.getHandlerWidth() / 2}px`;
+  public getRightEdge(): number {
+    const rightEdge = this.trackView.getLength() - this.handlerView.getWidth();
+    return rightEdge;
+  }
 
-  //       const data = { newLeft, rightEdge };
-  //       this.broadcast(data);
-  //     };
-
-  //     function mouseUp() {
-  //       document.removeEventListener('mouseup', mouseUp);
-  //       document.removeEventListener('mousemove', mouseMove);
-  //     }
-  //     document.addEventListener('mousemove', mouseMove);
-  //     document.addEventListener('mouseup', mouseUp);
-  //   });
-  //   document.addEventListener('dragstart', () => false);
-  // }
+  public setHandlerPosAndValue(value: number, limits: { min: number, max: number }, rightEdge: number): void {
+    const handlerPos: number = rightEdge * ((value - limits.min) / (limits.max - limits.min));
+    this.handlerView.setPos(handlerPos);
+    this.valueNoteView.setPos(this.handlerView.$handler);
+    this.valueNoteView.setValue(value);
+  }
 }

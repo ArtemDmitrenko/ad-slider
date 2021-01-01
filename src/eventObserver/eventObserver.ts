@@ -1,13 +1,9 @@
-interface eventObserver {
-  subscribe: Function;
-}
-
 export default class EventObserver {
   private observers: Function[] = [];
 
-  // constructor() {
-  //   this.observers = [];
-  // }
+  constructor() {
+    this.observers = [];
+  }
 
   public addObserver(newObserver: Function): void {
     if (typeof newObserver !== 'function') {
@@ -21,7 +17,7 @@ export default class EventObserver {
     this.observers.push(newObserver);
   }
 
-  removeObserver(obs: Function): void {
+  public removeObserver(obs: Function): void {
     for (let i = 0; i < this.observers.length; i += 1) {
       if (obs === this.observers[i]) {
         this.observers.splice(i, 1);
@@ -31,7 +27,7 @@ export default class EventObserver {
     throw new Error('No such observer in the list!');
   }
 
-  broadcast(data: any): void {
+  public broadcast(data: any): void {
     if (this.observers.length < 1) {
       return;
     }

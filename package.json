@@ -8,6 +8,10 @@
     "dev": "parcel src/index.pug --out-dir dist --open",
     "eslint": "eslint src/**"
   },
+  "jest": {
+    "collectCoverage": true,
+    "coverageReporters": ["html"]
+  },
   "author": "ArtemDmitrenko",
   "license": "ISC",
   "devDependencies": {

@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// import { Config } from '../model/model';
 const handlerView_1 = __importDefault(require("./handlerView/handlerView"));
 const trackView_1 = __importDefault(require("./trackView/trackView"));
 const valueNoteView_1 = __importDefault(require("./valueNoteView/valueNoteView"));
@@ -25,22 +26,8 @@ class View extends eventObserver_1.default {
         this.valueNoteView = new valueNoteView_1.default(this.$adslider);
         this.addListeners();
     }
-    getRightEdge() {
-        const rightEdge = this.trackView.getLength() - this.handlerView.getHandlerWidth();
-        return rightEdge;
-    }
-    setHandlerPosAndValue(value, limits, rightEdge) {
-        const handlerPos = rightEdge * ((value - limits.min) / (limits.max - limits.min));
-        this.handlerView.setPos(handlerPos);
-        this.valueNoteView.setPos(this.handlerView.$handler);
-        this.valueNoteView.setValue(value);
-    }
     addListeners() {
         this.handlerView.$handler.addEventListener('mousedown', this.moveHandler.bind(this));
-        // document.addEventListener('dragstart', View.dragstart);
-    }
-    static dragstart() {
-        return false;
     }
     moveHandler(event) {
         event.preventDefault();
@@ -54,8 +41,10 @@ class View extends eventObserver_1.default {
             else if (newLeft > rightEdge) {
                 newLeft = rightEdge;
             }
-            this.handlerView.$handler.style.left = `${newLeft}px`;
-            this.valueNoteView.$note.style.left = `${newLeft + this.handlerView.getHandlerWidth() / 2}px`;
+            this.handlerView.setPos(newLeft);
+            this.valueNoteView.setPos(this.handlerView.$handler);
+            const data = { newLeft, rightEdge };
+            this.broadcast(data);
         };
         function mouseUp() {
             document.removeEventListener('mouseup', mouseUp);
@@ -63,6 +52,16 @@ class View extends eventObserver_1.default {
         }
         document.addEventListener('mousemove', mouseMove);
         document.addEventListener('mouseup', mouseUp);
+    }
+    getRightEdge() {
+        const rightEdge = this.trackView.getLength() - this.handlerView.getWidth();
+        return rightEdge;
+    }
+    setHandlerPosAndValue(value, limits, rightEdge) {
+        const handlerPos = rightEdge * ((value - limits.min) / (limits.max - limits.min));
+        this.handlerView.setPos(handlerPos);
+        this.valueNoteView.setPos(this.handlerView.$handler);
+        this.valueNoteView.setValue(value);
     }
 }
 exports.default = View;

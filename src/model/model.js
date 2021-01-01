@@ -10,7 +10,7 @@ class Model extends eventObserver_1.default {
         super();
         this.limits = options.limits;
         this.curValue = options.curValue;
-        this.showValueNote = true;
+        this.showValueNote = options.showValueNote;
         this.init(options);
     }
     setLimits(limits) {
@@ -25,13 +25,9 @@ class Model extends eventObserver_1.default {
         }
         this.curValue = value;
     }
-    setShowValueNote(value) {
-        this.showValueNote = value;
-    }
     init(options) {
         this.setLimits(options.limits);
         this.setValue(options.curValue);
-        this.setShowValueNote(options.showValueNote);
     }
     setValueFromHandlerPos(data) {
         const odds = this.limits.max - this.limits.min;
@@ -41,20 +37,3 @@ class Model extends eventObserver_1.default {
     }
 }
 exports.Model = Model;
-// constructor(options) {
-//   this.limits = (options.limits) ? options.limits : { min: 0, max: 100 };
-//   this.defValue = (options.defValue) ? options.defValue : 50;
-//   this.showValueNote = (typeof options.showValueNote === 'boolean') ? options.showValueNote : true;
-//   // Event to update value on handler when defvalue in Model is changed
-//   this.eventUpdateValue = new EventObserver();
-//   this.setValue(this.defValue);
-//   this.setLimits(this.limits);
-// }
-//   getValueFromHandlerPos(data) {
-//     this.defValue = Math.round(this.limits.min + (this.limits.max - this.limits.min) * (parseInt(data.newLeft, 10) / data.rightEdge));
-//     this.eventUpdateValue.broadcast(this.defValue);
-//   }
-//   getHandlerPosFromValue(rightEdge) {
-//     const newLeft = Math.round(rightEdge * (this.defValue - this.limits.min) / (this.limits.max - this.limits.min));
-//     return newLeft;
-//   }

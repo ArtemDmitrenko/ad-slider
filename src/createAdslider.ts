@@ -2,7 +2,7 @@ import { Config, Model } from './model/model';
 import View from './view/view';
 import Presenter from './presenter/presenter';
 
-export default function createAdslider(selector: string, userOptions: Config) {
+export default function createAdslider(selector: string, userOptions: Config): void {
   const view = new View(selector);
   const model = new Model(userOptions);
   const presenter = new Presenter(model, view);
