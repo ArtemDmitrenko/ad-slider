@@ -1,0 +1,52 @@
+{
+    "plugins": [
+        "fsd",
+        "@typescript-eslint"
+    ],
+    "env": {
+        "browser": true,
+        "node": true,
+        "es6": true,
+        "amd": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "airbnb-base",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 11,
+        "sourceType": "module"
+    },
+    "parser": "@typescript-eslint/parser",
+    "rules": {
+        "fsd/hof-name-prefix": "error",
+        "fsd/no-heavy-constructor": "error",
+        "fsd/jq-cache-dom-elements": "error",
+        "fsd/jq-use-js-prefix-in-selector": "error",
+        "fsd/no-function-declaration-in-event-listener": "error",
+        "fsd/split-conditionals": "error",
+        "import/extensions": [
+            "error",
+            "ignorePackages",
+            {
+                "js": "never",
+                "jsx": "never",
+                "ts": "never",
+                "tsx": "never"
+            }
+        ]
+    },
+    "settings": {
+        "import/resolver": {
+            "node": {
+                "extensions": [
+                    ".js",
+                    ".jsx",
+                    ".ts",
+                    ".tsx"
+                ]
+            }
+        }
+    }
+}
