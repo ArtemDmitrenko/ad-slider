@@ -31,6 +31,6 @@ export default class ValueNoteView {
   }
 
   public setPos(handler: HTMLElement): void {
-    this.$note.style.left = `${parseInt(getComputedStyle(handler).left, 10) + handler.offsetWidth / 2}px`;
+    this.$note.style.left = `${parseInt(getComputedStyle(handler).left, 10) + parseInt(getComputedStyle(handler).width, 10) / 2}px`;
   }
 }

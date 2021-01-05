@@ -4,15 +4,16 @@ describe('trackView', () => {
   const $parent: HTMLElement = document.createElement('div');
   const trackView = new TrackView($parent);
 
-  test('Create element', () => {
+  test('Function render: create element', () => {
     expect(trackView.$track).not.toBeNull();
+    expect(trackView.$track.tagName).toBe('DIV');
   });
 
-  test('Add css-class', () => {
+  test('Function render: add css-class', () => {
     expect(trackView.$track.classList.contains('adslider__track')).toBe(true);
   });
 
-  test('Append track to parent-element', () => {
+  test('Function render: append track to parent-element', () => {
     expect(trackView.$track.parentElement).toBe($parent);
   });
 

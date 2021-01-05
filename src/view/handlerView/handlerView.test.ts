@@ -11,6 +11,7 @@ describe('handlerView', () => {
 
   test('Function render: create element', () => {
     expect(handlerView.$handler).not.toBeNull();
+    expect(handlerView.$handler.tagName).toBe('DIV');
   });
 
   test('Function render: add css-class', () => {
