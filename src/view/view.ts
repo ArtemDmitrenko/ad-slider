@@ -15,15 +15,16 @@ export default class View extends EventObserver {
 
   private $adslider!: HTMLElement;
 
-  constructor(selector: string) {
+  constructor(container: HTMLElement) {
     super();
-    this.render(selector);
+    this.render(container);
   }
 
-  public render(selector: string): void {
-    this.$el = document.querySelector(selector);
+  public render(container: HTMLElement): void {
+    this.$el = container;
+    // this.$el = document.querySelector(selector);
     if (!this.$el) {
-      throw new Error('You do not have this selector in your DOM');
+      throw new Error('You do not have this element in your DOM');
     }
     this.$adslider = document.createElement('div');
     this.$adslider.classList.add('adslider');

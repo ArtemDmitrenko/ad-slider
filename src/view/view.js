@@ -9,14 +9,15 @@ const trackView_1 = __importDefault(require("./trackView/trackView"));
 const valueNoteView_1 = __importDefault(require("./valueNoteView/valueNoteView"));
 const eventObserver_1 = __importDefault(require("../eventObserver/eventObserver"));
 class View extends eventObserver_1.default {
-    constructor(selector) {
+    constructor(container) {
         super();
-        this.render(selector);
+        this.render(container);
     }
-    render(selector) {
-        this.$el = document.querySelector(selector);
+    render(container) {
+        this.$el = container;
+        // this.$el = document.querySelector(selector);
         if (!this.$el) {
-            throw new Error('You do not have this selector in your DOM');
+            throw new Error('You do not have this element in your DOM');
         }
         this.$adslider = document.createElement('div');
         this.$adslider.classList.add('adslider');

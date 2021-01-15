@@ -1,5 +1,5 @@
-$('.container').adslider('.container', {
+$('.container').adslider({
   limits: { min: 50, max: 150 },
-  curValue: 100,
+  curValue: 80,
   showValueNote: true,
 });

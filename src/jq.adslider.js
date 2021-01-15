@@ -10,10 +10,12 @@ const model_1 = require("./model/model");
 const view_1 = __importDefault(require("./view/view"));
 const presenter_1 = __importDefault(require("./presenter/presenter"));
 (function ($) {
-    $.fn.adslider = function (selector, userOptions) {
-        const view = new view_1.default(selector);
-        const model = new model_1.Model(userOptions);
-        const presenter = new presenter_1.default(model, view);
+    $.fn.adslider = function (userOptions) {
+        this.each(() => {
+            const view = new view_1.default(this[0]);
+            const model = new model_1.Model(userOptions);
+            new presenter_1.default(model, view);
+        });
         return this;
     };
 }(jQuery));
