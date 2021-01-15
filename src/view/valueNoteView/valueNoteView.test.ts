@@ -47,6 +47,7 @@ describe('valueNoteView', () => {
     valueNoteView.setPos(handler);
     expect(getComputedStyle(valueNoteView.$note).left).toBe('250px');
   });
+
   test('Function showValueNote', () => {
     valueNoteView.showValueNote(true);
     expect(valueNoteView.$note.classList.contains('adslider__note_hide')).toBe(false);

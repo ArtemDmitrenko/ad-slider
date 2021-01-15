@@ -29,6 +29,7 @@ class Model extends eventObserver_1.default {
         this.setLimits(options.limits);
         this.setValue(options.curValue);
     }
+    // Под вопросом, что этот метод должен быть в модели
     setValueFromHandlerPos(data) {
         const odds = this.limits.max - this.limits.min;
         const value = Math.round(this.limits.min + odds * (data.newLeft / data.rightEdge));

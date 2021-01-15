@@ -10,12 +10,12 @@ export interface Config {
 }
 
 export class Model extends EventObserver {
-  public limits: {
+  public limits!: {
     min: number
     max: number
   }
 
-  public curValue: number;
+  public curValue!: number;
 
   public showValueNote: boolean;
 
@@ -46,6 +46,7 @@ export class Model extends EventObserver {
     this.setValue(options.curValue);
   }
 
+  // Под вопросом, что этот метод должен быть в модели
   public setValueFromHandlerPos(data: { newLeft: number, rightEdge: number }): void {
     const odds = this.limits.max - this.limits.min;
     const value = Math.round(this.limits.min + odds * (data.newLeft / data.rightEdge));

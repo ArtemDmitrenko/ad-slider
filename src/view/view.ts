@@ -5,7 +5,7 @@ import ValueNoteView from './valueNoteView/valueNoteView';
 import EventObserver from '../eventObserver/eventObserver';
 
 export default class View extends EventObserver {
-  private $el!: HTMLElement | null;
+  public $el!: HTMLElement | null;
 
   private handlerView!: HandlerView;
 
@@ -20,7 +20,7 @@ export default class View extends EventObserver {
     this.render(selector);
   }
 
-  private render(selector: string) {
+  public render(selector: string): void {
     this.$el = document.querySelector(selector);
     if (!this.$el) {
       throw new Error('You do not have this selector in your DOM');
