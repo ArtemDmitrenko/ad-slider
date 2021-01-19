@@ -3,11 +3,12 @@ import HandlerView from './handlerView/handlerView';
 import TrackView from './trackView/trackView';
 import ValueNoteView from './valueNoteView/valueNoteView';
 import EventObserver from '../eventObserver/eventObserver';
+// import { Config } from '../model/model';
 
 export default class View extends EventObserver {
   public $el!: HTMLElement | null;
 
-  private handlerView!: HandlerView;
+  public handlerView!: HandlerView;
 
   private trackView!: TrackView;
 
@@ -22,10 +23,6 @@ export default class View extends EventObserver {
 
   public render(container: HTMLElement): void {
     this.$el = container;
-    // this.$el = document.querySelector(selector);
-    if (!this.$el) {
-      throw new Error('You do not have this element in your DOM');
-    }
     this.$adslider = document.createElement('div');
     this.$adslider.classList.add('adslider');
     this.$el.append(this.$adslider);
@@ -35,6 +32,21 @@ export default class View extends EventObserver {
     this.valueNoteView = new ValueNoteView(this.$adslider);
 
     this.addListeners();
+  }
+
+  static calcHandlerPos(value: number, limits: { min: number, max: number }, rightEdge: number): number {
+    const handlerPos = rightEdge * ((value - limits.min) / (limits.max - limits.min));
+    return handlerPos;
+  }
+
+  static calcValueNotePos(handler: HTMLElement): number {
+    const valueNotePos: number = parseInt(getComputedStyle(handler).left, 10) + parseInt(getComputedStyle(handler).width, 10) / 2;
+    return valueNotePos;
+  }
+
+  public getRightEdge(): number {
+    const rightEdge = this.trackView.getLength() - this.handlerView.getWidth();
+    return rightEdge;
   }
 
   private addListeners(): void {
@@ -53,9 +65,9 @@ export default class View extends EventObserver {
         newLeft = rightEdge;
       }
       this.handlerView.setPos(newLeft);
-      this.valueNoteView.setPos(this.handlerView.$handler);
+      this.valueNoteView.setPos(View.calcValueNotePos(this.handlerView.$handler));
       const data = { newLeft, rightEdge };
-      this.broadcast(data);
+      this.broadcast('handlerMove', data);
     };
     function mouseUp() {
       document.removeEventListener('mouseup', mouseUp);
@@ -63,17 +75,5 @@ export default class View extends EventObserver {
     }
     document.addEventListener('mousemove', mouseMove);
     document.addEventListener('mouseup', mouseUp);
-  }
-
-  public getRightEdge(): number {
-    const rightEdge = this.trackView.getLength() - this.handlerView.getWidth();
-    return rightEdge;
-  }
-
-  public setHandlerPosAndValue(value: number, limits: { min: number, max: number }, rightEdge: number): void {
-    const handlerPos: number = rightEdge * ((value - limits.min) / (limits.max - limits.min));
-    this.handlerView.setPos(handlerPos);
-    this.valueNoteView.setPos(this.handlerView.$handler);
-    this.valueNoteView.setValue(value);
   }
 }

@@ -2,37 +2,40 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 class EventObserver {
     constructor() {
-        this.observers = [];
-        this.observers = [];
+        this.observers = {};
     }
-    addObserver(newObserver) {
-        if (typeof newObserver !== 'function') {
-            throw new Error('Observer must be a function!');
-        }
-        this.observers.forEach((observer) => {
-            if (observer === newObserver) {
-                throw new Error('Observer already in the list!');
+    addObserver(event, newObserver) {
+        if (this.observers[event]) {
+            if (this.observers[event].includes(newObserver)) {
+                throw new Error('Observer is already in the list!');
             }
-        });
-        this.observers.push(newObserver);
-    }
-    removeObserver(obs) {
-        for (let i = 0; i < this.observers.length; i += 1) {
-            if (obs === this.observers[i]) {
-                this.observers.splice(i, 1);
-                return;
-            }
+            this.observers[event].push(newObserver);
         }
-        throw new Error('No such observer in the list!');
-    }
-    broadcast(data) {
-        if (this.observers.length < 1) {
-            return;
+        else {
+            this.observers[event] = [];
+            this.observers[event].push(newObserver);
         }
-        const observersClone = this.observers.slice(0);
+    }
+    broadcast(event, data) {
+        if (this.observers[event] === undefined) {
+            throw new Error('There is no such observer in the list!');
+        }
+        const observersClone = this.observers[event].slice(0);
         observersClone.forEach((subscriber) => {
             subscriber(data);
         });
     }
 }
 exports.default = EventObserver;
+// function sum() {
+//   return 5;
+// }
+// function sum2() {
+//   return 5;
+// }
+// const ev = new EventObserver();
+// ev.addObserver('click', sum);
+// ev.addObserver('click', sum2);
+// ev.addObserver('dass', sum2);
+// ev.broadcast('dass');
+// console.log(ev);

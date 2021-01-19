@@ -14,7 +14,7 @@ const presenter_1 = __importDefault(require("./presenter/presenter"));
         this.each(() => {
             const view = new view_1.default(this[0]);
             const model = new model_1.Model(userOptions);
-            new presenter_1.default(model, view);
+            const presenter = new presenter_1.default(model, view);
         });
         return this;
     };

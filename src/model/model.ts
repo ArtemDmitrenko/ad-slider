@@ -51,6 +51,7 @@ export class Model extends EventObserver {
     const odds = this.limits.max - this.limits.min;
     const value = Math.round(this.limits.min + odds * (data.newLeft / data.rightEdge));
     this.setValue(value);
-    this.broadcast(this.curValue);
+    this.broadcast('handlerMove', this.curValue);
   }
+
 }

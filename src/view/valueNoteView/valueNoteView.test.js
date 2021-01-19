@@ -36,11 +36,8 @@ describe('valueNoteView', () => {
         expect(valueNoteView.$value.innerHTML).toBe('50');
     });
     test('Function setPos', () => {
-        const handler = document.createElement('div');
-        handler.style.left = '200px';
-        handler.style.width = '100px';
-        valueNoteView.setPos(handler);
-        expect(getComputedStyle(valueNoteView.$note).left).toBe('250px');
+        valueNoteView.setPos(50);
+        expect(getComputedStyle(valueNoteView.$note).left).toBe('50px');
     });
     test('Function showValueNote', () => {
         valueNoteView.showValueNote(true);

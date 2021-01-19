@@ -25,8 +25,8 @@ class ValueNoteView {
             this.$note.classList.add('adslider__note_hide');
         }
     }
-    setPos(handler) {
-        this.$note.style.left = `${parseInt(getComputedStyle(handler).left, 10) + parseInt(getComputedStyle(handler).width, 10) / 2}px`;
+    setPos(value) {
+        this.$note.style.left = `${value}px`;
     }
 }
 exports.default = ValueNoteView;
