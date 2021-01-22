@@ -30,6 +30,18 @@ export class Model extends EventObserver {
     this.init(this.options);
   }
 
+  public setValueFromHandlerPos(data: { newLeft: number, rightEdge: number }): void {
+    const odds = this.limits.max - this.limits.min;
+    const value = Math.round(this.limits.min + odds * (data.newLeft / data.rightEdge));
+    this.setValue(value);
+    this.broadcast('handlerMove', this.curValue);
+  }
+
+  private init(options: Config): void {
+    this.setLimits(options.limits);
+    this.setValue(options.curValue);
+  }
+
   private setLimits(limits: { min: number, max: number }): void {
     if (limits.min >= limits.max) {
       throw new Error('Min can not be the same or more than Max');
@@ -43,18 +55,4 @@ export class Model extends EventObserver {
     }
     this.curValue = value;
   }
-
-  private init(options: Config): void {
-    this.setLimits(options.limits);
-    this.setValue(options.curValue);
-  }
-
-  // Под вопросом, что этот метод должен быть в модели
-  public setValueFromHandlerPos(data: { newLeft: number, rightEdge: number }): void {
-    const odds = this.limits.max - this.limits.min;
-    const value = Math.round(this.limits.min + odds * (data.newLeft / data.rightEdge));
-    this.setValue(value);
-    this.broadcast('handlerMove', this.curValue);
-  }
-
 }

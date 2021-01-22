@@ -1,5 +1,5 @@
 export default class EventObserver {
-  private observers: { [event: string]: Function[] };
+  public observers: { [event: string]: Function[] };
 
   constructor() {
     this.observers = {};
@@ -27,17 +27,3 @@ export default class EventObserver {
     });
   }
 }
-
-// function sum() {
-//   return 5;
-// }
-// function sum2() {
-//   return 5;
-// }
-// const ev = new EventObserver();
-// ev.addObserver('click', sum);
-// ev.addObserver('click', sum2);
-// ev.addObserver('dass', sum2);
-// ev.broadcast('dass');
-
-// console.log(ev);
