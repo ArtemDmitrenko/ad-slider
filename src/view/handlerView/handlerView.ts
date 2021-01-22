@@ -17,7 +17,8 @@ export default class HandlerView {
   }
 
   public getWidth(): number {
-    return this.$handler.offsetWidth;
+    const width: number = parseInt(getComputedStyle(this.$handler).width, 10);
+    return width;
   }
 
   public setPos(value: number): void {

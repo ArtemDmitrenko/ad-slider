@@ -19,12 +19,15 @@ export class Model extends EventObserver {
 
   public showValueNote: boolean;
 
+  public options: Config;
+
   constructor(options: Config) {
     super();
     this.limits = options.limits;
     this.curValue = options.curValue;
     this.showValueNote = options.showValueNote;
-    this.init(options);
+    this.options = options;
+    this.init(this.options);
   }
 
   private setLimits(limits: { min: number, max: number }): void {

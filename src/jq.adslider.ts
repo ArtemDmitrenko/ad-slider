@@ -12,6 +12,8 @@ import Presenter from './presenter/presenter';
       const view = new View(this[0]);
       const model = new Model(userOptions);
       const presenter = new Presenter(model, view);
+      console.log(view.trackView.$track.getBoundingClientRect());
+
     });
     return this;
   };

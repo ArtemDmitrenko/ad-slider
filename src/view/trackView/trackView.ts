@@ -11,7 +11,8 @@ export default class TrackView {
     $parent.append(this.$track);
   }
 
-  public getLength(): number {
-    return this.$track.offsetWidth;
+  public getWidth(): number {
+    const width: number = parseInt(getComputedStyle(this.$track).width, 10);
+    return width;
   }
 }
