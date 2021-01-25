@@ -1,6 +1,4 @@
-// declare var $: any;
-// var jquery = require("jquery");
-// window.$ = window.jQuery = jquery;
+import './main.scss';
 
 import { Config, Model } from './model/model';
 import View from './view/view';
@@ -12,8 +10,6 @@ import Presenter from './presenter/presenter';
       const view = new View(this[0]);
       const model = new Model(userOptions);
       const presenter = new Presenter(model, view);
-      console.log(view.trackView.$track.getBoundingClientRect());
-
     });
     return this;
   };
