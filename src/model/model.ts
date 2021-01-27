@@ -20,6 +20,7 @@ export class Model extends EventObserver {
   public showValueNote: boolean;
 
   public options: Config;
+  static options: any;
 
   constructor(options: Config) {
     super();
@@ -37,7 +38,7 @@ export class Model extends EventObserver {
     this.broadcast('handlerMove', this.curValue);
   }
 
-  private init(options: Config): void {
+  public init(options: Config): void {
     this.setLimits(options.limits);
     this.setValue(options.curValue);
   }
