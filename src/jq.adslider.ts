@@ -7,10 +7,14 @@ import Presenter from './presenter/presenter';
 (function ($) {
   const methods = {
     init(container: HTMLElement, options: Config) {
-      const view = new View(container);
-      const model = new Model(options);
-      const presenter = new Presenter(model, view);
-      $(this).data({ view, model, presenter });
+      if ($(this).data('inited') {
+        $.error('Plugin has already been initialized on this selector!');
+      } else {
+        const view = new View(container);
+        const model = new Model(options);
+        const presenter = new Presenter(model, view);
+        $(this).data({ view, model, presenter, inited: true });
+      };
     },
     update(options: Config) {
       const model = $(this).data('model');
@@ -19,7 +23,7 @@ import Presenter from './presenter/presenter';
       model.init(model.options);
       view.updateView(model.options);
     },
-    getOptions() {
+    getOptions(): Object {
       return $(this).data('model').options;
     },
   };

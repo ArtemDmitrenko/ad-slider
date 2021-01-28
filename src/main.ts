@@ -1,28 +1,33 @@
-const options = {
+let options1 = {
   limits: { min: 50, max: 150 },
-  curValue: 100,
+  curValue: 120,
   showValueNote: true,
 };
-const options2 = {
-  limits: { min: 50, max: 150 },
-  curValue: 140,
-  showValueNote: true,
-};
+// const options2 = {
+//   limits: { min: 50, max: 150 },
+//   curValue: 140,
+//   showValueNote: true,
+// };
 
-$('.container').adslider(options);
+$('.container').adslider(options1);
 
-// const slider1input: HTMLInputElement | null = document.querySelector('.slider1_input');
-// if (!slider1input) {
-//   throw Error('No such html element');
-// } else {
-//   const alert1 = (): void => {
-//     options.curValue = Number(slider1input.value);
-//     $('.container').adslider('update', options);
-//   };
-//   slider1input.addEventListener('change', alert1);
-// }
 
-// console.log($('.container').adslider('getOptions'));
-// const obj = $('.container').adslider('getOptions');
-// console.log(obj);
-// slider1input.value = obj.curValue;
+
+const inputCurValue: HTMLInputElement | null = document.querySelector('.panel__curValue');
+if (!inputCurValue) {
+  throw Error('No such html element');
+} else {
+  inputCurValue.value = $('.container').adslider('getOptions').curValue;
+
+  const updateAdslider = (): void => {
+    options1.curValue = Number(inputCurValue.value);
+    $('.container').adslider('update', options1);
+  };
+  inputCurValue.addEventListener('change', updateAdslider);
+}
+
+const valueOnSlider = document.querySelector('.adslider__value');
+function updateInput(): void {
+  inputCurValue.value = valueOnSlider.textContent;
+}
+valueOnSlider.addEventListener('DOMSubtreeModified', updateInput);
