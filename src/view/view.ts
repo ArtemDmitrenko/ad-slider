@@ -1,4 +1,3 @@
-import { Config } from '../model/model';
 import HandlerView from './handlerView/handlerView';
 import TrackView from './trackView/trackView';
 import ValueNoteView from './valueNoteView/valueNoteView';
@@ -38,10 +37,9 @@ export default class View extends EventObserver {
   }
 
   public updateView(options: Config): void {
-    const handlerPos: number = this.calcHandlerPos(options.curValue, options.limits);
-    this.handlerView.setPos(handlerPos);
-    const valueNotePos: number = this.calcValueNotePos();
-    this.valueNoteView.setPos(valueNotePos);
+    const data = { value: options.curValue, limits: options.limits };
+    this.setHandlerPos(data);
+    this.setValueNotePos();
     this.valueNoteView.setValue(options.curValue);
     this.valueNoteView.showValueNote(options.showValueNote);
   }
@@ -68,8 +66,6 @@ export default class View extends EventObserver {
     let newLeft = this.calcNewLeft(shiftX, e);
     const rightEdge: number = this.getRightEdge();
     newLeft = this.checkNewLeft(newLeft);
-    this.handlerView.setPos(newLeft);
-    this.valueNoteView.setPos(this.calcValueNotePos());
     const data = { newLeft, rightEdge };
     this.broadcast('handlerMove', data);
   }
@@ -84,14 +80,14 @@ export default class View extends EventObserver {
     return rightEdge;
   }
 
-  private calcHandlerPos(value: number, limits: { min: number, max: number }): number {
-    const handlerPos = this.getRightEdge() * ((value - limits.min) / (limits.max - limits.min));
-    return handlerPos;
+  public setHandlerPos(data: { value: number, limits: { min: number, max: number } }): void {
+    const handlerPos = this.getRightEdge() * ((data.value - data.limits.min) / (data.limits.max - data.limits.min));
+    this.handlerView.setPos(handlerPos);
   }
 
-  private calcValueNotePos(): number {
+  public setValueNotePos(): void {
     const valueNotePos: number = parseInt(getComputedStyle(this.handlerView.$handler).left, 10) + parseInt(getComputedStyle(this.handlerView.$handler).width, 10) / 2;
-    return valueNotePos;
+    this.valueNoteView.setPos(valueNotePos);
   }
 
   private checkNewLeft(newLeft: number): number {

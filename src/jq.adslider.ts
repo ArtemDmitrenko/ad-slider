@@ -18,10 +18,17 @@ import Presenter from './presenter/presenter';
     },
     update(options: Config) {
       const model = $(this).data('model');
-      const view = $(this).data('view');
+      const presenter = $(this).data('presenter');
       model.options = options;
       model.init(model.options);
-      view.updateView(model.options);
+      presenter.updateView();
+    },
+    updateCurValue(curValue: number) {
+      const model = $(this).data('model');
+      const presenter = $(this).data('presenter');
+      model.options.curValue = curValue;
+      model.init(model.options);
+      presenter.updateView();
     },
     getOptions(): Object {
       return $(this).data('model').options;

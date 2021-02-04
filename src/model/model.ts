@@ -7,6 +7,7 @@ export interface Config {
   }
   curValue: number;
   showValueNote: boolean;
+  step: number
 }
 
 export class Model extends EventObserver {
@@ -19,28 +20,24 @@ export class Model extends EventObserver {
 
   public showValueNote: boolean;
 
+  private step: number;
+
   public options: Config;
-  static options: any;
 
   constructor(options: Config) {
     super();
     this.limits = options.limits;
     this.curValue = options.curValue;
     this.showValueNote = options.showValueNote;
+    this.step = options.step;
     this.options = options;
     this.init(this.options);
-  }
-
-  public setValueFromHandlerPos(data: { newLeft: number, rightEdge: number }): void {
-    const odds = this.limits.max - this.limits.min;
-    const value = Math.round(this.limits.min + odds * (data.newLeft / data.rightEdge));
-    this.setValue(value);
-    this.broadcast('handlerMove', this.curValue);
   }
 
   public init(options: Config): void {
     this.setLimits(options.limits);
     this.setValue(options.curValue);
+    this.setStep(options.step);
   }
 
   private setLimits(limits: { min: number, max: number }): void {
@@ -56,4 +53,39 @@ export class Model extends EventObserver {
     }
     this.curValue = value;
   }
+
+  private setStep(value: number): void {
+    if (value > this.limits.max - this.limits.min) {
+      throw new Error('Step can not be more than odd min and max limits');
+    }
+    this.step = value;
+  }
+
+  public setValueFromHandlerPos(data: { newLeft: number, rightEdge: number }): void {
+    const odds = this.limits.max - this.limits.min;
+    const value = Math.round(this.limits.min + odds * (data.newLeft / data.rightEdge));
+    if (this.step) {
+      this.setValueWithStep(value);
+    }
+    const options = { value: this.curValue, limits: this.limits };
+    this.broadcast('setValueOfNote', this.curValue);
+    this.broadcast('setHandlerPos', options);
+    this.broadcast('setValueNotePos');
+  }
+
+  private setValueWithStep(value: number): void {
+    if (value > (this.curValue + this.step / 2)) {
+      const newValue: number = this.curValue + this.step;
+      if (newValue <= this.limits.max) {
+        this.curValue = newValue;
+      }
+    }
+    if (value < (this.curValue - this.step / 2)) {
+      const newValue: number = this.curValue - this.step;
+      if (newValue >= this.limits.min) {
+        this.curValue = newValue;
+      }
+    }
+  }
+
 }
