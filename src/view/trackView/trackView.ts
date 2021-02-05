@@ -11,9 +11,14 @@ export default class TrackView {
     $parent.append(this.$track);
   }
 
-  public getWidth(): number {
-    const width: number = parseInt(getComputedStyle(this.$track).width, 10);
-    return width;
+  public getLength(): number {
+    let length: number;
+    if (this.$track.classList.contains('adslider__track_vertical')) {
+      length = parseInt(getComputedStyle(this.$track).height, 10);
+    } else {
+      length = parseInt(getComputedStyle(this.$track).width, 10);
+    }
+    return length;
   }
 
   public setVerticalView(verticalView: boolean): void {

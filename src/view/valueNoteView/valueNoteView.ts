@@ -31,7 +31,11 @@ export default class ValueNoteView {
   }
 
   public setPos(value: number): void {
-    this.$note.style.left = `${value}px`;
+    if (this.$note.classList.contains('adslider__note_vertical')) {
+      this.$note.style.bottom = `${value}px`;
+    } else {
+      this.$note.style.left = `${value}px`;
+    }
   }
 
   public setVerticalView(verticalView: boolean): void {
@@ -41,4 +45,11 @@ export default class ValueNoteView {
       this.$note.classList.add('adslider__note_horizontal');
     }
   }
+
+  // private isVertical(): boolean {
+  //   if (this.$note.classList.contains('adslider__note_vertical')) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
 }

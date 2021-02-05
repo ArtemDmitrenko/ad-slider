@@ -7,7 +7,8 @@ export interface Config {
   }
   curValue: number;
   showValueNote: boolean;
-  step: number
+  step: number;
+  vertical: boolean;
 }
 
 export class Model extends EventObserver {
@@ -22,6 +23,8 @@ export class Model extends EventObserver {
 
   private step: number;
 
+  private vertical: boolean;
+
   public options: Config;
 
   constructor(options: Config) {
@@ -30,6 +33,7 @@ export class Model extends EventObserver {
     this.curValue = options.curValue;
     this.showValueNote = options.showValueNote;
     this.step = options.step;
+    this.vertical = options.vertical;
     this.options = options;
     this.init(this.options);
   }
@@ -61,11 +65,13 @@ export class Model extends EventObserver {
     this.step = value;
   }
 
-  public setValueFromHandlerPos(data: { newLeft: number, rightEdge: number }): void {
-    const odds = this.limits.max - this.limits.min;
-    const value = Math.round(this.limits.min + odds * (data.newLeft / data.rightEdge));
+  public setValueFromHandlerPos(data: { newPos: number, edge: number }): void {
+    const odds: number = this.limits.max - this.limits.min;
+    const value: number = Math.round(this.limits.min + odds * (data.newPos / data.edge));
     if (this.step) {
       this.setValueWithStep(value);
+    } else {
+      this.curValue = value;
     }
     const options = { value: this.curValue, limits: this.limits };
     this.broadcast('setValueOfNote', this.curValue);
@@ -87,5 +93,4 @@ export class Model extends EventObserver {
       }
     }
   }
-
 }

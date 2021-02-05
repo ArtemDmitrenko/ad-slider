@@ -62,11 +62,11 @@ export default class View extends EventObserver {
 
   private moveHandler(event: MouseEvent): void {
     event.preventDefault();
-    this.bindMousemove(event, this.calcShiftX(event));
+    this.bindMousemove(event, this.calcShift(event));
   }
 
-  private bindMousemove(event: MouseEvent, shiftX: number): void {
-    this.mouseMoveListener = this.mouseMove.bind(this, shiftX);
+  private bindMousemove(event: MouseEvent, shift: number): void {
+    this.mouseMoveListener = this.mouseMove.bind(this, shift);
     this.mouseUpListener = this.mouseUp.bind(this);
     // if (event.type === 'mousedown') {
     document.addEventListener('mousemove', this.mouseMoveListener);
@@ -74,11 +74,11 @@ export default class View extends EventObserver {
     // }
   }
 
-  private mouseMove(shiftX: number, e: MouseEvent): void {
-    let newLeft = this.calcNewLeft(shiftX, e);
-    const rightEdge: number = this.getRightEdge();
-    newLeft = this.checkNewLeft(newLeft);
-    const data = { newLeft, rightEdge };
+  private mouseMove(shift: number, e: MouseEvent): void {
+    let newPos = this.calcnewPos(shift, e);
+    const edge: number = this.getEdge();
+    newPos = this.checknewPos(newPos);
+    const data = { newPos, edge };
     this.broadcast('handlerMove', data);
   }
 
@@ -87,39 +87,61 @@ export default class View extends EventObserver {
     document.removeEventListener('mousemove', this.mouseMoveListener);
   }
 
-  private getRightEdge(): number {
-    const rightEdge = this.trackView.getWidth() - this.handlerView.getWidth();
-    return rightEdge;
+  private getEdge(): number {
+    const edge: number = this.trackView.getLength() - this.handlerView.getLength();
+    return edge;
   }
 
   public setHandlerPos(data: { value: number, limits: { min: number, max: number } }): void {
-    const handlerPos = this.getRightEdge() * ((data.value - data.limits.min) / (data.limits.max - data.limits.min));
+    const handlerPos = this.getEdge() * ((data.value - data.limits.min) / (data.limits.max - data.limits.min));
     this.handlerView.setPos(handlerPos);
   }
 
   public setValueNotePos(): void {
-    const valueNotePos: number = parseInt(getComputedStyle(this.handlerView.$handler).left, 10) + parseInt(getComputedStyle(this.handlerView.$handler).width, 10) / 2;
+    let valueNotePos: number;
+    if (this.isVertical()) {
+      valueNotePos = parseInt(getComputedStyle(this.handlerView.$handler).bottom, 10) + parseInt(getComputedStyle(this.handlerView.$handler).height, 10) / 2;
+    } else {
+      valueNotePos = parseInt(getComputedStyle(this.handlerView.$handler).left, 10) + parseInt(getComputedStyle(this.handlerView.$handler).width, 10) / 2;
+    }
     this.valueNoteView.setPos(valueNotePos);
   }
 
-  private checkNewLeft(newLeft: number): number {
-    const rightEdge = this.getRightEdge();
-    let newLeftCopy = newLeft;
-    if (newLeft < 0) {
-      newLeftCopy = 0;
-    } else if (newLeft > rightEdge) {
-      newLeftCopy = rightEdge;
+  private checknewPos(newPos: number): number {
+    const edge = this.getEdge();
+    let newPosCopy = newPos;
+    if (newPos < 0) {
+      newPosCopy = 0;
+    } else if (newPos > edge) {
+      newPosCopy = edge;
     }
-    return newLeftCopy;
+    return newPosCopy;
   }
 
-  private calcShiftX(e: MouseEvent): number {
-    const shiftX: number = e.clientX - this.handlerView.$handler.getBoundingClientRect().left;
-    return shiftX;
+  private calcShift(e: MouseEvent): number {
+    let shift: number;
+    if (this.isVertical()) {
+      shift = e.clientY - this.handlerView.$handler.getBoundingClientRect().bottom;
+    } else {
+      shift = e.clientX - this.handlerView.$handler.getBoundingClientRect().left;
+    }
+    return shift;
   }
 
-  private calcNewLeft(shiftX: number, e: MouseEvent): number {
-    const newLeft: number = e.clientX - shiftX - this.trackView.$track.getBoundingClientRect().left;
-    return newLeft;
+  private isVertical(): boolean {
+    if (this.$adslider.classList.contains('adslider_vertical')) {
+      return true;
+    }
+    return false;
+  }
+
+  private calcnewPos(shift: number, e: MouseEvent): number {
+    let newPos;
+    if (this.isVertical()) {
+      newPos = this.trackView.$track.getBoundingClientRect().bottom - e.clientY + shift;
+    } else {
+      newPos = e.clientX - shift - this.trackView.$track.getBoundingClientRect().left;
+    }
+    return newPos;
   }
 }

@@ -16,13 +16,22 @@ export default class HandlerView {
     $parent.append(this.$handler);
   }
 
-  public getWidth(): number {
-    const width: number = parseInt(getComputedStyle(this.$handler).width, 10);
-    return width;
+  public getLength(): number {
+    let length: number;
+    if (this.isVertical()) {
+      length = parseInt(getComputedStyle(this.$handler).height, 10);
+    } else {
+      length = parseInt(getComputedStyle(this.$handler).width, 10);
+    }
+    return length;
   }
 
   public setPos(value: number): void {
-    this.$handler.style.left = `${value}px`;
+    if (this.isVertical()) {
+      this.$handler.style.bottom = `${value}px`;
+    } else {
+      this.$handler.style.left = `${value}px`;
+    }
   }
 
   public setVerticalView(verticalView: boolean): void {
@@ -31,5 +40,12 @@ export default class HandlerView {
     } else {
       this.$handler.classList.add('adslider__handler_horizontal');
     }
+  }
+
+  private isVertical(): boolean {
+    if (this.$handler.classList.contains('adslider__handler_vertical')) {
+      return true;
+    }
+    return false;
   }
 }

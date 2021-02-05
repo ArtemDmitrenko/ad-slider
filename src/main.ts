@@ -2,8 +2,8 @@ let options1 = {
   limits: { min: 0, max: 100 },
   curValue: 50,
   showValueNote: true,
-  step: 20,
-  vertical: true
+  step: 5,
+  vertical: true,
 };
 const options2 = {
   limits: { min: 50, max: 150 },
@@ -12,9 +12,7 @@ const options2 = {
 };
 
 $('.container').adslider(options1);
-$('.container').adslider('updateCurValue', 60);
-
-
+// $('.container').adslider('updateCurValue', 60);
 
 // const inputCurValue: HTMLInputElement | null = document.querySelector('.panel__curValue');
 // if (!inputCurValue) {
