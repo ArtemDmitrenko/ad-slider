@@ -15,4 +15,12 @@ export default class TrackView {
     const width: number = parseInt(getComputedStyle(this.$track).width, 10);
     return width;
   }
+
+  public setVerticalView(verticalView: boolean): void {
+    if (verticalView) {
+      this.$track.classList.add('adslider__track_vertical');
+    } else {
+      this.$track.classList.add('adslider__track_horizontal');
+    }
+  }
 }

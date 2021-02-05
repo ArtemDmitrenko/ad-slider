@@ -3,6 +3,7 @@ let options1 = {
   curValue: 50,
   showValueNote: true,
   step: 20,
+  vertical: true
 };
 const options2 = {
   limits: { min: 50, max: 150 },

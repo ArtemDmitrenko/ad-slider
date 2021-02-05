@@ -24,4 +24,12 @@ export default class HandlerView {
   public setPos(value: number): void {
     this.$handler.style.left = `${value}px`;
   }
+
+  public setVerticalView(verticalView: boolean): void {
+    if (verticalView) {
+      this.$handler.classList.add('adslider__handler_vertical');
+    } else {
+      this.$handler.classList.add('adslider__handler_horizontal');
+    }
+  }
 }

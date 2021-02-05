@@ -33,4 +33,12 @@ export default class ValueNoteView {
   public setPos(value: number): void {
     this.$note.style.left = `${value}px`;
   }
+
+  public setVerticalView(verticalView: boolean): void {
+    if (verticalView) {
+      this.$note.classList.add('adslider__note_vertical');
+    } else {
+      this.$note.classList.add('adslider__note_horizontal');
+    }
+  }
 }

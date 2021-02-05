@@ -36,7 +36,8 @@ export default class View extends EventObserver {
     this.addListeners();
   }
 
-  public updateView(options: Config): void {
+  public updateView(options): void {
+    this.setVerticalView(options);
     const data = { value: options.curValue, limits: options.limits };
     this.setHandlerPos(data);
     this.setValueNotePos();
@@ -44,8 +45,19 @@ export default class View extends EventObserver {
     this.valueNoteView.showValueNote(options.showValueNote);
   }
 
-  private addListeners(): void {
+  private addListeners(options): void {
     this.handlerView.$handler.addEventListener('mousedown', this.moveHandler.bind(this));
+  }
+
+  private setVerticalView(options) {
+    if (options.vertical) {
+      this.$adslider.classList.add('adslider_vertical');
+    } else {
+      this.$adslider.classList.add('adslider_horizontal');
+    }
+    this.trackView.setVerticalView(options.vertical);
+    this.handlerView.setVerticalView(options.vertical);
+    this.valueNoteView.setVerticalView(options.vertical);
   }
 
   private moveHandler(event: MouseEvent): void {
