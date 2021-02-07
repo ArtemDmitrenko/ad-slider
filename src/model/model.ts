@@ -77,6 +77,7 @@ export class Model extends EventObserver {
     this.broadcast('setValueOfNote', this.curValue);
     this.broadcast('setHandlerPos', options);
     this.broadcast('setValueNotePos');
+    this.broadcast('setBarWidth');
   }
 
   private setValueWithStep(value: number): void {
@@ -84,6 +85,7 @@ export class Model extends EventObserver {
       const newValue: number = this.curValue + this.step;
       if (newValue <= this.limits.max) {
         this.curValue = newValue;
+        return;
       }
     }
     if (value < (this.curValue - this.step / 2)) {

@@ -1,9 +1,9 @@
 let options1 = {
   limits: { min: 0, max: 100 },
-  curValue: 50,
+  curValue: 20,
   showValueNote: true,
-  step: 5,
-  vertical: true,
+  step: 30,
+  // vertical: true,
 };
 const options2 = {
   limits: { min: 50, max: 150 },

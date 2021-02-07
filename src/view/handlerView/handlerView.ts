@@ -3,8 +3,6 @@ export default class HandlerView {
 
   private $parent!: HTMLElement;
 
-  private handlerPos!: number;
-
   constructor($parent: HTMLElement) {
     this.render($parent);
   }

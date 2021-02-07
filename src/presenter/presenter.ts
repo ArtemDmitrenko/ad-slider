@@ -30,5 +30,8 @@ export default class Presenter {
 
     // Observer: When curValue in Model is changing - position of valueNote is updating
     this.model.addObserver('setValueNotePos', this.view.setValueNotePos.bind(this.view));
+
+    // Observer: When curValue in Model is changing - width of bar is updating
+    this.model.addObserver('setBarWidth', this.view.setBarLength.bind(this.view));
   }
 }

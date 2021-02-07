@@ -1,6 +1,7 @@
 import HandlerView from './handlerView/handlerView';
 import TrackView from './trackView/trackView';
 import ValueNoteView from './valueNoteView/valueNoteView';
+import Bar from './barView/barView';
 import EventObserver from '../eventObserver/eventObserver';
 
 export default class View extends EventObserver {
@@ -11,6 +12,8 @@ export default class View extends EventObserver {
   public trackView!: TrackView;
 
   public valueNoteView!: ValueNoteView;
+
+  public bar!: Bar;
 
   private $adslider!: HTMLElement;
 
@@ -32,6 +35,7 @@ export default class View extends EventObserver {
     this.trackView = new TrackView(this.$adslider);
     this.handlerView = new HandlerView(this.trackView.$track);
     this.valueNoteView = new ValueNoteView(this.$adslider);
+    this.bar = new Bar(this.$adslider);
 
     this.addListeners();
   }
@@ -43,6 +47,7 @@ export default class View extends EventObserver {
     this.setValueNotePos();
     this.valueNoteView.setValue(options.curValue);
     this.valueNoteView.showValueNote(options.showValueNote);
+    this.bar.setLength(this.handlerView.$handler);
   }
 
   private addListeners(options): void {
@@ -58,6 +63,7 @@ export default class View extends EventObserver {
     this.trackView.setVerticalView(options.vertical);
     this.handlerView.setVerticalView(options.vertical);
     this.valueNoteView.setVerticalView(options.vertical);
+    this.bar.setVerticalView(options.vertical);
   }
 
   private moveHandler(event: MouseEvent): void {
@@ -78,6 +84,7 @@ export default class View extends EventObserver {
     let newPos = this.calcnewPos(shift, e);
     const edge: number = this.getEdge();
     newPos = this.checknewPos(newPos);
+
     const data = { newPos, edge };
     this.broadcast('handlerMove', data);
   }
@@ -105,6 +112,10 @@ export default class View extends EventObserver {
       valueNotePos = parseInt(getComputedStyle(this.handlerView.$handler).left, 10) + parseInt(getComputedStyle(this.handlerView.$handler).width, 10) / 2;
     }
     this.valueNoteView.setPos(valueNotePos);
+  }
+
+  public setBarLength(): void {
+    this.bar.setLength(this.handlerView.$handler);
   }
 
   private checknewPos(newPos: number): number {
