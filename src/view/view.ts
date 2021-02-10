@@ -1,8 +1,10 @@
 import HandlerView from './handlerView/handlerView';
 import TrackView from './trackView/trackView';
 import ValueNoteView from './valueNoteView/valueNoteView';
-import Bar from './barView/barView';
+import BarView from './barView/barView';
+import ScaleView from './scaleView/scaleView';
 import EventObserver from '../eventObserver/eventObserver';
+import { Config } from '../model/model';
 
 export default class View extends EventObserver {
   public $el!: HTMLElement | null;
@@ -13,7 +15,9 @@ export default class View extends EventObserver {
 
   public valueNoteView!: ValueNoteView;
 
-  public bar!: Bar;
+  public barView!: BarView;
+
+  public scaleView!: ScaleView;
 
   private $adslider!: HTMLElement;
 
@@ -35,26 +39,35 @@ export default class View extends EventObserver {
     this.trackView = new TrackView(this.$adslider);
     this.handlerView = new HandlerView(this.trackView.$track);
     this.valueNoteView = new ValueNoteView(this.$adslider);
-    this.bar = new Bar(this.$adslider);
+    this.barView = new BarView(this.$adslider);
+    this.scaleView = new ScaleView(this.$adslider);
 
     this.addListeners();
   }
 
-  public updateView(options): void {
+  public updateView(options: Config): void {
     this.setVerticalView(options);
     const data = { value: options.curValue, limits: options.limits };
     this.setHandlerPos(data);
     this.setValueNotePos();
     this.valueNoteView.setValue(options.curValue);
     this.valueNoteView.showValueNote(options.showValueNote);
-    this.bar.setLength(this.handlerView.$handler);
+    this.barView.setLength(this.handlerView.$handler);
+    this.scaleView.drawScale(options, this.handlerView.$handler);
   }
 
-  private addListeners(options): void {
+  private addListeners(options: Config): void {
     this.handlerView.$handler.addEventListener('mousedown', this.moveHandler.bind(this));
+    this.trackView.$track.addEventListener('mousedown', this.changeHandlerPos.bind(this));
+    this.barView.$bar.addEventListener('mousedown', this.changeHandlerPos.bind(this));
+    this.scaleView.$scale.addEventListener('mousedown', this.changeHandlerPos.bind(this));
   }
 
-  private setVerticalView(options) {
+  private changeHandlerPos(e: MouseEvent) {
+    this.mouseMove(this.handlerView.getLength() / 2, e);
+  }
+
+  private setVerticalView(options: Config) {
     if (options.vertical) {
       this.$adslider.classList.add('adslider_vertical');
     } else {
@@ -63,11 +76,12 @@ export default class View extends EventObserver {
     this.trackView.setVerticalView(options.vertical);
     this.handlerView.setVerticalView(options.vertical);
     this.valueNoteView.setVerticalView(options.vertical);
-    this.bar.setVerticalView(options.vertical);
+    this.barView.setVerticalView(options.vertical);
   }
 
   private moveHandler(event: MouseEvent): void {
     event.preventDefault();
+    event.stopPropagation();
     this.bindMousemove(event, this.calcShift(event));
   }
 
@@ -84,7 +98,6 @@ export default class View extends EventObserver {
     let newPos = this.calcnewPos(shift, e);
     const edge: number = this.getEdge();
     newPos = this.checknewPos(newPos);
-
     const data = { newPos, edge };
     this.broadcast('handlerMove', data);
   }
@@ -115,7 +128,7 @@ export default class View extends EventObserver {
   }
 
   public setBarLength(): void {
-    this.bar.setLength(this.handlerView.$handler);
+    this.barView.setLength(this.handlerView.$handler);
   }
 
   private checknewPos(newPos: number): number {
@@ -136,7 +149,7 @@ export default class View extends EventObserver {
     } else {
       shift = e.clientX - this.handlerView.$handler.getBoundingClientRect().left;
     }
-    return shift;
+    return Math.abs(shift);
   }
 
   private isVertical(): boolean {
@@ -149,7 +162,7 @@ export default class View extends EventObserver {
   private calcnewPos(shift: number, e: MouseEvent): number {
     let newPos;
     if (this.isVertical()) {
-      newPos = this.trackView.$track.getBoundingClientRect().bottom - e.clientY + shift;
+      newPos = this.trackView.$track.getBoundingClientRect().bottom - e.clientY - shift;
     } else {
       newPos = e.clientX - shift - this.trackView.$track.getBoundingClientRect().left;
     }

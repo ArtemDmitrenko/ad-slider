@@ -1,6 +1,6 @@
 let options1 = {
   limits: { min: 0, max: 100 },
-  curValue: 20,
+  curValue: 0,
   showValueNote: true,
   step: 30,
   // vertical: true,

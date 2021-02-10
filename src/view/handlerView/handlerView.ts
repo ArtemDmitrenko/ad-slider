@@ -11,7 +11,7 @@ export default class HandlerView {
     this.$parent = $parent;
     this.$handler = document.createElement('div');
     this.$handler.classList.add('adslider__handler');
-    $parent.append(this.$handler);
+    this.$parent.append(this.$handler);
   }
 
   public getLength(): number {

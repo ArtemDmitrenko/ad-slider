@@ -1,5 +1,5 @@
 export default class BarView {
-  private $bar!: HTMLElement;
+  public $bar!: HTMLElement;
 
   private $parent!: HTMLElement;
 
