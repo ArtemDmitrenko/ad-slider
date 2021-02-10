@@ -81,18 +81,8 @@ export class Model extends EventObserver {
   }
 
   private setValueWithStep(value: number): void {
-    if (value > (this.curValue + this.step / 2)) {
-      const newValue: number = this.curValue + this.step;
-      if (newValue <= this.limits.max) {
-        this.curValue = newValue;
-        return;
-      }
-    }
-    if (value < (this.curValue - this.step / 2)) {
-      const newValue: number = this.curValue - this.step;
-      if (newValue >= this.limits.min) {
-        this.curValue = newValue;
-      }
-    }
+    const numberOfSteps = Math.round((value - this.curValue) / this.step);
+    const newValue: number = this.curValue + this.step * numberOfSteps;
+    this.curValue = newValue;
   }
 }
