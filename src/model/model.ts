@@ -9,6 +9,9 @@ export interface Config {
   showValueNote: boolean;
   step: number;
   vertical: boolean;
+  double: boolean;
+  from: number;
+  to: number;
 }
 
 export class Model extends EventObserver {
@@ -25,6 +28,12 @@ export class Model extends EventObserver {
 
   private vertical: boolean;
 
+  private double: boolean;
+
+  private from: number;
+
+  private to: number;
+
   public options: Config;
 
   constructor(options: Config) {
@@ -34,6 +43,9 @@ export class Model extends EventObserver {
     this.showValueNote = options.showValueNote;
     this.step = options.step;
     this.vertical = options.vertical;
+    this.double = options.double;
+    this.from = options.to;
+    this.to = options.to;
     this.options = options;
     this.init(this.options);
   }
@@ -41,6 +53,8 @@ export class Model extends EventObserver {
   public init(options: Config): void {
     this.setLimits(options.limits);
     this.setValue(options.curValue);
+    this.setValue(options.to);
+    this.setValue(options.from);
     this.setStep(options.step);
   }
 

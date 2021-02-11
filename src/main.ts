@@ -3,6 +3,9 @@ let options1 = {
   curValue: 50,
   showValueNote: true,
   step: 10,
+  double: true,
+  from: 30,
+  to: 80,
   // vertical: true,
 };
 const options2 = {

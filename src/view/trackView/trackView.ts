@@ -17,6 +17,8 @@ export default class TrackView {
       length = parseInt(getComputedStyle(this.$track).height, 10);
     } else {
       length = parseInt(getComputedStyle(this.$track).width, 10);
+      // console.log(this.$track)
+      // console.log(getComputedStyle(this.$track).width)
     }
     return length;
   }
