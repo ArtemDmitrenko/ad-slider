@@ -3,6 +3,8 @@ export default class ValueNoteView {
 
   public $value!: HTMLElement;
 
+  private valueNotePos: number;
+
   constructor(parent: HTMLElement) {
     this.render(parent);
   }
@@ -30,11 +32,19 @@ export default class ValueNoteView {
     }
   }
 
-  public setPos(value: number): void {
-    if (this.$note.classList.contains('adslider__note_vertical')) {
-      this.$note.style.bottom = `${value}px`;
+  public calcPos(handler: HTMLElement): void {
+    if (this.isVertical()) {
+      this.valueNotePos = parseInt(getComputedStyle(handler).bottom, 10) + parseInt(getComputedStyle(handler).height, 10) / 2;
     } else {
-      this.$note.style.left = `${value}px`;
+      this.valueNotePos = parseInt(getComputedStyle(handler).left, 10) + parseInt(getComputedStyle(handler).width, 10) / 2;
+    }
+  }
+
+  public setPos(): void {
+    if (this.$note.classList.contains('adslider__note_vertical')) {
+      this.$note.style.bottom = `${this.valueNotePos}px`;
+    } else {
+      this.$note.style.left = `${this.valueNotePos}px`;
     }
   }
 
@@ -46,10 +56,10 @@ export default class ValueNoteView {
     }
   }
 
-  // private isVertical(): boolean {
-  //   if (this.$note.classList.contains('adslider__note_vertical')) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
+  private isVertical(): boolean {
+    if (this.$note.classList.contains('adslider__note_vertical')) {
+      return true;
+    }
+    return false;
+  }
 }

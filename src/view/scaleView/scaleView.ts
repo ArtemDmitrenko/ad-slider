@@ -31,19 +31,6 @@ export default class ScaleView {
     this.renderScaleSign(options, odd);
   }
 
-  public drawScaleForDouble(options: Config, $handlerFrom: HTMLElement, $handlerTo: HTMLElement): void {
-    if (options.vertical) {
-      this.$scale.classList.add('adslider__scale_vertical');
-    } else {
-      this.$scale.classList.add('adslider__scale_horizontal');
-    }
-    const odd: number = options.limits.max - options.limits.min;
-    this.calcNumberOfLines(odd);
-    this.setScalePos($handlerFrom);
-    this.renderScaleLines();
-    this.renderScaleSign(options, odd);
-  }
-
   private calcNumberOfLines(odd: number): number {
     if (odd <= 100) {
       this.numberOfLines = 6;

@@ -38,38 +38,29 @@ export default class BarView {
     }
   }
 
-  public setLengthForDouble($handlerFrom: HTMLElement, $handlerTo: HTMLElement) {
-    let handlerPosFrom: number;
-    let handlerPosTo: number;
-    let handlerLengthFrom: number;
-    let handlerLengthTo: number;
+  public setLengthForDouble(options: any): void {
+    const handlerPosFrom: number = options.edge * ((options.valueFrom - options.limits.min) / (options.limits.max - options.limits.min));
+    const handlerPosTo: number = options.edge * ((options.valueTo - options.limits.min) / (options.limits.max - options.limits.min));
+    const handlerLength: number = parseInt(getComputedStyle(options.handler).width, 10);
+    const barLength: number = Math.abs((handlerPosTo + handlerLength / 2) - (handlerPosFrom + handlerLength / 2));
     if (this.$bar.classList.contains('adslider__bar_horizontal')) {
-      handlerPosFrom = parseInt(getComputedStyle($handlerFrom).left, 10);
-      handlerLengthFrom = parseInt(getComputedStyle($handlerFrom).width, 10);
-      handlerPosTo = parseInt(getComputedStyle($handlerTo).left, 10);
-      handlerLengthTo = parseInt(getComputedStyle($handlerTo).width, 10);
-      const barLength: number = Math.abs((handlerPosTo + handlerLengthTo / 2) - (handlerPosFrom + handlerLengthFrom / 2));
       this.$bar.style.width = `${barLength}px`;
       let barPos: number;
       if (handlerPosFrom < handlerPosTo) {
-        barPos = handlerPosFrom + handlerLengthFrom / 2;
+        barPos = handlerPosFrom + handlerLength / 2;
       } else {
-        barPos = handlerPosTo + handlerLengthFrom / 2;
+        barPos = handlerPosTo + handlerLength / 2;
       }
       this.$bar.style.left = `${barPos}px`;
     } else {
-      handlerPosFrom = parseInt(getComputedStyle($handlerFrom).bottom, 10);
-      handlerLengthFrom = parseInt(getComputedStyle($handlerFrom).height, 10);
-      handlerPosTo = parseInt(getComputedStyle($handlerTo).bottom, 10);
-      handlerLengthTo = parseInt(getComputedStyle($handlerTo).height, 10);
-      const barLength: number = Math.abs((handlerPosTo + handlerLengthTo / 2) - (handlerPosFrom + handlerLengthFrom / 2));
       this.$bar.style.height = `${barLength}px`;
       let barPos: number;
       if (handlerPosFrom < handlerPosTo) {
-        barPos = handlerPosFrom + handlerLengthFrom / 2;
+        barPos = handlerPosFrom + handlerLength / 2;
       } else {
-        barPos = handlerPosTo + handlerLengthFrom / 2;
+        barPos = handlerPosTo + handlerLength / 2;
       }
       this.$bar.style.bottom = `${barPos}px`;
     }
   }
+}

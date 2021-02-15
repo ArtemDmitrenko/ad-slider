@@ -39,23 +39,32 @@ export class Model extends EventObserver {
   constructor(options: Config) {
     super();
     this.limits = options.limits;
-    this.curValue = options.curValue;
+    this.curValue = options.to || options.curValue;
     this.showValueNote = options.showValueNote;
     this.step = options.step;
     this.vertical = options.vertical;
     this.double = options.double;
-    this.from = options.to;
+    this.from = options.from;
     this.to = options.to;
-    this.options = options;
-    this.init(this.options);
+    this.options = {
+      limits: this.limits,
+      curValue: this.curValue,
+      showValueNote: this.showValueNote,
+      step: this.step,
+      vertical: this.vertical,
+      double: this.double,
+      from: this.from,
+      to: this.to,
+    };
+    this.init();
   }
 
-  public init(options: Config): void {
-    this.setLimits(options.limits);
-    this.setValue(options.curValue);
-    this.setValue(options.to);
-    this.setValue(options.from);
-    this.setStep(options.step);
+  public init(): void {
+    this.setLimits(this.limits);
+    this.setCurValue(this.curValue);
+    this.setValueTo(this.to);
+    this.setValueFrom(this.from);
+    this.setStep(this.step);
   }
 
   private setLimits(limits: { min: number, max: number }): void {
@@ -65,11 +74,25 @@ export class Model extends EventObserver {
     this.limits = { min: limits.min, max: limits.max };
   }
 
-  private setValue(value: number): void {
+  private setCurValue(value: number): void {
     if (value < this.limits.min || value > this.limits.max) {
       throw new Error('Value must be in range of min and max limits');
     }
     this.curValue = value;
+  }
+
+  private setValueTo(value: number): void {
+    if (value < this.limits.min || value > this.limits.max) {
+      throw new Error('Value must be in range of min and max limits');
+    }
+    this.to = value;
+  }
+
+  private setValueFrom(value: number): void {
+    if (value < this.limits.min || value > this.limits.max) {
+      throw new Error('Value must be in range of min and max limits');
+    }
+    this.from = value;
   }
 
   private setStep(value: number): void {
@@ -79,24 +102,40 @@ export class Model extends EventObserver {
     this.step = value;
   }
 
-  public setValueFromHandlerPos(data: { newPos: number, edge: number }): void {
+  public setValueFromHandlerPos(data: { newPos: number, edge: number, handler: HTMLElement }): void {
     const odds: number = this.limits.max - this.limits.min;
     const value: number = Math.round(this.limits.min + odds * (data.newPos / data.edge));
-    if (this.step) {
-      this.setValueWithStep(value);
+    if (data.handler.classList.contains('adslider__handler_from')) {
+      this.from = this.calcValueWithStep(value, this.from);
+      const options = { edge: data.edge, value: this.from, limits: this.limits };
+      this.broadcast('calcHandlerPosForDouble', options);
+      this.broadcast('setHandlerPosForDouble');
+      this.broadcast('calcValueNotePosForDouble', data.handler);
+      this.broadcast('setValueNotePosForDouble');
+      this.broadcast('setValueOfNoteForDouble', this.from);
     } else {
-      this.curValue = value;
+      this.curValue = this.calcValueWithStep(value, this.curValue);
+      const options = { edge: data.edge, value: this.curValue, limits: this.limits };
+      this.broadcast('calcHandlerPos', options);
+      this.broadcast('setHandlerPos');
+      this.broadcast('calcValueNotePos', data.handler);
+      this.broadcast('setValueNotePos');
+      this.broadcast('setValueOfNote', this.curValue);
     }
-    const options = { value: this.curValue, limits: this.limits };
-    this.broadcast('setValueOfNote', this.curValue);
-    this.broadcast('setHandlerPos', options);
-    this.broadcast('setValueNotePos');
-    this.broadcast('setBarWidth');
+    if (this.double) {
+      const optionsForBar = { edge: data.edge, valueFrom: this.from, valueTo: this.curValue, limits: this.limits, handler: data.handler };
+      this.broadcast('setBarWidthForDouble', optionsForBar);
+    } else {
+      this.broadcast('setBarWidth', data.handler);
+    }
   }
 
-  private setValueWithStep(value: number): void {
-    const numberOfSteps = Math.round((value - this.curValue) / this.step);
-    const newValue: number = this.curValue + this.step * numberOfSteps;
-    this.curValue = newValue;
+  private calcValueWithStep(value: number, curValue: number): number {
+    if (this.step) {
+      const numberOfSteps = Math.round((value - curValue) / this.step);
+      const newValue: number = curValue + this.step * numberOfSteps;
+      return newValue;
+    }
+    return value;
   }
 }

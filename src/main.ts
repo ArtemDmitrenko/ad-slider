@@ -4,9 +4,9 @@ let options1 = {
   showValueNote: true,
   step: 10,
   double: true,
-  from: 30,
+  from: 10,
   to: 80,
-  // vertical: true,
+  vertical: true,
 };
 const options2 = {
   limits: { min: 50, max: 150 },

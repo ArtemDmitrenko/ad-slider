@@ -3,6 +3,8 @@ export default class HandlerView {
 
   private $parent!: HTMLElement;
 
+  private handlerPos: number;
+
   constructor($parent: HTMLElement) {
     this.render($parent);
   }
@@ -24,11 +26,15 @@ export default class HandlerView {
     return length;
   }
 
-  public setPos(value: number): void {
+  public calcPos(options: { edge: number, value: number, limits: { min: number, max: number } }): void {
+    this.handlerPos = options.edge * ((options.value - options.limits.min) / (options.limits.max - options.limits.min));
+  }
+
+  public setPos(): void {
     if (this.isVertical()) {
-      this.$handler.style.bottom = `${value}px`;
+      this.$handler.style.bottom = `${this.handlerPos}px`;
     } else {
-      this.$handler.style.left = `${value}px`;
+      this.$handler.style.left = `${this.handlerPos}px`;
     }
   }
 

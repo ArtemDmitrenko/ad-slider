@@ -50,86 +50,74 @@ export default class View extends EventObserver {
   }
 
   public updateView(options: Config): void {
-    let data: any;
-    let dataFrom: any;
-    let dataTo: any;
+    this.handlerView = new HandlerView(this.trackView.$track);
+    this.valueNoteView = new ValueNoteView(this.$adslider);
+    this.setVerticalViewForSingle(options.vertical);
+    this.handlerView.calcPos({ edge: this.getEdge(this.handlerView), value: options.curValue, limits: options.limits });
+    this.handlerView.setPos();
+    this.valueNoteView.calcPos(this.handlerView.$handler);
+    this.valueNoteView.setPos();
+    this.valueNoteView.setValue(options.curValue);
+    this.valueNoteView.showValueNote(options.showValueNote);
+    this.scaleView.drawScale(options, this.handlerView.$handler);
     if (options.double) {
       this.handlerViewFrom = new HandlerView(this.trackView.$track);
+      this.handlerViewFrom.$handler.classList.add('adslider__handler_from');
       this.valueNoteViewFrom = new ValueNoteView(this.$adslider);
-      this.handlerViewTo = new HandlerView(this.trackView.$track);
-      this.valueNoteViewTo = new ValueNoteView(this.$adslider);
-      this.setVerticalView(options);
-      dataFrom = { value: options.from, limits: options.limits };
-      dataTo = { value: options.to, limits: options.limits };
-      this.setHandlerPos(dataFrom, this.handlerViewFrom);
-      this.setHandlerPos(dataTo, this.handlerViewTo);
-      this.setValueNotePos(this.valueNoteViewFrom, this.handlerViewFrom);
-      this.setValueNotePos(this.valueNoteViewTo, this.handlerViewTo);
+      this.valueNoteViewFrom.$note.classList.add('adslider__note_from');
+      this.setVerticalViewForDouble(options.vertical);
+      this.handlerViewFrom.calcPos({ edge: this.getEdge(this.handlerViewFrom), value: options.from, limits: options.limits });
+      this.handlerViewFrom.setPos();
+      this.valueNoteViewFrom.calcPos(this.handlerViewFrom.$handler);
+      this.valueNoteViewFrom.setPos();
       this.valueNoteViewFrom.setValue(options.from);
-      this.valueNoteViewTo.setValue(options.to);
       this.valueNoteViewFrom.showValueNote(options.showValueNote);
-      this.valueNoteViewTo.showValueNote(options.showValueNote);
-      this.barView.setLengthForDouble(this.handlerViewFrom.$handler, this.handlerViewTo.$handler);
-      this.scaleView.drawScaleForDouble(options, this.handlerViewFrom.$handler, this.handlerViewTo.$handler);
+      this.barView.setLengthForDouble({ edge: this.getEdge(this.handlerViewFrom), valueFrom: options.from, valueTo: options.curValue, limits: options.limits, handler: this.handlerView.$handler });
     } else {
-      this.handlerView = new HandlerView(this.trackView.$track);
-      this.valueNoteView = new ValueNoteView(this.$adslider);
-      this.setVerticalView(options);
-      data = { value: options.curValue, limits: options.limits };
-      this.setHandlerPos(data, this.handlerView);
-      this.setValueNotePos(this.valueNoteView, this.handlerView);
-      this.valueNoteView.setValue(options.curValue);
-      this.valueNoteView.showValueNote(options.showValueNote);
       this.barView.setLength(this.handlerView.$handler);
-      this.scaleView.drawScale(options, this.handlerView.$handler);
     }
-    // this.addListeners(options.double);
+    this.addListeners(options.double);
   }
 
   private addListeners(double: boolean): void {
-    if (double) {
-      this.handlerViewFrom.$handler.addEventListener('mousedown', this.moveHandler.bind(this));
-      this.handlerViewTo.$handler.addEventListener('mousedown', this.moveHandler.bind(this));
-    } else {
-      this.handlerView.$handler.addEventListener('mousedown', this.moveHandler.bind(this));
-    }
-    this.trackView.$track.addEventListener('mousedown', this.changeHandlerPos.bind(this));
+    this.handlerView.$handler.addEventListener('mousedown', this.moveHandler.bind(this, this.handlerView));
+    // this.trackView.$track.addEventListener('mousedown', this.changeHandlerPos.bind(this));
     // this.barView.$bar.addEventListener('mousedown', this.changeHandlerPos.bind(this));
     // this.scaleView.$scale.addEventListener('mousedown', this.changeHandlerPos.bind(this));
-
+    if (double) {
+      this.handlerViewFrom.$handler.addEventListener('mousedown', this.moveHandler.bind(this, this.handlerViewFrom));
+    }
   }
 
   private changeHandlerPos(e: MouseEvent) {
     this.mouseMove(this.handlerView.getLength() / 2, e);
   }
 
-  private setVerticalView(options: Config) {
-    if (options.vertical) {
+  private setVerticalViewForSingle(vertical: boolean): void {
+    if (vertical) {
       this.$adslider.classList.add('adslider_vertical');
     } else {
       this.$adslider.classList.add('adslider_horizontal');
     }
-    this.trackView.setVerticalView(options.vertical);
-    if (options.double) {
-      this.handlerViewFrom.setVerticalView(options.vertical);
-      this.handlerViewTo.setVerticalView(options.vertical);
-      this.valueNoteViewFrom.setVerticalView(options.vertical);
-      this.valueNoteViewTo.setVerticalView(options.vertical);
-    } else {
-      this.handlerView.setVerticalView(options.vertical);
-      this.valueNoteView.setVerticalView(options.vertical);
-    }
-    this.barView.setVerticalView(options.vertical);
+    this.trackView.setVerticalView(vertical);
+    this.handlerView.setVerticalView(vertical);
+    this.valueNoteView.setVerticalView(vertical);
+    this.barView.setVerticalView(vertical);
   }
 
-  private moveHandler(event: MouseEvent): void {
+  private setVerticalViewForDouble(vertical: boolean): void {
+    this.handlerViewFrom.setVerticalView(vertical);
+    this.valueNoteViewFrom.setVerticalView(vertical);
+  }
+
+  private moveHandler(handler: HandlerView, event: MouseEvent): void {
     event.preventDefault();
     event.stopPropagation();
-    this.bindMousemove(event, this.calcShift(event));
+    this.bindMousemove(event, this.calcShift(event, handler.$handler), handler);
   }
 
-  private bindMousemove(event: MouseEvent, shift: number): void {
-    this.mouseMoveListener = this.mouseMove.bind(this, shift);
+  private bindMousemove(event: MouseEvent, shift: number, handler: HandlerView): void {
+    this.mouseMoveListener = this.mouseMove.bind(this, shift, handler);
     this.mouseUpListener = this.mouseUp.bind(this);
     // if (event.type === 'mousedown') {
     document.addEventListener('mousemove', this.mouseMoveListener);
@@ -137,11 +125,11 @@ export default class View extends EventObserver {
     // }
   }
 
-  private mouseMove(shift: number, e: MouseEvent): void {
+  private mouseMove(shift: number, handler: HandlerView, e: MouseEvent): void {
     let newPos = this.calcnewPos(shift, e);
-    const edge: number = this.getEdge();
+    const edge: number = this.getEdge(handler);
     newPos = this.checknewPos(newPos);
-    const data = { newPos, edge };
+    const data = { newPos, edge, handler: handler.$handler };
     this.broadcast('handlerMove', data);
   }
 
@@ -152,33 +140,11 @@ export default class View extends EventObserver {
 
   private getEdge(handler: HandlerView): number {
     const edge: number = this.trackView.getLength() - handler.getLength();
-    // console.log(this.trackView)
-    // console.log(this.trackView.getLength())
     return edge;
   }
 
-  public setHandlerPos(data: { value: number, limits: { min: number, max: number } }, handler: HandlerView): void {
-    const handlerPos = this.getEdge(handler) * ((data.value - data.limits.min) / (data.limits.max - data.limits.min));
-    // console.log(handlerPos)
-    handler.setPos(handlerPos);
-  }
-
-  public setValueNotePos(valueNote: ValueNoteView, handler: HandlerView): void {
-    let valueNotePos: number;
-    if (this.isVertical()) {
-      valueNotePos = parseInt(getComputedStyle(handler.$handler).bottom, 10) + parseInt(getComputedStyle(handler.$handler).height, 10) / 2;
-    } else {
-      valueNotePos = parseInt(getComputedStyle(handler.$handler).left, 10) + parseInt(getComputedStyle(handler.$handler).width, 10) / 2;
-    }
-    valueNote.setPos(valueNotePos);
-  }
-
-  public setBarLength(): void {
-    this.barView.setLength(this.handlerView.$handler);
-  }
-
   private checknewPos(newPos: number): number {
-    const edge = this.getEdge();
+    const edge = this.getEdge(this.handlerView);
     let newPosCopy = newPos;
     if (newPos < 0) {
       newPosCopy = 0;
@@ -188,12 +154,12 @@ export default class View extends EventObserver {
     return newPosCopy;
   }
 
-  private calcShift(e: MouseEvent): number {
+  private calcShift(e: MouseEvent, handler: HTMLElement): number {
     let shift: number;
     if (this.isVertical()) {
-      shift = e.clientY - this.handlerView.$handler.getBoundingClientRect().bottom;
+      shift = e.clientY - handler.getBoundingClientRect().bottom;
     } else {
-      shift = e.clientX - this.handlerView.$handler.getBoundingClientRect().left;
+      shift = e.clientX - handler.getBoundingClientRect().left;
     }
     return Math.abs(shift);
   }
