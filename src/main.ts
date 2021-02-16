@@ -1,12 +1,12 @@
 let options1 = {
   limits: { min: 0, max: 100 },
-  curValue: 50,
+  curValue: 55,
   showValueNote: true,
-  step: 10,
+  step: 20,
   double: true,
-  from: 10,
-  to: 80,
-  vertical: true,
+  from: 30,
+  to: 50,
+  // vertical: true,
 };
 const options2 = {
   limits: { min: 50, max: 150 },

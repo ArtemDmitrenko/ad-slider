@@ -41,7 +41,7 @@ export class Model extends EventObserver {
     this.limits = options.limits;
     this.curValue = options.to || options.curValue;
     this.showValueNote = options.showValueNote;
-    this.step = options.step;
+    this.step = options.step || 1;
     this.vertical = options.vertical;
     this.double = options.double;
     this.from = options.from;
@@ -85,12 +85,18 @@ export class Model extends EventObserver {
     if (value < this.limits.min || value > this.limits.max) {
       throw new Error('Value must be in range of min and max limits');
     }
+    if (value < this.from) {
+      throw new Error('Value To must be more than From');
+    }
     this.to = value;
   }
 
   private setValueFrom(value: number): void {
     if (value < this.limits.min || value > this.limits.max) {
       throw new Error('Value must be in range of min and max limits');
+    }
+    if (value > this.to) {
+      throw new Error('Value From must be less than To');
     }
     this.from = value;
   }
@@ -107,6 +113,9 @@ export class Model extends EventObserver {
     const value: number = Math.round(this.limits.min + odds * (data.newPos / data.edge));
     if (data.handler.classList.contains('adslider__handler_from')) {
       this.from = this.calcValueWithStep(value, this.from);
+      if (this.curValue - this.from < this.step && this.from > this.curValue) {
+        return;
+      }
       const options = { edge: data.edge, value: this.from, limits: this.limits };
       this.broadcast('calcHandlerPosForDouble', options);
       this.broadcast('setHandlerPosForDouble');
@@ -115,6 +124,10 @@ export class Model extends EventObserver {
       this.broadcast('setValueOfNoteForDouble', this.from);
     } else {
       this.curValue = this.calcValueWithStep(value, this.curValue);
+      if (this.curValue - this.from < this.step && this.from > this.curValue) {
+        return;
+      }
+
       const options = { edge: data.edge, value: this.curValue, limits: this.limits };
       this.broadcast('calcHandlerPos', options);
       this.broadcast('setHandlerPos');
@@ -131,11 +144,14 @@ export class Model extends EventObserver {
   }
 
   private calcValueWithStep(value: number, curValue: number): number {
-    if (this.step) {
-      const numberOfSteps = Math.round((value - curValue) / this.step);
-      const newValue: number = curValue + this.step * numberOfSteps;
-      return newValue;
+    const numberOfSteps = Math.round((value - curValue) / this.step);
+    let newValue: number = curValue + this.step * numberOfSteps;
+    if (newValue < this.limits.min) {
+      newValue += this.step;
     }
-    return value;
+    if (newValue > this.limits.max) {
+      newValue -= this.step;
+    }
+    return newValue;
   }
 }
