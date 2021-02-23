@@ -25,8 +25,10 @@ export default class TrackView {
 
   public setVerticalView(verticalView: boolean): void {
     if (verticalView) {
+      this.$track.classList.remove('adslider__track_horizontal');
       this.$track.classList.add('adslider__track_vertical');
     } else {
+      this.$track.classList.remove('adslider__track_vertical');
       this.$track.classList.add('adslider__track_horizontal');
     }
   }

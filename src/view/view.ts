@@ -36,6 +36,7 @@ export default class View extends EventObserver {
   constructor(container: HTMLElement) {
     super();
     this.render(container);
+    this.addListeners();
   }
 
   private render(container: HTMLElement): void {
@@ -47,11 +48,16 @@ export default class View extends EventObserver {
     this.trackView = new TrackView(this.$adslider);
     this.barView = new BarView(this.$adslider);
     this.scaleView = new ScaleView(this.$adslider);
+    this.handlerView = new HandlerView(this.trackView.$track);
+    this.valueNoteView = new ValueNoteView(this.$adslider);
+
+    this.handlerViewFrom = new HandlerView(this.trackView.$track);
+    this.handlerViewFrom.$handler.classList.add('adslider__handler_from');
+    this.valueNoteViewFrom = new ValueNoteView(this.$adslider);
+    this.valueNoteViewFrom.$note.classList.add('adslider__note_from');
   }
 
   public updateView(options: Config): void {
-    this.handlerView = new HandlerView(this.trackView.$track);
-    this.valueNoteView = new ValueNoteView(this.$adslider);
     this.setVerticalViewForSingle(options.vertical);
     this.handlerView.calcPos({ edge: this.getEdge(this.handlerView), value: options.curValue, limits: options.limits });
     this.handlerView.setPos();
@@ -61,10 +67,14 @@ export default class View extends EventObserver {
     this.valueNoteView.showValueNote(options.showValueNote);
     this.scaleView.drawScale(options, this.handlerView.$handler);
     if (options.double) {
-      this.handlerViewFrom = new HandlerView(this.trackView.$track);
-      this.handlerViewFrom.$handler.classList.add('adslider__handler_from');
-      this.valueNoteViewFrom = new ValueNoteView(this.$adslider);
-      this.valueNoteViewFrom.$note.classList.add('adslider__note_from');
+      if (!this.handlerViewFrom) {
+        console.log('dfsff')
+        this.handlerViewFrom = new HandlerView(this.trackView.$track);
+        this.handlerViewFrom.$handler.classList.add('adslider__handler_from');
+        this.valueNoteViewFrom = new ValueNoteView(this.$adslider);
+        this.valueNoteViewFrom.$note.classList.add('adslider__note_from');
+        this.handlerViewFrom.$handler.addEventListener('mousedown', this.moveHandler.bind(this, this.handlerViewFrom));
+      }
       this.setVerticalViewForDouble(options.vertical);
       this.handlerViewFrom.calcPos({ edge: this.getEdge(this.handlerViewFrom), value: options.from, limits: options.limits });
       this.handlerViewFrom.setPos();
@@ -74,29 +84,59 @@ export default class View extends EventObserver {
       this.valueNoteViewFrom.showValueNote(options.showValueNote);
       this.barView.setLengthForDouble({ edge: this.getEdge(this.handlerViewFrom), valueFrom: options.from, valueTo: options.curValue, limits: options.limits, handler: this.handlerView.$handler });
     } else {
+      if (this.handlerViewFrom) {
+        this.handlerViewFrom.$handler.remove();
+        this.valueNoteViewFrom.$note.remove();
+        this.handlerViewFrom = null;
+        this.valueNoteViewFrom = null;
+      }
       this.barView.setLength(this.handlerView.$handler);
     }
-    this.addListeners(options.double);
   }
 
-  private addListeners(double: boolean): void {
+  private addListeners(): void {
     this.handlerView.$handler.addEventListener('mousedown', this.moveHandler.bind(this, this.handlerView));
-    // this.trackView.$track.addEventListener('mousedown', this.changeHandlerPos.bind(this));
-    // this.barView.$bar.addEventListener('mousedown', this.changeHandlerPos.bind(this));
-    // this.scaleView.$scale.addEventListener('mousedown', this.changeHandlerPos.bind(this));
-    if (double) {
+    this.trackView.$track.addEventListener('mousedown', this.changeHandlerPos.bind(this));
+    this.barView.$bar.addEventListener('mousedown', this.changeHandlerPos.bind(this));
+    this.scaleView.$scale.addEventListener('mousedown', this.changeHandlerPos.bind(this));
+    if (this.isDouble()) {
       this.handlerViewFrom.$handler.addEventListener('mousedown', this.moveHandler.bind(this, this.handlerViewFrom));
     }
   }
 
   private changeHandlerPos(e: MouseEvent) {
-    this.mouseMove(this.handlerView.getLength() / 2, e);
+    if (this.isDouble()) {
+      if (this.handlerView.$handler.classList.contains('adslider__handler_horizontal') {
+        const handlerFromPos = this.handlerViewFrom.$handler.getBoundingClientRect().left;
+        const handlerToPos = this.handlerView.$handler.getBoundingClientRect().left;
+        const middlePos = (handlerToPos - handlerFromPos) / 2 + handlerFromPos + this.handlerView.getLength() / 2;
+        if (e.clientX <= middlePos) {
+          this.mouseMove(this.handlerViewFrom.getLength() / 2, this.handlerViewFrom, e);
+        } else {
+          this.mouseMove(this.handlerView.getLength() / 2, this.handlerView, e);
+        }
+      } else {
+        const handlerFromPos = this.handlerViewFrom.$handler.getBoundingClientRect().top;
+        const handlerToPos = this.handlerView.$handler.getBoundingClientRect().top;
+        const middlePos = (handlerToPos - handlerFromPos) / 2 + handlerFromPos + this.handlerView.getLength() / 2;
+        if (e.clientY >= middlePos) {
+          this.mouseMove(this.handlerViewFrom.getLength() / 2, this.handlerViewFrom, e);
+        } else {
+          this.mouseMove(this.handlerView.getLength() / 2, this.handlerView, e);
+        }
+      }
+
+    } else {
+      this.mouseMove(this.handlerView.getLength() / 2, this.handlerView, e);
+    }
   }
 
   private setVerticalViewForSingle(vertical: boolean): void {
     if (vertical) {
+      this.$adslider.classList.remove('adslider_horizontal');
       this.$adslider.classList.add('adslider_vertical');
     } else {
+      this.$adslider.classList.remove('adslider_vertical');
       this.$adslider.classList.add('adslider_horizontal');
     }
     this.trackView.setVerticalView(vertical);
@@ -169,6 +209,14 @@ export default class View extends EventObserver {
       return true;
     }
     return false;
+  }
+
+  private isDouble(): boolean {
+    if (this.handlerViewFrom) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   private calcnewPos(shift: number, e: MouseEvent): number {

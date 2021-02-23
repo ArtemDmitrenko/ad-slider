@@ -16,6 +16,7 @@ export default class Presenter {
 
   public updateView(): void {
     this.view.updateView(this.model.options);
+    this.updateObservers();
   }
 
   private addObservers(): void {
@@ -48,6 +49,17 @@ export default class Presenter {
     // Observer: When curValue in Model is changing - width of bar is updating
     this.model.addObserver('setBarWidth', this.view.barView.setLength.bind(this.view.barView));
     if (this.view.valueNoteViewFrom) {
+      this.model.addObserver('setBarWidthForDouble', this.view.barView.setLengthForDouble.bind(this.view.barView));
+    }
+  }
+
+  private updateObservers(): void {
+    if (this.view.handlerViewFrom) {
+      this.model.addObserver('calcHandlerPosForDouble', this.view.handlerViewFrom.calcPos.bind(this.view.handlerViewFrom));
+      this.model.addObserver('setHandlerPosForDouble', this.view.handlerViewFrom.setPos.bind(this.view.handlerViewFrom));
+      this.model.addObserver('calcValueNotePosForDouble', this.view.valueNoteViewFrom.calcPos.bind(this.view.valueNoteViewFrom));
+      this.model.addObserver('setValueNotePosForDouble', this.view.valueNoteViewFrom.setPos.bind(this.view.valueNoteViewFrom));
+      this.model.addObserver('setValueOfNoteForDouble', this.view.valueNoteViewFrom.setValue.bind(this.view.valueNoteViewFrom));
       this.model.addObserver('setBarWidthForDouble', this.view.barView.setLengthForDouble.bind(this.view.barView));
     }
   }

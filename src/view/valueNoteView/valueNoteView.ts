@@ -3,7 +3,7 @@ export default class ValueNoteView {
 
   public $value!: HTMLElement;
 
-  private valueNotePos: number;
+  private valueNotePos!: number;
 
   constructor(parent: HTMLElement) {
     this.render(parent);
@@ -42,16 +42,20 @@ export default class ValueNoteView {
 
   public setPos(): void {
     if (this.$note.classList.contains('adslider__note_vertical')) {
+      this.$note.style.left = '';
       this.$note.style.bottom = `${this.valueNotePos}px`;
     } else {
+      this.$note.style.bottom = '';
       this.$note.style.left = `${this.valueNotePos}px`;
     }
   }
 
   public setVerticalView(verticalView: boolean): void {
     if (verticalView) {
+      this.$note.classList.remove('adslider__note_horizontal');
       this.$note.classList.add('adslider__note_vertical');
     } else {
+      this.$note.classList.remove('adslider__note_vertical');
       this.$note.classList.add('adslider__note_horizontal');
     }
   }

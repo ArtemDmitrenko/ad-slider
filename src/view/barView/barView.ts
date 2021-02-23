@@ -16,8 +16,10 @@ export default class BarView {
 
   public setVerticalView(verticalView: boolean): void {
     if (verticalView) {
+      this.$bar.classList.remove('adslider__bar_horizontal');
       this.$bar.classList.add('adslider__bar_vertical');
     } else {
+      this.$bar.classList.remove('adslider__bar_vertical');
       this.$bar.classList.add('adslider__bar_horizontal');
     }
   }
@@ -25,12 +27,16 @@ export default class BarView {
   public setLength($handler: HTMLElement): void {
     let handlerPos: number;
     let handlerLength: number;
+    this.$bar.style.bottom = '';
+    this.$bar.style.left = '';
     if (this.$bar.classList.contains('adslider__bar_horizontal')) {
+      this.$bar.style.height = '';
       handlerPos = parseInt(getComputedStyle($handler).left, 10);
       handlerLength = parseInt(getComputedStyle($handler).width, 10);
       const barPos: number = handlerPos + handlerLength / 2;
       this.$bar.style.width = `${barPos}px`;
     } else {
+      this.$bar.style.width = '';
       handlerPos = parseInt(getComputedStyle($handler).bottom, 10);
       handlerLength = parseInt(getComputedStyle($handler).height, 10);
       const barPos: number = handlerPos + handlerLength / 2;
@@ -44,6 +50,8 @@ export default class BarView {
     const handlerLength: number = parseInt(getComputedStyle(options.handler).width, 10);
     const barLength: number = Math.abs((handlerPosTo + handlerLength / 2) - (handlerPosFrom + handlerLength / 2));
     if (this.$bar.classList.contains('adslider__bar_horizontal')) {
+      this.$bar.style.height = '';
+      this.$bar.style.bottom = '';
       this.$bar.style.width = `${barLength}px`;
       let barPos: number;
       if (handlerPosFrom < handlerPosTo) {
@@ -53,6 +61,8 @@ export default class BarView {
       }
       this.$bar.style.left = `${barPos}px`;
     } else {
+      this.$bar.style.width = '';
+      this.$bar.style.left = '';
       this.$bar.style.height = `${barLength}px`;
       let barPos: number;
       if (handlerPosFrom < handlerPosTo) {

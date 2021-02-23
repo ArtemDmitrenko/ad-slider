@@ -3,7 +3,7 @@ export default class HandlerView {
 
   private $parent!: HTMLElement;
 
-  private handlerPos: number;
+  private handlerPos!: number;
 
   constructor($parent: HTMLElement) {
     this.render($parent);
@@ -32,16 +32,20 @@ export default class HandlerView {
 
   public setPos(): void {
     if (this.isVertical()) {
+      this.$handler.style.left = '';
       this.$handler.style.bottom = `${this.handlerPos}px`;
     } else {
+      this.$handler.style.bottom = '';
       this.$handler.style.left = `${this.handlerPos}px`;
     }
   }
 
   public setVerticalView(verticalView: boolean): void {
     if (verticalView) {
+      this.$handler.classList.remove('adslider__handler_horizontal');
       this.$handler.classList.add('adslider__handler_vertical');
     } else {
+      this.$handler.classList.remove('adslider__handler_vertical');
       this.$handler.classList.add('adslider__handler_horizontal');
     }
   }

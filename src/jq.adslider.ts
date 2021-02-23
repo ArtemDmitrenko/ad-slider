@@ -1,5 +1,4 @@
 import './main.scss';
-// import './vmain.scss';
 
 import { Config, Model } from './model/model';
 import View from './view/view';

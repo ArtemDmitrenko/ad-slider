@@ -16,12 +16,15 @@ export default class ScaleView {
     this.$scale = document.createElement('div');
     this.$scale.classList.add('adslider__scale');
     this.$parent.append(this.$scale);
+    this.renderScaleLines();
   }
 
   public drawScale(options: Config, $handler: HTMLElement): void {
     if (options.vertical) {
+      this.$scale.classList.remove('adslider__scale_horizontal');
       this.$scale.classList.add('adslider__scale_vertical');
     } else {
+      this.$scale.classList.remove('adslider__scale_vertical');
       this.$scale.classList.add('adslider__scale_horizontal');
     }
     const odd: number = options.limits.max - options.limits.min;
@@ -45,12 +48,16 @@ export default class ScaleView {
     let trackLength: number;
     let scaleLength: number;
     if (this.isVertical()) {
+      this.$scale.style.width = '';
+      this.$scale.style.left = '';
       handlerLength = parseInt(getComputedStyle($handler).height, 10);
       trackLength = parseInt(getComputedStyle(this.$parent).height, 10);
       scaleLength = trackLength - handlerLength;
       this.$scale.style.height = `${scaleLength}px`;
       this.$scale.style.top = `${handlerLength / 2}px`;
     } else {
+      this.$scale.style.height = '';
+      this.$scale.style.top = '';
       handlerLength = parseInt(getComputedStyle($handler).width, 10);
       trackLength = parseInt(getComputedStyle(this.$parent).width, 10);
       scaleLength = trackLength - handlerLength;
@@ -76,11 +83,12 @@ export default class ScaleView {
     for (let i = 0; i < this.numberOfLines; i += 1) {
       fragment.appendChild(line.cloneNode(true));
     }
+    this.$scale.innerHTML = '';
     this.$scale.append(fragment);
   }
 
   private renderScaleSign(options: Config, odd: number) {
-    const listOfLines = document.querySelectorAll('.adslider__scaleLine');
+    const listOfLines = this.$scale.querySelectorAll('.adslider__scaleLine');
     listOfLines.forEach((el, index) => {
       const value: number = this.calcSigns(index, options, odd);
       const $text = document.createElement('div');
