@@ -96,9 +96,9 @@ export class Model extends EventObserver {
     if (value < this.limits.min || value > this.limits.max) {
       throw new Error('Value must be in range of min and max limits');
     }
-    if (value < this.from) {
-      throw new Error('Value To must be more than From');
-    }
+    // if (value < this.from) {
+    //   throw new Error('Value To must be more than From');
+    // }
     this.to = value;
     this.options.to = value;
   }
