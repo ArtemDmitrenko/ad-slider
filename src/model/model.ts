@@ -123,9 +123,7 @@ export class Model extends EventObserver {
   }
 
   public setValueFromHandlerPos(data: { newPos: number, edge: number, handler: HTMLElement }): void {
-    const odds: number = this.limits.max - this.limits.min;
-    const value: number = Math.round(this.limits.min + odds * (data.newPos / data.edge));
-
+    const value = this.calcValueFromHandlerPos(data.newPos, data.edge);
     if (data.handler.classList.contains('adslider__handler_from')) {
       this.from = this.calcValueWithStep(value, this.from);
       if (this.curValue - this.from < this.step && this.from > this.curValue) {
@@ -154,16 +152,21 @@ export class Model extends EventObserver {
     if (this.double) {
       const optionsForBar = { edge: data.edge, valueFrom: this.from, valueTo: this.curValue, limits: this.limits, handler: data.handler };
       this.broadcast('setBarWidthForDouble', optionsForBar);
+      this.broadcast('setOneNote', optionsForBar)
     } else {
       this.broadcast('setBarWidth', data.handler);
     }
   }
 
+  public calcValueFromHandlerPos(newPos: number, edge: number): number {
+    const odds: number = this.limits.max - this.limits.min;
+    const value: number = Math.round(this.limits.min + odds * (newPos / edge));
+    return value;
+  }
+
   private calcValueWithStep(value: number, curValue: number): number {
     const numberOfSteps = Math.round((value - curValue) / this.step);
     let newValue: number = curValue + this.step * numberOfSteps;
-    // console.log(this.step)
-    // console.log(curValue, this.step, numberOfSteps)
     if (newValue < this.limits.min) {
       newValue += this.step;
     }

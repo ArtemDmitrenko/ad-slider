@@ -34,6 +34,7 @@ export default class Presenter {
     // Observer: When curValue in Model is changing - position of valueNote is calculating and then updating
     this.model.addObserver('calcValueNotePos', this.view.valueNoteView.calcPos.bind(this.view.valueNoteView));
     this.model.addObserver('setValueNotePos', this.view.valueNoteView.setPos.bind(this.view.valueNoteView));
+    this.model.addObserver('setOneNote', this.view.setViewOfOneNote.bind(this.view));
     if (this.view.valueNoteViewFrom) {
       this.model.addObserver('calcValueNotePosForDouble', this.view.valueNoteViewFrom.calcPos.bind(this.view.valueNoteViewFrom));
       this.model.addObserver('setValueNotePosForDouble', this.view.valueNoteViewFrom.setPos.bind(this.view.valueNoteViewFrom));

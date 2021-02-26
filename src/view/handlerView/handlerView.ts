@@ -26,6 +26,13 @@ export default class HandlerView {
     return length;
   }
 
+  public getPos(): number {
+    if (this.isVertical()) {
+      return parseInt(getComputedStyle(this.$handler).bottom, 10);
+    }
+    return parseInt(getComputedStyle(this.$handler).left, 10);
+  }
+
   public calcPos(options: { edge: number, value: number, limits: { min: number, max: number } }): void {
     this.handlerPos = options.edge * ((options.value - options.limits.min) / (options.limits.max - options.limits.min));
   }

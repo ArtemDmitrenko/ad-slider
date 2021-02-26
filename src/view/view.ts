@@ -55,6 +55,8 @@ export default class View extends EventObserver {
     this.handlerViewFrom.$handler.classList.add('adslider__handler_from');
     this.valueNoteViewFrom = new ValueNoteView(this.$adslider);
     this.valueNoteViewFrom.$note.classList.add('adslider__note_from');
+    this.valueNoteView.$note.classList.add('adslider__note_to');
+
   }
 
   public updateView(options: Config): void {
@@ -68,7 +70,6 @@ export default class View extends EventObserver {
     this.scaleView.drawScale(options, this.handlerView.$handler);
     if (options.double) {
       if (!this.handlerViewFrom) {
-        console.log('dfsff')
         this.handlerViewFrom = new HandlerView(this.trackView.$track);
         this.handlerViewFrom.$handler.classList.add('adslider__handler_from');
         this.valueNoteViewFrom = new ValueNoteView(this.$adslider);
@@ -227,5 +228,41 @@ export default class View extends EventObserver {
       newPos = e.clientX - shift - this.trackView.$track.getBoundingClientRect().left;
     }
     return newPos;
+  }
+
+  private isSmallDistanceBetweenNotes(): boolean {
+    if (this.valueNoteView.getPos() - this.valueNoteViewFrom.getPos() < this.valueNoteView.size + 5) {
+      return true;
+    }
+    return false;
+  }
+
+  private makeCommonNoteView(valueNoteView: ValueNoteView, valueFrom: number, valueTo: number) {
+    valueNoteView.setValueForTwo(valueFrom, valueTo);
+    const leftEdgeOfHandlerFrom = this.handlerViewFrom.getPos();
+    const rightEdgeOfHandlerTo = this.handlerView.getPos() + this.handlerView.getLength();
+    const distBetweenEdgesOfHandlers = rightEdgeOfHandlerTo - leftEdgeOfHandlerFrom;
+    valueNoteView.valueNotePos = leftEdgeOfHandlerFrom + distBetweenEdgesOfHandlers / 2;
+    valueNoteView.setPos();
+  }
+
+  public setViewOfOneNote(options: any): void {
+    if (options.handler.classList.contains('adslider__handler_from')) {
+      if (this.isSmallDistanceBetweenNotes()) {
+        this.valueNoteView.showValueNote(false);
+        this.makeCommonNoteView(this.valueNoteViewFrom, options.valueFrom, options.valueTo)
+      } else {
+        this.valueNoteView.showValueNote(true)
+        this.valueNoteView.setValue(options.valueTo)
+      }
+    } else {
+      if (this.isSmallDistanceBetweenNotes()) {
+        this.valueNoteViewFrom.showValueNote(false);
+        this.makeCommonNoteView(this.valueNoteView, options.valueFrom, options.valueTo)
+      } else {
+        this.valueNoteViewFrom.showValueNote(true)
+        this.valueNoteView.setValue(options.valueTo)
+      }
+    }
   }
 }

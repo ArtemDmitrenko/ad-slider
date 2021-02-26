@@ -3,7 +3,9 @@ export default class ValueNoteView {
 
   public $value!: HTMLElement;
 
-  private valueNotePos!: number;
+  public valueNotePos!: number;
+
+  public size!: number;
 
   constructor(parent: HTMLElement) {
     this.render(parent);
@@ -16,10 +18,17 @@ export default class ValueNoteView {
     this.$value.classList.add('adslider__value');
     this.$note.append(this.$value);
     parent.append(this.$note);
+    this.findWidth();
   }
 
   public setValue(value: number): void {
     this.$value.textContent = String(value);
+  }
+
+  public setValueForTwo(valueFrom: number, valueTo: number): void {
+    const valFrom = String(valueFrom);
+    const valTo = String(valueTo);
+    this.$value.textContent = `${valFrom} - ${valTo}`;
   }
 
   public showValueNote(data: boolean): void {
@@ -59,6 +68,30 @@ export default class ValueNoteView {
       this.$note.classList.add('adslider__note_horizontal');
     }
   }
+
+  public findWidth(): void {
+    if (this.$note.classList.contains('adslider__note_vertical')) {
+      this.size = parseInt(getComputedStyle(this.$note).height, 10);
+    } else {
+      this.size = parseInt(getComputedStyle(this.$note).width, 10);
+    }
+  }
+
+  public getPos(): number {
+    let pos: number;
+    if (this.$note.classList.contains('adslider__note_vertical')) {
+      pos = parseInt(getComputedStyle(this.$note).bottom, 10);
+    } else {
+      pos = parseInt(getComputedStyle(this.$note).left, 10);
+    }
+    return pos;
+  }
+
+  public getValue(): number {
+    const value: number = parseInt(this.$value.textContent, 10);
+    return value;
+  }
+
 
   private isVertical(): boolean {
     if (this.$note.classList.contains('adslider__note_vertical')) {
