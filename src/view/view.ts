@@ -19,6 +19,8 @@ export default class View extends EventObserver {
 
   public valueNoteViewTo!: ValueNoteView;
 
+  public valueNoteViewCommon!: ValueNoteView;
+
   public trackView!: TrackView;
 
   public valueNoteView!: ValueNoteView;
@@ -84,6 +86,8 @@ export default class View extends EventObserver {
       this.valueNoteViewFrom.setValue(options.from);
       this.valueNoteViewFrom.showValueNote(options.showValueNote);
       this.barView.setLengthForDouble({ edge: this.getEdge(this.handlerViewFrom), valueFrom: options.from, valueTo: options.curValue, limits: options.limits, handler: this.handlerView.$handler });
+      const data = { valueFrom: options.from, valueTo: options.to };
+      this.setViewOfOneNote(data);
     } else {
       if (this.handlerViewFrom) {
         this.handlerViewFrom.$handler.remove();
@@ -230,39 +234,50 @@ export default class View extends EventObserver {
     return newPos;
   }
 
+  public setViewOfOneNote(options: any): void {
+    if (this.isSmallDistanceBetweenNotes()) {
+      this.makeCommonNoteView(options.valueFrom, options.valueTo);
+    } else {
+      if (this.valueNoteViewCommon) {
+        this.removeValueNotesFromAndTo();
+      }
+    }
+  }
+
   private isSmallDistanceBetweenNotes(): boolean {
-    if (this.valueNoteView.getPos() - this.valueNoteViewFrom.getPos() < this.valueNoteView.size + 5) {
+    if (this.valueNoteView.getPos() - this.valueNoteViewFrom.getPos() < this.valueNoteView.getSize() + 3) {
       return true;
     }
     return false;
   }
 
-  private makeCommonNoteView(valueNoteView: ValueNoteView, valueFrom: number, valueTo: number) {
-    valueNoteView.setValueForTwo(valueFrom, valueTo);
+  private makeCommonNoteView(valueFrom: number, valueTo: number) {
+    this.valueNoteView.showValueNote(false);
+    this.valueNoteViewFrom.showValueNote(false);
+    if (this.valueNoteViewCommon) {
+      this.updateCommonNoteView(valueFrom, valueTo);
+    } else {
+      this.valueNoteViewCommon = new ValueNoteView(this.$adslider);
+      this.valueNoteViewCommon.$note.classList.add('adslider__note_common');
+      this.valueNoteViewCommon.setVerticalView(this.isVertical());
+      this.updateCommonNoteView(valueFrom, valueTo);
+    }
+  }
+
+  private updateCommonNoteView(valueFrom: number, valueTo: number): void {
+    this.valueNoteViewCommon.setValueForTwo(valueFrom, valueTo);
     const leftEdgeOfHandlerFrom = this.handlerViewFrom.getPos();
     const rightEdgeOfHandlerTo = this.handlerView.getPos() + this.handlerView.getLength();
     const distBetweenEdgesOfHandlers = rightEdgeOfHandlerTo - leftEdgeOfHandlerFrom;
-    valueNoteView.valueNotePos = leftEdgeOfHandlerFrom + distBetweenEdgesOfHandlers / 2;
-    valueNoteView.setPos();
+    this.valueNoteViewCommon.valueNotePos = leftEdgeOfHandlerFrom + distBetweenEdgesOfHandlers / 2;
+    this.valueNoteViewCommon.setPos();
   }
 
-  public setViewOfOneNote(options: any): void {
-    if (options.handler.classList.contains('adslider__handler_from')) {
-      if (this.isSmallDistanceBetweenNotes()) {
-        this.valueNoteView.showValueNote(false);
-        this.makeCommonNoteView(this.valueNoteViewFrom, options.valueFrom, options.valueTo)
-      } else {
-        this.valueNoteView.showValueNote(true)
-        this.valueNoteView.setValue(options.valueTo)
-      }
-    } else {
-      if (this.isSmallDistanceBetweenNotes()) {
-        this.valueNoteViewFrom.showValueNote(false);
-        this.makeCommonNoteView(this.valueNoteView, options.valueFrom, options.valueTo)
-      } else {
-        this.valueNoteViewFrom.showValueNote(true)
-        this.valueNoteView.setValue(options.valueTo)
-      }
-    }
+
+  private removeValueNotesFromAndTo(): void {
+    this.valueNoteView.showValueNote(true);
+    this.valueNoteViewFrom.showValueNote(true);
+    this.valueNoteViewCommon.$note.remove();
+    this.valueNoteViewCommon = null;
   }
 }

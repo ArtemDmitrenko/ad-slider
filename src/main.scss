@@ -75,16 +75,18 @@ body {
     }
     &_show {
       display: flex;
+      visibility: visible;
     }
     &_hide {
-      // visibility: hidden;
-      display: none;
+      visibility: hidden;
+      // display: none;
     }
   }
   &__value {
     font-size: 1.25rem;
     color: white;
     user-select: none;
+    width: max-content;
   }
   &__handler {
     width: 1.875rem;

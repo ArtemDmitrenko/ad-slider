@@ -5,8 +5,6 @@ export default class ValueNoteView {
 
   public valueNotePos!: number;
 
-  public size!: number;
-
   constructor(parent: HTMLElement) {
     this.render(parent);
   }
@@ -18,7 +16,6 @@ export default class ValueNoteView {
     this.$value.classList.add('adslider__value');
     this.$note.append(this.$value);
     parent.append(this.$note);
-    this.findWidth();
   }
 
   public setValue(value: number): void {
@@ -69,12 +66,14 @@ export default class ValueNoteView {
     }
   }
 
-  public findWidth(): void {
+  public getSize(): number {
+    let size: number;
     if (this.$note.classList.contains('adslider__note_vertical')) {
-      this.size = parseInt(getComputedStyle(this.$note).height, 10);
+      size = parseInt(getComputedStyle(this.$note).height, 10);
     } else {
-      this.size = parseInt(getComputedStyle(this.$note).width, 10);
+      size = parseInt(getComputedStyle(this.$note).width, 10);
     }
+    return size;
   }
 
   public getPos(): number {
