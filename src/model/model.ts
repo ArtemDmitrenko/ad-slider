@@ -70,7 +70,7 @@ export class Model extends EventObserver {
 
   private setDouble(double: boolean, from: number): void {
     if (double && !from) {
-      throw new Error('You have to enter value of from for double slider');
+      this.from = this.limits.min;
     }
     this.double = double;
     this.options.double = double;
@@ -107,7 +107,7 @@ export class Model extends EventObserver {
     if (value < this.limits.min || value > this.limits.max) {
       throw new Error('Value must be in range of min and max limits');
     }
-    if (value > this.to) {
+    if (value > this.to && this.to) {
       throw new Error('Value From must be less than To');
     }
     this.from = value;

@@ -25,14 +25,6 @@ export default class DemoPage {
 
   private $curValueOnSlider!: HTMLElement | null;
 
-  // private $noteFrom!: HTMLElement | null;
-
-  // private $valueFrom!: HTMLElement | null;
-
-  // private $noteTo!: HTMLElement | null;
-
-  // private $valueTo!: HTMLElement | null;
-
   private options!: Config;
 
   constructor(selector: string) {
@@ -57,12 +49,6 @@ export default class DemoPage {
       this.$inputFrom = this.$container.querySelector('.panel__from');
       this.$inputTo = this.$container.querySelector('.panel__to');
       this.$curValueOnSlider = this.$container.querySelector('.adslider__value');
-      // if (this.$inputDouble.checked) {
-      //   this.$noteFrom = $container.querySelector('.adslider__note_from');
-      //   this.$valueFrom = this.$noteFrom.querySelector('.adslider__value');
-      //   this.$noteTo = $container.querySelector('.adslider__note');
-      //   this.$valueTo = this.$noteTo.querySelector('.adslider__value');
-      // }
     }
   }
 
@@ -104,15 +90,8 @@ export default class DemoPage {
     }
   }
 
-  // static isNotNull($el: HTMLInputElement | null): HTMLInputElement {
-  //   const $element = $el;
-  //   if ($element) {
-  //     return $element;
-  //   }
-  //   throw Error('dsfsfsfsf');
-  // }
-
   private updateSlider(): void {
+    console.log(this.options)
     this.options.curValue = Number(this.$inputCurValue.value);
     this.options.limits.min = Number(this.$inputMinValue.value);
     this.options.limits.max = Number(this.$inputMaxValue.value);
@@ -149,7 +128,6 @@ export default class DemoPage {
     this.$inputTo.addEventListener('change', this.updateSlider.bind(this));
     this.$curValueOnSlider.addEventListener('DOMSubtreeModified', this.updateCurInput.bind(this));
     this.$inputDouble.addEventListener('change', this.updateInputFromTo.bind(this));
-
   }
 
   private updateCurInput(): void {
@@ -162,15 +140,38 @@ export default class DemoPage {
       const $valueFrom = $noteFrom.querySelector('.adslider__value');
       const $noteTo = this.$container.querySelector('.adslider__note');
       const $valueTo = $noteTo.querySelector('.adslider__value');
+      this.updateFromInput($valueFrom);
+      this.updateToInput($valueTo);
+      this.$inputCurValue.style.visibility = 'hidden';
+      this.$inputFrom.style.visibility = 'visible';
+      this.$inputTo.style.visibility = 'visible';
+
+      // this.$inputCurValue.value = '';
+
       $valueFrom.addEventListener('DOMSubtreeModified', this.updateFromInput.bind(this, $valueFrom));
       $valueTo.addEventListener('DOMSubtreeModified', this.updateToInput.bind(this, $valueTo));
+    } else {
+      this.$inputFrom.value = '';
+      this.$inputTo.value = '';
+      this.$inputCurValue.style.visibility = 'visible';
+      this.$inputFrom.style.visibility = 'hidden';
+      this.$inputTo.style.visibility = 'hidden';
     }
   }
 
   private updateFromInput($valueFrom: HTMLElement): void {
     this.$inputFrom.value = $valueFrom.textContent;
   }
+
   private updateToInput($valueTo: HTMLElement): void {
     this.$inputTo.value = $valueTo.textContent;
   }
+
+  // static isNotNull($el: HTMLInputElement | null): HTMLInputElement {
+  //   const $element = $el;
+  //   if ($element) {
+  //     return $element;
+  //   }
+  //   throw Error('dsfsfsfsf');
+  // }
 }

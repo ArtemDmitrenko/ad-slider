@@ -1,53 +1,21 @@
+include demoPage/panel.pug
+
 <!DOCTYPE html>
 html(lang="en")
     head
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        link(rel="stylesheet", href="demoPage/panel.scss")
         title Document
     body
         .container1
-            .panel
-                .panel__inputName Минимальное значение:
-                    input(type="text").panel__minValue
-                .panel__inputName Максимальное значение:
-                    input(type="text").panel__maxValue
-                .panel__inputName Тек. значение:
-                    input(type="text").panel__curValue
-                .panel__inputName Показать текущее значение
-                    input(type="checkbox" name="showValueNote").panel__showNoteValue
-                .panel__inputName Шаг:
-                    input(type="text").panel__step
-                .panel__inputName Вертикальный вид
-                    input(type="checkbox" name="verticalView").panel__verticalView
-                .panel__inputName Диапазон
-                    input(type="checkbox" name="double").panel__double
-                .panel__inputName От:
-                    input(type="text").panel__from
-                .panel__inputName До:
-                    input(type="text").panel__to
-
+            +panel(1)
         .container2
-            .panel
-                .panel__inputName Минимальное значение:
-                    input(type="text").panel__minValue
-                .panel__inputName Максимальное значение:
-                    input(type="text").panel__maxValue
-                .panel__inputName Тек. значение:
-                    input(type="text").panel__curValue
-                .panel__inputName Показать текущее значение
-                    input(type="checkbox" name="showValueNote").panel__showNoteValue
-                .panel__inputName Шаг:
-                    input(type="text").panel__step
-                .panel__inputName Вертикальный вид
-                    input(type="checkbox" name="verticalView").panel__verticalView
-                .panel__inputName Диапазон
-                    input(type="checkbox" name="double").panel__double
-                .panel__inputName От:
-                    input(type="text").panel__from
-                .panel__inputName До:
-                    input(type="text").panel__to
-
-
+            +panel(2)
+        .container3
+            +panel(3)
+        .container4
+            +panel(4)
 
         script(src="https://code.jquery.com/jquery-3.5.1.min.js")
         script(src="jq.adslider.ts")
