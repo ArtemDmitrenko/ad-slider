@@ -40,9 +40,24 @@ describe('valueNoteView', () => {
     expect(valueNoteView.$value.innerHTML).toBe('50');
   });
 
+  test('Function setValueForTwo: should set values when notes are close in range slider', () => {
+    valueNoteView.setValueForTwo(50, 55);
+    expect(valueNoteView.$value.innerHTML).toBe('50 - 55');
+  });
+
   test('Function setPos: should set position of valueNote', () => {
-    valueNoteView.setPos(50);
-    expect(getComputedStyle(valueNoteView.$note).left).toBe('50px');
+    const $handler: HTMLElement = document.createElement('div');
+    $handler.style.left = '50px';
+    $handler.style.width = '30px';
+    valueNoteView.calcPos($handler);
+    valueNoteView.setPos();
+    expect(window.getComputedStyle(valueNoteView.$note).left).toBe('65px');
+    valueNoteView.setVerticalView(true);
+    $handler.style.bottom = '60px';
+    $handler.style.height = '20px';
+    valueNoteView.calcPos($handler);
+    valueNoteView.setPos();
+    expect(window.getComputedStyle(valueNoteView.$note).bottom).toBe('70px');
   });
 
   test('Function showValueNote: should have classes if showValueNote is true and back', () => {
@@ -52,5 +67,33 @@ describe('valueNoteView', () => {
     valueNoteView.showValueNote(false);
     expect(valueNoteView.$note.classList.contains('adslider__note_hide')).toBe(true);
     expect(valueNoteView.$note.classList.contains('adslider__note_show')).toBe(false);
+  });
+
+  test('Function setVerticalView: should set vertical or horizontal view of note', () => {
+    valueNoteView.setVerticalView(false);
+    expect(valueNoteView.$note.classList.contains('adslider__note_horizontal')).toBe(true);
+    valueNoteView.setVerticalView(true);
+    expect(valueNoteView.$note.classList.contains('adslider__note_vertical')).toBe(true);
+  });
+
+  test('Function getValue: return value of note', () => {
+    valueNoteView.$value.textContent = '44';
+    expect(valueNoteView.getValue()).toBe(44);
+  });
+
+  test('Function getPos: return pos of note', () => {
+    valueNoteView.$note.style.left = '30px';
+    expect(valueNoteView.getPos()).toBe(30);
+    valueNoteView.setVerticalView(true);
+    valueNoteView.$note.style.bottom = '40px';
+    expect(valueNoteView.getPos()).toBe(40);
+  });
+
+  test('Function getSize: return size of note', () => {
+    valueNoteView.$note.style.width = '30px';
+    expect(valueNoteView.getSize()).toBe(30);
+    valueNoteView.setVerticalView(true);
+    valueNoteView.$note.style.height = '40px';
+    expect(valueNoteView.getSize()).toBe(40);
   });
 });

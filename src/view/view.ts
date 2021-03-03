@@ -111,7 +111,7 @@ export default class View extends EventObserver {
 
   private changeHandlerPos(e: MouseEvent) {
     if (this.isDouble()) {
-      if (this.handlerView.$handler.classList.contains('adslider__handler_horizontal') {
+      if (this.handlerView.$handler.classList.contains('adslider__handler_horizontal')) {
         const handlerFromPos = this.handlerViewFrom.$handler.getBoundingClientRect().left;
         const handlerToPos = this.handlerView.$handler.getBoundingClientRect().left;
         const middlePos = (handlerToPos - handlerFromPos) / 2 + handlerFromPos + this.handlerView.getLength() / 2;

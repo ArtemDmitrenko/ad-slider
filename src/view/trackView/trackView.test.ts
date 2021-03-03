@@ -17,8 +17,18 @@ describe('trackView', () => {
     expect(trackView.$track.parentElement).toBe($parent);
   });
 
-  test('Function getWidth: should get width of track', () => {
+  test('Function getLength: should get length of track', () => {
     trackView.$track.style.width = '20px';
-    expect(trackView.getWidth()).toBe(20);
+    expect(trackView.getLength()).toBe(20);
+    trackView.$track.classList.add('adslider__track_vertical');
+    trackView.$track.style.height = '55px';
+    expect(trackView.getLength()).toBe(55);
+  });
+
+  test('Function setVerticalView: should set vertical or horizontal view of track', () => {
+    trackView.setVerticalView(false);
+    expect(trackView.$track.classList.contains('adslider__track_horizontal')).toBe(true);
+    trackView.setVerticalView(true);
+    expect(trackView.$track.classList.contains('adslider__track_vertical')).toBe(true);
   });
 });

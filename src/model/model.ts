@@ -96,9 +96,6 @@ export class Model extends EventObserver {
     if (value < this.limits.min || value > this.limits.max) {
       throw new Error('Value must be in range of min and max limits');
     }
-    // if (value < this.from) {
-    //   throw new Error('Value To must be more than From');
-    // }
     this.to = value;
     this.options.to = value;
   }
@@ -126,9 +123,9 @@ export class Model extends EventObserver {
     const value = this.calcValueFromHandlerPos(data.newPos, data.edge);
     if (data.handler.classList.contains('adslider__handler_from')) {
       this.from = this.calcValueWithStep(value, this.from);
-      if (this.curValue - this.from < this.step && this.from > this.curValue) {
+      if (this.isValFromMovesOverValTo()) {
         return;
-      }
+      };
       const options = { edge: data.edge, value: this.from, limits: this.limits };
       this.broadcast('calcHandlerPosForDouble', options);
       this.broadcast('setHandlerPosForDouble');
@@ -137,10 +134,8 @@ export class Model extends EventObserver {
       this.broadcast('setValueOfNoteForDouble', this.from);
     } else {
       this.curValue = this.calcValueWithStep(value, this.curValue);
-      if (this.double) {
-        if (this.curValue - this.from < this.step && this.from > this.curValue) {
-          return;
-        }
+      if (this.double && this.isValFromMovesOverValTo()) {
+        return;
       }
       const options = { edge: data.edge, value: this.curValue, limits: this.limits };
       this.broadcast('calcHandlerPos', options);
@@ -156,6 +151,13 @@ export class Model extends EventObserver {
     } else {
       this.broadcast('setBarWidth', data.handler);
     }
+  }
+
+  private isValFromMovesOverValTo() {
+    if (this.curValue - this.from < this.step && this.from > this.curValue) {
+      return true;
+    }
+    return false;
   }
 
   public calcValueFromHandlerPos(newPos: number, edge: number): number {

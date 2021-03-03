@@ -145,14 +145,9 @@ export default class DemoPage {
       this.$inputCurValue.style.visibility = 'hidden';
       this.$inputFrom.style.visibility = 'visible';
       this.$inputTo.style.visibility = 'visible';
-
-      // this.$inputCurValue.value = '';
-
       $valueFrom.addEventListener('DOMSubtreeModified', this.updateFromInput.bind(this, $valueFrom));
       $valueTo.addEventListener('DOMSubtreeModified', this.updateToInput.bind(this, $valueTo));
     } else {
-      this.$inputFrom.value = '';
-      this.$inputTo.value = '';
       this.$inputCurValue.style.visibility = 'visible';
       this.$inputFrom.style.visibility = 'hidden';
       this.$inputTo.style.visibility = 'hidden';
@@ -166,12 +161,4 @@ export default class DemoPage {
   private updateToInput($valueTo: HTMLElement): void {
     this.$inputTo.value = $valueTo.textContent;
   }
-
-  // static isNotNull($el: HTMLInputElement | null): HTMLInputElement {
-  //   const $element = $el;
-  //   if ($element) {
-  //     return $element;
-  //   }
-  //   throw Error('dsfsfsfsf');
-  // }
 }

@@ -3,6 +3,8 @@ export default class BarView {
 
   private $parent!: HTMLElement;
 
+  private barPos!: number;
+
   constructor($parent: HTMLElement) {
     this.render($parent);
   }
@@ -33,14 +35,14 @@ export default class BarView {
       this.$bar.style.height = '';
       handlerPos = parseInt(getComputedStyle($handler).left, 10);
       handlerLength = parseInt(getComputedStyle($handler).width, 10);
-      const barPos: number = handlerPos + handlerLength / 2;
-      this.$bar.style.width = `${barPos}px`;
+      this.calcBarPosForSingle(handlerPos, handlerLength);
+      this.$bar.style.width = `${this.barPos}px`;
     } else {
       this.$bar.style.width = '';
       handlerPos = parseInt(getComputedStyle($handler).bottom, 10);
       handlerLength = parseInt(getComputedStyle($handler).height, 10);
-      const barPos: number = handlerPos + handlerLength / 2;
-      this.$bar.style.height = `${barPos}px`;
+      this.calcBarPosForSingle(handlerPos, handlerLength);
+      this.$bar.style.height = `${this.barPos}px`;
     }
   }
 
@@ -53,24 +55,26 @@ export default class BarView {
       this.$bar.style.height = '';
       this.$bar.style.bottom = '';
       this.$bar.style.width = `${barLength}px`;
-      let barPos: number;
-      if (handlerPosFrom < handlerPosTo) {
-        barPos = handlerPosFrom + handlerLength / 2;
-      } else {
-        barPos = handlerPosTo + handlerLength / 2;
-      }
-      this.$bar.style.left = `${barPos}px`;
+      this.calcBarPosForDouble(handlerPosFrom, handlerPosTo, handlerLength);
+      this.$bar.style.left = `${this.barPos}px`;
     } else {
       this.$bar.style.width = '';
       this.$bar.style.left = '';
       this.$bar.style.height = `${barLength}px`;
-      let barPos: number;
-      if (handlerPosFrom < handlerPosTo) {
-        barPos = handlerPosFrom + handlerLength / 2;
-      } else {
-        barPos = handlerPosTo + handlerLength / 2;
-      }
-      this.$bar.style.bottom = `${barPos}px`;
+      this.calcBarPosForDouble(handlerPosFrom, handlerPosTo, handlerLength);
+      this.$bar.style.bottom = `${this.barPos}px`;
+    }
+  }
+
+  private calcBarPosForSingle(handlerPos: number, handlerLength: number): void {
+    this.barPos = handlerPos + handlerLength / 2;
+  }
+
+  private calcBarPosForDouble(handlerPosFrom: number, handlerPosTo: number, handlerLength: number): void {
+    if (handlerPosFrom < handlerPosTo) {
+      this.barPos = handlerPosFrom + handlerLength / 2;
+    } else {
+      this.barPos = handlerPosTo + handlerLength / 2;
     }
   }
 }
