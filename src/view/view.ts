@@ -61,7 +61,7 @@ export default class View extends EventObserver {
 
   }
 
-  public updateView(options: Config): void {
+  public updateView(options: any): void {
     this.setVerticalViewForSingle(options.vertical);
     this.handlerView.calcPos({ edge: this.getEdge(this.handlerView), value: options.curValue, limits: options.limits });
     this.handlerView.setPos();
@@ -130,7 +130,6 @@ export default class View extends EventObserver {
           this.mouseMove(this.handlerView.getLength() / 2, this.handlerView, e);
         }
       }
-
     } else {
       this.mouseMove(this.handlerView.getLength() / 2, this.handlerView, e);
     }
