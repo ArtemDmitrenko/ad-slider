@@ -53,9 +53,9 @@ export default class BarView {
     const handlerPosFrom: number = options.edge * (oddFromMin / oddMaxMin);
     const handlerPosTo: number = options.edge * (oddToMin / oddMaxMin);
     const handlerLength: number = parseInt(getComputedStyle(options.handler).width, 10);
-    const sumToLength: number = handlerPosTo + handlerLength;
-    const sumFromLength: number = handlerPosFrom + handlerLength;
-    const barLength: number = Math.abs((sumToLength / 2) - (sumFromLength / 2));
+    const sumToLength: number = handlerPosTo + handlerLength / 2;
+    const sumFromLength: number = handlerPosFrom + handlerLength / 2;
+    const barLength: number = Math.abs(sumToLength - sumFromLength);
     if (this.$bar.classList.contains('adslider__bar_horizontal')) {
       this.$bar.style.height = '';
       this.$bar.style.bottom = '';
