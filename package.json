@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest",
     "dev": "parcel src/index.pug --out-dir dist --open",
-    "eslint": "eslint src/**"
+    "eslint": "eslint src/**",
+    "build": "parcel build src/index.pug --public-url /ad-slider --no-content-hash --out-dir docs"
   },
   "jest": {
     "collectCoverage": true,
@@ -25,6 +26,7 @@
     "@typescript-eslint/eslint-plugin": "^4.10.0",
     "@typescript-eslint/parser": "^4.10.0",
     "babel-jest": "^26.6.3",
+    "cssnano": "^4.1.10",
     "eslint": "^7.2.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-fsd": "^1.0.1",
