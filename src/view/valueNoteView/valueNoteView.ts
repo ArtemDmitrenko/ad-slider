@@ -40,9 +40,13 @@ export default class ValueNoteView {
 
   public calcPos(handler: HTMLElement): void {
     if (this.isVertical()) {
-      this.valueNotePos = parseInt(getComputedStyle(handler).bottom, 10) + parseInt(getComputedStyle(handler).height, 10) / 2;
+      const handlerBottomPos: string = getComputedStyle(handler).bottom;
+      const handlerHeight: string = getComputedStyle(handler).height;
+      this.valueNotePos = parseInt(handlerBottomPos, 10) + parseInt(handlerHeight, 10) / 2;
     } else {
-      this.valueNotePos = parseInt(getComputedStyle(handler).left, 10) + parseInt(getComputedStyle(handler).width, 10) / 2;
+      const handlerLeftPos: string = getComputedStyle(handler).left;
+      const handlerWidth: string = getComputedStyle(handler).width;
+      this.valueNotePos = parseInt(handlerLeftPos, 10) + parseInt(handlerWidth, 10) / 2;
     }
   }
 
@@ -90,7 +94,6 @@ export default class ValueNoteView {
     const value: number = parseInt(this.$value.textContent, 10);
     return value;
   }
-
 
   private isVertical(): boolean {
     if (this.$note.classList.contains('adslider__note_vertical')) {

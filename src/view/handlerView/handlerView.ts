@@ -33,8 +33,14 @@ export default class HandlerView {
     return parseInt(getComputedStyle(this.$handler).left, 10);
   }
 
-  public calcPos(options: { edge: number, value: number, limits: { min: number, max: number } }): void {
-    this.handlerPos = options.edge * ((options.value - options.limits.min) / (options.limits.max - options.limits.min));
+  public calcPos(options: {
+    edge: number,
+    value: number,
+    limits: { min: number, max: number }
+  }): void {
+    const oddValMin: number = options.value - options.limits.min;
+    const oddMaxMin: number = options.limits.max - options.limits.min;
+    this.handlerPos = options.edge * (oddValMin / oddMaxMin);
   }
 
   public setPos(): void {

@@ -47,10 +47,15 @@ export default class BarView {
   }
 
   public setLengthForDouble(options: any): void {
-    const handlerPosFrom: number = options.edge * ((options.valueFrom - options.limits.min) / (options.limits.max - options.limits.min));
-    const handlerPosTo: number = options.edge * ((options.valueTo - options.limits.min) / (options.limits.max - options.limits.min));
+    const oddFromMin: number = options.valueFrom - options.limits.min;
+    const oddToMin: number = options.valueTo - options.limits.min;
+    const oddMaxMin: number = options.limits.max - options.limits.min;
+    const handlerPosFrom: number = options.edge * (oddFromMin / oddMaxMin);
+    const handlerPosTo: number = options.edge * (oddToMin / oddMaxMin);
     const handlerLength: number = parseInt(getComputedStyle(options.handler).width, 10);
-    const barLength: number = Math.abs((handlerPosTo + handlerLength / 2) - (handlerPosFrom + handlerLength / 2));
+    const sumToLength: number = handlerPosTo + handlerLength;
+    const sumFromLength: number = handlerPosFrom + handlerLength;
+    const barLength: number = Math.abs((sumToLength / 2) - (sumFromLength / 2));
     if (this.$bar.classList.contains('adslider__bar_horizontal')) {
       this.$bar.style.height = '';
       this.$bar.style.bottom = '';
@@ -70,7 +75,11 @@ export default class BarView {
     this.barPos = handlerPos + handlerLength / 2;
   }
 
-  private calcBarPosForDouble(handlerPosFrom: number, handlerPosTo: number, handlerLength: number): void {
+  private calcBarPosForDouble(
+    handlerPosFrom: number,
+    handlerPosTo: number,
+    handlerLength: number,
+  ): void {
     if (handlerPosFrom < handlerPosTo) {
       this.barPos = handlerPosFrom + handlerLength / 2;
     } else {

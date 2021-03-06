@@ -4,7 +4,6 @@ import ValueNoteView from './valueNoteView/valueNoteView';
 import BarView from './barView/barView';
 import ScaleView from './scaleView/scaleView';
 import EventObserver from '../eventObserver/eventObserver';
-import { Config } from '../model/model';
 
 export default class View extends EventObserver {
   public $el!: HTMLElement | null;
@@ -58,12 +57,15 @@ export default class View extends EventObserver {
     this.valueNoteViewFrom = new ValueNoteView(this.$adslider);
     this.valueNoteViewFrom.$note.classList.add('adslider__note_from');
     this.valueNoteView.$note.classList.add('adslider__note_to');
-
   }
 
   public updateView(options: any): void {
     this.setVerticalViewForSingle(options.vertical);
-    this.handlerView.calcPos({ edge: this.getEdge(this.handlerView), value: options.curValue, limits: options.limits });
+    this.handlerView.calcPos({
+      edge: this.getEdge(this.handlerView),
+      value: options.curValue,
+      limits: options.limits,
+    });
     this.handlerView.setPos();
     this.valueNoteView.calcPos(this.handlerView.$handler);
     this.valueNoteView.setPos();
@@ -79,13 +81,23 @@ export default class View extends EventObserver {
         this.handlerViewFrom.$handler.addEventListener('mousedown', this.moveHandler.bind(this, this.handlerViewFrom));
       }
       this.setVerticalViewForDouble(options.vertical);
-      this.handlerViewFrom.calcPos({ edge: this.getEdge(this.handlerViewFrom), value: options.from, limits: options.limits });
+      this.handlerViewFrom.calcPos({
+        edge: this.getEdge(this.handlerViewFrom),
+        value: options.from,
+        limits: options.limits,
+      });
       this.handlerViewFrom.setPos();
       this.valueNoteViewFrom.calcPos(this.handlerViewFrom.$handler);
       this.valueNoteViewFrom.setPos();
       this.valueNoteViewFrom.setValue(options.from);
       this.valueNoteViewFrom.showValueNote(options.showValueNote);
-      this.barView.setLengthForDouble({ edge: this.getEdge(this.handlerViewFrom), valueFrom: options.from, valueTo: options.curValue, limits: options.limits, handler: this.handlerView.$handler });
+      this.barView.setLengthForDouble({
+        edge: this.getEdge(this.handlerViewFrom),
+        valueFrom: options.from,
+        valueTo: options.curValue,
+        limits: options.limits,
+        handler: this.handlerView.$handler,
+      });
       const data = { valueFrom: options.from, valueTo: options.to };
       this.setViewOfOneNote(data);
     } else {
@@ -114,7 +126,8 @@ export default class View extends EventObserver {
       if (this.handlerView.$handler.classList.contains('adslider__handler_horizontal')) {
         const handlerFromPos = this.handlerViewFrom.$handler.getBoundingClientRect().left;
         const handlerToPos = this.handlerView.$handler.getBoundingClientRect().left;
-        const middlePos = (handlerToPos - handlerFromPos) / 2 + handlerFromPos + this.handlerView.getLength() / 2;
+        const oddToFrom: number = handlerToPos - handlerFromPos;
+        const middlePos = oddToFrom / 2 + handlerFromPos + this.handlerView.getLength() / 2;
         if (e.clientX <= middlePos) {
           this.mouseMove(this.handlerViewFrom.getLength() / 2, this.handlerViewFrom, e);
         } else {
@@ -123,7 +136,8 @@ export default class View extends EventObserver {
       } else {
         const handlerFromPos = this.handlerViewFrom.$handler.getBoundingClientRect().top;
         const handlerToPos = this.handlerView.$handler.getBoundingClientRect().top;
-        const middlePos = (handlerToPos - handlerFromPos) / 2 + handlerFromPos + this.handlerView.getLength() / 2;
+        const oddToFrom: number = handlerToPos - handlerFromPos;
+        const middlePos = oddToFrom / 2 + handlerFromPos + this.handlerView.getLength() / 2;
         if (e.clientY >= middlePos) {
           this.mouseMove(this.handlerViewFrom.getLength() / 2, this.handlerViewFrom, e);
         } else {
@@ -218,9 +232,8 @@ export default class View extends EventObserver {
   private isDouble(): boolean {
     if (this.handlerViewFrom) {
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
   private calcnewPos(shift: number, e: MouseEvent): number {
@@ -236,15 +249,14 @@ export default class View extends EventObserver {
   public setViewOfOneNote(options: any): void {
     if (this.isSmallDistanceBetweenNotes()) {
       this.makeCommonNoteView(options.valueFrom, options.valueTo);
-    } else {
-      if (this.valueNoteViewCommon) {
-        this.removeValueNotesFromAndTo();
-      }
+    } else if (this.valueNoteViewCommon) {
+      this.removeValueNotesFromAndTo();
     }
   }
 
   private isSmallDistanceBetweenNotes(): boolean {
-    if (this.valueNoteView.getPos() - this.valueNoteViewFrom.getPos() < this.valueNoteView.getSize() + 3) {
+    const distBetweenNotes: number = this.valueNoteView.getPos() - this.valueNoteViewFrom.getPos();
+    if (distBetweenNotes < this.valueNoteView.getSize() + 3) {
       return true;
     }
     return false;
@@ -271,7 +283,6 @@ export default class View extends EventObserver {
     this.valueNoteViewCommon.valueNotePos = leftEdgeOfHandlerFrom + distBetweenEdgesOfHandlers / 2;
     this.valueNoteViewCommon.setPos();
   }
-
 
   private removeValueNotesFromAndTo(): void {
     this.valueNoteView.showValueNote(true);

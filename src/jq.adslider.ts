@@ -7,14 +7,16 @@ import Presenter from './presenter/presenter';
 (function ($) {
   const methods = {
     init(container: HTMLElement, options: Config) {
-      if ($(this).data('inited') {
+      if ($(this).data('inited')) {
         $.error('Plugin has already been initialized on this selector!');
       } else {
         const view = new View(container);
         const model = new Model(options);
         const presenter = new Presenter(model, view);
-        $(this).data({ view, model, presenter, inited: true });
-      };
+        $(this).data({
+          view, model, presenter, inited: true,
+        });
+      }
     },
     update(options: Config) {
       const model = $(this).data('model');

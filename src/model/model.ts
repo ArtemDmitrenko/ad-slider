@@ -119,13 +119,17 @@ export class Model extends EventObserver {
     this.options.step = value || 1;
   }
 
-  public setValueFromHandlerPos(data: { newPos: number, edge: number, handler: HTMLElement }): void {
+  public setValueFromHandlerPos(data: {
+    newPos: number,
+    edge: number,
+    handler: HTMLElement
+  }): void {
     const value = this.calcValueFromHandlerPos(data.newPos, data.edge);
     if (data.handler.classList.contains('adslider__handler_from')) {
       this.from = this.calcValueWithStep(value, this.from);
       if (this.isValFromMovesOverValTo()) {
         return;
-      };
+      }
       const options = { edge: data.edge, value: this.from, limits: this.limits };
       this.broadcast('calcHandlerPosForDouble', options);
       this.broadcast('setHandlerPosForDouble');
@@ -145,9 +149,15 @@ export class Model extends EventObserver {
       this.broadcast('setValueOfNote', this.curValue);
     }
     if (this.double) {
-      const optionsForBar = { edge: data.edge, valueFrom: this.from, valueTo: this.curValue, limits: this.limits, handler: data.handler };
+      const optionsForBar = {
+        edge: data.edge,
+        valueFrom: this.from,
+        valueTo: this.curValue,
+        limits: this.limits,
+        handler: data.handler,
+      };
       this.broadcast('setBarWidthForDouble', optionsForBar);
-      this.broadcast('setOneNote', optionsForBar)
+      this.broadcast('setOneNote', optionsForBar);
     } else {
       this.broadcast('setBarWidth', data.handler);
     }
