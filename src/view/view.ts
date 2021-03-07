@@ -121,7 +121,7 @@ export default class View extends EventObserver {
     }
   }
 
-  private changeHandlerPos(e: MouseEvent) {
+  private changeHandlerPos(e: MouseEvent): void {
     if (this.isDouble()) {
       if (this.handlerView.$handler.classList.contains('adslider__handler_horizontal')) {
         const handlerFromPos = this.handlerViewFrom.$handler.getBoundingClientRect().left;
@@ -262,7 +262,7 @@ export default class View extends EventObserver {
     return false;
   }
 
-  private makeCommonNoteView(valueFrom: number, valueTo: number) {
+  private makeCommonNoteView(valueFrom: number, valueTo: number): void {
     this.valueNoteView.showValueNote(false);
     this.valueNoteViewFrom.showValueNote(false);
     if (this.valueNoteViewCommon) {

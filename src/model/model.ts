@@ -163,7 +163,7 @@ export class Model extends EventObserver {
     }
   }
 
-  private isValFromMovesOverValTo() {
+  private isValFromMovesOverValTo(): boolean {
     if (this.curValue - this.from < this.step && this.from > this.curValue) {
       return true;
     }

@@ -87,7 +87,7 @@ export default class ScaleView {
     this.$scale.append(fragment);
   }
 
-  private renderScaleSign(options: Config, odd: number) {
+  private renderScaleSign(options: Config, odd: number): void {
     const listOfLines = this.$scale.querySelectorAll('.adslider__scaleLine');
     listOfLines.forEach((el, index) => {
       const value: number = this.calcSigns(index, options, odd);
