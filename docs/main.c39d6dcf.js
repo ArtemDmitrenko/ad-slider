@@ -3,4 +3,4 @@ parcelRequire=function(e,r,t,n){var i,o="function"==typeof parcelRequire&&parcel
 },{}],"ZCfc":[function(require,module,exports) {
 "use strict";var e=this&&this.__importDefault||function(e){return e&&e.__esModule?e:{default:e}};Object.defineProperty(exports,"__esModule",{value:!0});var a=e(require("./demoPage/demoPage")),t={limits:{min:0,max:100},curValue:35,showValueNote:!0},i={limits:{min:0,max:100},curValue:85,showValueNote:!0,step:20,double:!0,from:40,to:90},r={limits:{min:0,max:1e3},curValue:500,showValueNote:!0,vertical:!0},o={limits:{min:0,max:100},curValue:85,showValueNote:!0,step:15,double:!0,from:40,to:90,vertical:!0};$(".container1").adslider(t),$(".container2").adslider(i),$(".container3").adslider(r),$(".container4").adslider(o);var l=new a.default(".container1"),n=new a.default(".container2"),u=new a.default(".container3"),s=new a.default(".container4");
 },{"./demoPage/demoPage":"QxSh"}]},{},["ZCfc"], null)
-//# sourceMappingURL=main.b700c0ca.js.map
+//# sourceMappingURL=main.c39d6dcf.js.map
