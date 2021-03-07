@@ -50,4 +50,3 @@ const demopage1 = new DemoPage('.container1');
 const demopage2 = new DemoPage('.container2');
 const demopage3 = new DemoPage('.container3');
 const demopage4 = new DemoPage('.container4');
-
