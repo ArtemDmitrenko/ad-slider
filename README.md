@@ -69,7 +69,4 @@ $('selector').adslider('getOptions');
 
 Для сведения к минимуму зависимости слоев между собой применяется паттерн проектирования **Observer (Наблюдатель)**, реализующий у слоя механизм, который позволяет объекту этого слоя получать оповещения об изменении состояния других объектов в других слоях и тем самым наблюдать за ними.
 ## UML-диаграмма
-![alt-текст](https://github.com/ArtemDmitrenko/ad-slider/master/uml-diagram.jpg "UML-диаграмма")
-
-
-
+![UML-диаграмма](https://github.com/ArtemDmitrenko/ad-slider/raw/master/uml-diagram.jpg)
