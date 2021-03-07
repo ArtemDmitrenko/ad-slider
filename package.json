@@ -7,7 +7,7 @@
     "test": "jest",
     "dev": "parcel src/index.pug --out-dir dist --open",
     "eslint": "eslint src/**",
-    "build": "parcel build src/index.pug --public-url /ad-slider/index.html --no-content-hash --out-dir docs"
+    "build": "parcel build src/index.pug --public-url ./ --out-dir docs"
   },
   "jest": {
     "collectCoverage": true,
