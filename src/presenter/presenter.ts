@@ -1,4 +1,4 @@
-import { Model } from '../model/model';
+import { Config, Model } from '../model/model';
 import View from '../view/view';
 
 export default class Presenter {
@@ -6,10 +6,9 @@ export default class Presenter {
 
   private view: View;
 
-  constructor(model: Model, view: View) {
-    this.model = model;
-    this.view = view;
-
+  constructor(container: HTMLElement, options: Config) {
+    this.model = new Model(options);
+    this.view = new View(container);
     this.updateView();
     this.addObservers();
   }

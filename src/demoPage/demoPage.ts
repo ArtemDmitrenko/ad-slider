@@ -91,7 +91,6 @@ export default class DemoPage {
   }
 
   private updateSlider(): void {
-    console.log(this.options)
     this.options.curValue = Number(this.$inputCurValue.value);
     this.options.limits.min = Number(this.$inputMinValue.value);
     this.options.limits.max = Number(this.$inputMaxValue.value);

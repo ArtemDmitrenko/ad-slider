@@ -1,8 +1,6 @@
 export default class BarView {
   public $bar!: HTMLElement;
 
-  private $parent!: HTMLElement;
-
   private barPos!: number;
 
   constructor($parent: HTMLElement) {
@@ -10,7 +8,6 @@ export default class BarView {
   }
 
   private render($parent: HTMLElement): void {
-    this.$parent = $parent;
     this.$bar = document.createElement('div');
     this.$bar.classList.add('adslider__bar');
     $parent.append(this.$bar);

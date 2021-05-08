@@ -1,7 +1,6 @@
 import './main.scss';
 
-import { Config, Model } from './model/model';
-import View from './view/view';
+import { Config } from './model/model';
 import Presenter from './presenter/presenter';
 
 (function ($) {
@@ -10,30 +9,28 @@ import Presenter from './presenter/presenter';
       if ($(this).data('inited')) {
         $.error('Plugin has already been initialized on this selector!');
       } else {
-        const view = new View(container);
-        const model = new Model(options);
-        const presenter = new Presenter(model, view);
+        const presenter = new Presenter(container, options);
         $(this).data({
-          view, model, presenter, inited: true,
+          presenter, inited: true,
         });
       }
     },
     update(options: Config) {
-      const model = $(this).data('model');
+      const { model } = $(this).data('presenter');
       const presenter = $(this).data('presenter');
       model.options = options;
       model.init(model.options);
       presenter.updateView();
     },
     updateCurValue(curValue: number) {
-      const model = $(this).data('model');
+      const { model } = $(this).data('presenter');
       const presenter = $(this).data('presenter');
       model.options.curValue = curValue;
       model.init(model.options);
       presenter.updateView();
     },
     getOptions(): Object {
-      return $(this).data('model').options;
+      return $(this).data('presenter').model.options;
     },
   };
 
