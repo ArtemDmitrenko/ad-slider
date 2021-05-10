@@ -1,11 +1,18 @@
-export default class HandlerView {
+import EventObserver from '../../eventObserver/eventObserver';
+
+export default class HandlerView extends EventObserver {
   public $handler!: HTMLElement;
 
   private $parent!: HTMLElement;
 
   private handlerPos!: number;
 
+  private mouseMoveListener!: any;
+
+  private mouseUpListener!: any;
+
   constructor($parent: HTMLElement) {
+    super();
     this.render($parent);
   }
 
@@ -14,6 +21,34 @@ export default class HandlerView {
     this.$handler = document.createElement('div');
     this.$handler.classList.add('adslider__handler');
     this.$parent.append(this.$handler);
+    this.$handler.addEventListener('mousedown', this.moveHandler.bind(this));
+  }
+
+  private moveHandler(event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    const data = { event, handler: this.$handler };
+    this.broadcast('handlerMousedownEvent', data);
+    this.bindMousemove(event);
+  }
+
+  private bindMousemove(event: MouseEvent): void {
+    this.mouseMoveListener = this.mouseMove.bind(this);
+    this.mouseUpListener = this.mouseUp.bind(this);
+    // if (event.type === 'mousedown') {
+    document.addEventListener('mousemove', this.mouseMoveListener);
+    document.addEventListener('mouseup', this.mouseUpListener);
+    // }
+  }
+
+  private mouseMove(e: MouseEvent): void {
+    const data = { shift: null, e, handler: this };
+    this.broadcast('handlerMousemoveEvent', data);
+  }
+
+  private mouseUp(): void {
+    document.removeEventListener('mouseup', this.mouseUpListener);
+    document.removeEventListener('mousemove', this.mouseMoveListener);
   }
 
   public getLength(): number {

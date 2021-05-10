@@ -1,8 +1,16 @@
-export default class TrackView {
+import EventObserver from '../../eventObserver/eventObserver';
+
+export default class TrackView extends EventObserver {
   public $track!: HTMLElement;
 
   constructor($parent: HTMLElement) {
+    super();
     this.render($parent);
+    this.$track.addEventListener('mousedown', this.changeHandlerPos.bind(this));
+  }
+
+  private changeHandlerPos(event: MouseEvent): void {
+    this.broadcast('handlerMousedownEvent', event);
   }
 
   private render($parent: HTMLElement): void {

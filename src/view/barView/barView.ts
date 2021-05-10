@@ -1,10 +1,18 @@
-export default class BarView {
+import EventObserver from '../../eventObserver/eventObserver';
+
+export default class BarView extends EventObserver {
   public $bar!: HTMLElement;
 
   private barPos!: number;
 
   constructor($parent: HTMLElement) {
+    super();
     this.render($parent);
+    this.$bar.addEventListener('mousedown', this.changeHandlerPos.bind(this));
+  }
+
+  private changeHandlerPos(event: MouseEvent): void {
+    this.broadcast('handlerMousedownEvent', event);
   }
 
   private render($parent: HTMLElement): void {

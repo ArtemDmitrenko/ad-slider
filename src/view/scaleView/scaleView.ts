@@ -1,6 +1,8 @@
 import { Config } from '../../model/model';
+import EventObserver from '../../eventObserver/eventObserver';
 
-export default class ScaleView {
+
+export default class ScaleView extends EventObserver {
   private $parent!: HTMLElement;
 
   public $scale!: HTMLElement;
@@ -8,7 +10,13 @@ export default class ScaleView {
   private numberOfLines!: number;
 
   constructor($parent: HTMLElement) {
+    super();
     this.render($parent);
+    this.$scale.addEventListener('mousedown', this.changeHandlerPos.bind(this));
+  }
+
+  private changeHandlerPos(event: MouseEvent): void {
+    this.broadcast('handlerMousedownEvent', event);
   }
 
   private render($parent: HTMLElement): void {

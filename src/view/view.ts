@@ -10,8 +10,6 @@ export default class View extends EventObserver {
 
   public handlerView!: HandlerView;
 
-  public handlerViewTo!: HandlerView;
-
   public handlerViewFrom!: HandlerView;
 
   public valueNoteViewFrom!: ValueNoteView;
@@ -30,14 +28,12 @@ export default class View extends EventObserver {
 
   private $adslider!: HTMLElement;
 
-  private mouseMoveListener!: any;
-
-  private mouseUpListener!: any;
+  private handlerShift!: number;
 
   constructor(container: HTMLElement) {
     super();
     this.render(container);
-    this.addListeners();
+    this.addObservers();
   }
 
   private render(container: HTMLElement): void {
@@ -111,16 +107,6 @@ export default class View extends EventObserver {
     }
   }
 
-  private addListeners(): void {
-    this.handlerView.$handler.addEventListener('mousedown', this.moveHandler.bind(this, this.handlerView));
-    this.trackView.$track.addEventListener('mousedown', this.changeHandlerPos.bind(this));
-    this.barView.$bar.addEventListener('mousedown', this.changeHandlerPos.bind(this));
-    this.scaleView.$scale.addEventListener('mousedown', this.changeHandlerPos.bind(this));
-    if (this.isDouble()) {
-      this.handlerViewFrom.$handler.addEventListener('mousedown', this.moveHandler.bind(this, this.handlerViewFrom));
-    }
-  }
-
   private changeHandlerPos(e: MouseEvent): void {
     if (this.isDouble()) {
       if (this.handlerView.$handler.classList.contains('adslider__handler_horizontal')) {
@@ -129,9 +115,11 @@ export default class View extends EventObserver {
         const oddToFrom: number = handlerToPos - handlerFromPos;
         const middlePos = oddToFrom / 2 + handlerFromPos + this.handlerView.getLength() / 2;
         if (e.clientX <= middlePos) {
-          this.mouseMove(this.handlerViewFrom.getLength() / 2, this.handlerViewFrom, e);
+          const data = { shift: this.handlerViewFrom.getLength() / 2, e, handler: this.handlerViewFrom };
+          this.mouseMove(data);
         } else {
-          this.mouseMove(this.handlerView.getLength() / 2, this.handlerView, e);
+          const data = { shift: this.handlerView.getLength() / 2, e, handler: this.handlerView };
+          this.mouseMove(data);
         }
       } else {
         const handlerFromPos = this.handlerViewFrom.$handler.getBoundingClientRect().top;
@@ -139,13 +127,16 @@ export default class View extends EventObserver {
         const oddToFrom: number = handlerToPos - handlerFromPos;
         const middlePos = oddToFrom / 2 + handlerFromPos + this.handlerView.getLength() / 2;
         if (e.clientY >= middlePos) {
-          this.mouseMove(this.handlerViewFrom.getLength() / 2, this.handlerViewFrom, e);
+          const data = { shift: this.handlerViewFrom.getLength() / 2, e, handler: this.handlerViewFrom };
+          this.mouseMove(data);
         } else {
-          this.mouseMove(this.handlerView.getLength() / 2, this.handlerView, e);
+          const data = { shift: this.handlerView.getLength() / 2, e, handler: this.handlerView };
+          this.mouseMove(data);
         }
       }
     } else {
-      this.mouseMove(this.handlerView.getLength() / 2, this.handlerView, e);
+      const data = { shift: this.handlerView.getLength() / 2, e, handler: this.handlerView };
+      this.mouseMove(data);
     }
   }
 
@@ -168,32 +159,21 @@ export default class View extends EventObserver {
     this.valueNoteViewFrom.setVerticalView(vertical);
   }
 
-  private moveHandler(handler: HandlerView, event: MouseEvent): void {
-    event.preventDefault();
-    event.stopPropagation();
-    this.bindMousemove(event, this.calcShift(event, handler.$handler), handler);
+  private moveHandler(data): void {
+    this.calcShift(data.event, data.handler);
   }
 
-  private bindMousemove(event: MouseEvent, shift: number, handler: HandlerView): void {
-    this.mouseMoveListener = this.mouseMove.bind(this, shift, handler);
-    this.mouseUpListener = this.mouseUp.bind(this);
-    // if (event.type === 'mousedown') {
-    document.addEventListener('mousemove', this.mouseMoveListener);
-    document.addEventListener('mouseup', this.mouseUpListener);
-    // }
-  }
-
-  private mouseMove(shift: number, handler: HandlerView, e: MouseEvent): void {
-    let newPos = this.calcnewPos(shift, e);
-    const edge: number = this.getEdge(handler);
+  private mouseMove(data: { shift: number, e: MouseEvent, handler: HandlerView }): void {
+    let newPos;
+    if (data.e.type === 'mousedown') {
+      newPos = this.calcnewPos(data.shift, data.e);
+    } else {
+      newPos = this.calcnewPos(this.handlerShift, data.e);
+    }
+    const edge: number = this.getEdge(data.handler);
     newPos = this.checknewPos(newPos);
-    const data = { newPos, edge, handler: handler.$handler };
-    this.broadcast('handlerMove', data);
-  }
-
-  private mouseUp(): void {
-    document.removeEventListener('mouseup', this.mouseUpListener);
-    document.removeEventListener('mousemove', this.mouseMoveListener);
+    const data2 = { newPos, edge, handler: data.handler.$handler };
+    this.broadcast('handlerMove', data2);
   }
 
   private getEdge(handler: HandlerView): number {
@@ -212,14 +192,14 @@ export default class View extends EventObserver {
     return newPosCopy;
   }
 
-  private calcShift(e: MouseEvent, handler: HTMLElement): number {
+  private calcShift(e: MouseEvent, handler: HTMLElement): void {
     let shift: number;
     if (this.isVertical()) {
       shift = e.clientY - handler.getBoundingClientRect().bottom;
     } else {
       shift = e.clientX - handler.getBoundingClientRect().left;
     }
-    return Math.abs(shift);
+    this.handlerShift = Math.abs(shift);
   }
 
   private isVertical(): boolean {
@@ -289,5 +269,15 @@ export default class View extends EventObserver {
     this.valueNoteViewFrom.showValueNote(true);
     this.valueNoteViewCommon.$note.remove();
     this.valueNoteViewCommon = null;
+  }
+
+  private addObservers(): void {
+    this.handlerView.addObserver('handlerMousedownEvent', this.moveHandler.bind(this));
+    this.handlerViewFrom.addObserver('handlerMousedownEvent', this.moveHandler.bind(this));
+    this.handlerView.addObserver('handlerMousemoveEvent', this.mouseMove.bind(this));
+    this.handlerViewFrom.addObserver('handlerMousemoveEvent', this.mouseMove.bind(this));
+    this.trackView.addObserver('handlerMousedownEvent', this.changeHandlerPos.bind(this));
+    this.barView.addObserver('handlerMousedownEvent', this.changeHandlerPos.bind(this));
+    this.scaleView.addObserver('handlerMousedownEvent', this.changeHandlerPos.bind(this));
   }
 }
