@@ -61,11 +61,11 @@ export class Model extends EventObserver {
 
   public init(options: Config): void {
     this.setLimits(options.limits);
+    this.setStep(options.step);
     this.setValueTo(options.to);
     this.setValueFrom(options.from);
     this.setCurValue(options.curValue);
     this.setDouble(options.double, options.from);
-    this.setStep(options.step);
   }
 
   private setDouble(double: boolean, from: number): void {
@@ -88,16 +88,39 @@ export class Model extends EventObserver {
     if (value < this.limits.min || value > this.limits.max) {
       throw new Error('Value must be in range of min and max limits');
     }
-    this.curValue = this.to || value;
-    this.options.curValue = this.to || value;
+    if (this.step) {
+      const newVal = this.setRoundedCurVal(value, this.step, this.limits.min, this.limits.max);
+      this.curValue = this.to || newVal;
+      this.options.curValue = this.to || newVal;
+    }
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  private setRoundedCurVal(value: number, step: number, min: number, max: number): number {
+    const odd: number = value % step;
+    if (odd === 0) {
+      return value;
+    }
+    const numberOfSteps = Math.round(value / step);
+    let newCurValue = step * numberOfSteps;
+    if (newCurValue < min) {
+      newCurValue += step;
+    }
+    if (newCurValue > max) {
+      newCurValue -= step;
+    }
+    return newCurValue;
   }
 
   private setValueTo(value: number): void {
     if (value < this.limits.min || value > this.limits.max) {
       throw new Error('Value must be in range of min and max limits');
     }
-    this.to = value;
-    this.options.to = value;
+    if (this.step) {
+      const newVal = this.setRoundedCurVal(value, this.step, this.limits.min, this.limits.max);
+      this.to = newVal;
+      this.options.to = newVal;
+    }
   }
 
   private setValueFrom(value: number): void {
@@ -107,8 +130,11 @@ export class Model extends EventObserver {
     if (value > this.to && this.to) {
       throw new Error('Value From must be less than To');
     }
-    this.from = value;
-    this.options.from = value;
+    if (this.step) {
+      const newVal = this.setRoundedCurVal(value, this.step, this.limits.min, this.limits.max);
+      this.from = newVal;
+      this.options.from = newVal;
+    }
   }
 
   private setStep(value: number): void {

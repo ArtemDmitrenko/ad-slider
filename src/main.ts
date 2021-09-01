@@ -2,9 +2,9 @@ import DemoPage from './demoPage/demoPage';
 
 let options1 = {
   limits: { min: 0, max: 100 },
-  curValue: 35,
+  curValue: 12,
   showValueNote: true,
-  // step: 20,
+  step: 20,
   // double: true,
   // from: 2000,
   // to: 3000,
@@ -24,7 +24,7 @@ const options3 = {
   limits: { min: 0, max: 1000 },
   curValue: 500,
   showValueNote: true,
-  // step: 20,
+  // step: 0,
   // double: true,
   // from: 40,
   // to: 90,
