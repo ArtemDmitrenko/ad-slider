@@ -106,9 +106,7 @@
     }
   }
   &__scale {
-    display: flex;
     position: absolute;
-    justify-content: space-between;
     cursor: pointer;
     &_horizontal {
       bottom: -15px;
@@ -125,7 +123,7 @@
   }
   &__scaleLine {
     background-color: black;
-    position: relative;
+    position: absolute;
     &_horizontal {
       width: 2px;
       height: 12px;

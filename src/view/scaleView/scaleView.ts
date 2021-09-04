@@ -1,7 +1,6 @@
 import { Config } from '../../model/model';
 import EventObserver from '../../eventObserver/eventObserver';
 
-
 export default class ScaleView extends EventObserver {
   private $parent!: HTMLElement;
 
@@ -24,7 +23,7 @@ export default class ScaleView extends EventObserver {
     this.$scale = document.createElement('div');
     this.$scale.classList.add('adslider__scale');
     this.$parent.append(this.$scale);
-    this.renderScaleLines();
+    this.renderScaleLine();
   }
 
   public drawScale(options: Config, $handler: HTMLElement): void {
@@ -35,19 +34,17 @@ export default class ScaleView extends EventObserver {
       this.$scale.classList.remove('adslider__scale_vertical');
       this.$scale.classList.add('adslider__scale_horizontal');
     }
+    const {step} = options;
     const odd: number = options.limits.max - options.limits.min;
-    this.calcNumberOfLines(odd);
+    this.calcNumberOfLines(step, odd);
     this.setScalePos($handler);
-    this.renderScaleLines();
-    this.renderScaleSign(options, odd);
+    this.renderScaleLine();
+    this.createListOfScaleLines(options);
+    this.renderScaleSign(options);
   }
 
-  private calcNumberOfLines(odd: number): number {
-    if (odd <= 100) {
-      this.numberOfLines = 6;
-    } else {
-      this.numberOfLines = 3;
-    }
+  private calcNumberOfLines(step: number, odd: number): number {
+    this.numberOfLines = odd % step === 0 ? odd / step + 1 : Math.floor(odd / step + 2);
     return this.numberOfLines;
   }
 
@@ -74,31 +71,36 @@ export default class ScaleView extends EventObserver {
     }
   }
 
-  private renderScaleLines(): void {
+  private renderScaleLine(): HTMLElement {
     const line: HTMLElement = document.createElement('div');
     line.classList.add('adslider__scaleLine');
     if (this.isVertical()) {
       line.classList.add('adslider__scaleLine_vertical');
-      this.createListOfScaleLines(line);
     } else {
       line.classList.add('adslider__scaleLine_horizontal');
-      this.createListOfScaleLines(line);
     }
+    return line;
   }
 
-  private createListOfScaleLines(line: HTMLElement): void {
-    const fragment = document.createDocumentFragment();
-    for (let i = 0; i < this.numberOfLines; i += 1) {
-      fragment.appendChild(line.cloneNode(true));
-    }
+  private createListOfScaleLines(options: Config): void {
     this.$scale.innerHTML = '';
-    this.$scale.append(fragment);
+    const stepPercentage = (options.step / (options.limits.max - options.limits.min)) * 100;
+    for (let i = 0; i < this.numberOfLines; i += 1) {
+      const line = this.renderScaleLine();
+      this.$scale.append(line);
+      const position = i * stepPercentage > 100 ? 100 : i * stepPercentage;
+      if (this.isVertical()) {
+        line.style.bottom = `${position}%`;
+      } else {
+        line.style.left = `${position}%`;
+      }
+    }
   }
 
-  private renderScaleSign(options: Config, odd: number): void {
+  private renderScaleSign(options: Config): void {
     const listOfLines = this.$scale.querySelectorAll('.adslider__scaleLine');
     listOfLines.forEach((el, index) => {
-      const value: number = this.calcSigns(index, options, odd);
+      const value: number = this.calcSigns(index, options);
       const $text = document.createElement('div');
       $text.classList.add('adslider__scaleText');
       if (this.isVertical()) {
@@ -111,15 +113,14 @@ export default class ScaleView extends EventObserver {
     });
   }
 
-  private calcSigns(index: number, options: Config, odd: number): number {
+  private calcSigns(index: number, options: Config): number {
     let value: number;
     if (index === 0) {
       value = options.limits.min;
-    }
-    if (index === this.numberOfLines - 1) {
+    } else if (index === this.numberOfLines - 1) {
       value = options.limits.max;
     } else {
-      value = odd * (index / (this.numberOfLines - 1)) + options.limits.min;
+      value = index * options.step;
     }
     return Math.round(value);
   }

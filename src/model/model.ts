@@ -203,6 +203,8 @@ export class Model extends EventObserver {
   }
 
   private calcValueWithStep(value: number, curValue: number): number {
+    const AllNumberOfSteps: number = Math.floor((this.limits.max - this.limits.min) / this.step);
+    const maxStepValue: number = AllNumberOfSteps * this.step;
     const numberOfSteps = Math.round((value - curValue) / this.step);
     let newValue: number = curValue + this.step * numberOfSteps;
     if (newValue < this.limits.min) {
@@ -210,6 +212,13 @@ export class Model extends EventObserver {
     }
     if (newValue > this.limits.max) {
       newValue -= this.step;
+    }
+    if (value > maxStepValue) {
+      if (value > maxStepValue + (this.limits.max - maxStepValue) / 2) {
+        newValue = this.limits.max;
+      } else {
+        newValue = maxStepValue;
+      }
     }
     return newValue;
   }
