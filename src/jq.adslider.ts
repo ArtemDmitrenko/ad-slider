@@ -29,7 +29,7 @@ import Presenter from './presenter/presenter';
       model.init(model.options);
       presenter.updateView();
     },
-    getOptions(): Object {
+    getOptions(): Config {
       return $(this).data('presenter').model.options;
     },
   };

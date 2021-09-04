@@ -11,6 +11,10 @@ export default class ScaleView extends EventObserver {
   constructor($parent: HTMLElement) {
     super();
     this.render($parent);
+    this.addListeners();
+  }
+
+  private addListeners(): void {
     this.$scale.addEventListener('mousedown', this.changeHandlerPos.bind(this));
   }
 
@@ -34,7 +38,7 @@ export default class ScaleView extends EventObserver {
       this.$scale.classList.remove('adslider__scale_vertical');
       this.$scale.classList.add('adslider__scale_horizontal');
     }
-    const {step} = options;
+    const { step } = options;
     const odd: number = options.limits.max - options.limits.min;
     this.calcNumberOfLines(step, odd);
     this.setScalePos($handler);

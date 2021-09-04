@@ -90,11 +90,6 @@ export default class ValueNoteView {
     return pos;
   }
 
-  public getValue(): number {
-    const value: number = parseInt(this.$value.textContent, 10);
-    return value;
-  }
-
   private isVertical(): boolean {
     if (this.$note.classList.contains('adslider__note_vertical')) {
       return true;

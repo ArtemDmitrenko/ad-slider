@@ -231,14 +231,14 @@ describe('view', () => {
         document.dispatchEvent(nextmousemove);
         expect(callback).toHaveBeenCalledTimes(1);
       });
-      test('Should set newPosCopy = 0 if newPos < 0 in function checknewPos', () => {
+      test('Should set newPosCopy = 0 if newPos < 0 in function checkNewPos', () => {
         mousedown = new MouseEvent('mousedown', { clientX: 12 });
         mousemove = new MouseEvent('mousemove', { clientX: 10 });
         view.handlerView.$handler.dispatchEvent(mousedown);
         document.dispatchEvent(mousemove);
         expect(callback).toBeCalled();
       });
-      test('Should set newPosCopy = edge if newPos > edge in function checknewPos', () => {
+      test('Should set newPosCopy = edge if newPos > edge in function checkNewPos', () => {
         mousedown = new MouseEvent('mousedown', { clientX: 185 });
         mousemove = new MouseEvent('mousemove', { clientX: 500 });
         view.handlerView.$handler.dispatchEvent(mousedown);

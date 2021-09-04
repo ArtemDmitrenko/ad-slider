@@ -55,7 +55,16 @@ export default class View extends EventObserver {
     this.valueNoteView.$note.classList.add('adslider__note_to');
   }
 
-  public updateView(options: any): void {
+  public updateView(options: {
+    vertical: boolean;
+    curValue: number;
+    limits: { max: number; min: number };
+    showValueNote: boolean;
+    double: boolean;
+    from: number;
+    to: number;
+    step: number;
+  }): void {
     this.setVerticalViewForSingle(options.vertical);
     this.handlerView.calcPos({
       edge: this.getEdge(this.handlerView),
@@ -74,7 +83,14 @@ export default class View extends EventObserver {
         this.handlerViewFrom.$handler.classList.add('adslider__handler_from');
         this.valueNoteViewFrom = new ValueNoteView(this.$adslider);
         this.valueNoteViewFrom.$note.classList.add('adslider__note_from');
-        this.handlerViewFrom.$handler.addEventListener('mousedown', this.moveHandler.bind(this, this.handlerViewFrom));
+        this.handlerViewFrom.addObserver(
+          'handlerMousedownEvent',
+          this.moveHandler.bind(this),
+        );
+        this.handlerViewFrom.addObserver(
+          'handlerMousemoveEvent',
+          this.mouseMove.bind(this),
+        );
       }
       this.setVerticalViewForDouble(options.vertical);
       this.handlerViewFrom.calcPos({
@@ -100,8 +116,8 @@ export default class View extends EventObserver {
       if (this.handlerViewFrom) {
         this.handlerViewFrom.$handler.remove();
         this.valueNoteViewFrom.$note.remove();
-        this.handlerViewFrom = null;
-        this.valueNoteViewFrom = null;
+        delete this.handlerViewFrom;
+        delete this.valueNoteViewFrom;
       }
       this.barView.setLength(this.handlerView.$handler);
     }
@@ -109,16 +125,28 @@ export default class View extends EventObserver {
 
   private changeHandlerPos(e: MouseEvent): void {
     if (this.isDouble()) {
-      if (this.handlerView.$handler.classList.contains('adslider__handler_horizontal')) {
+      if (
+        this.handlerView.$handler.classList.contains(
+          'adslider__handler_horizontal',
+        )
+      ) {
         const handlerFromPos = this.handlerViewFrom.$handler.getBoundingClientRect().left;
         const handlerToPos = this.handlerView.$handler.getBoundingClientRect().left;
         const oddToFrom: number = handlerToPos - handlerFromPos;
         const middlePos = oddToFrom / 2 + handlerFromPos + this.handlerView.getLength() / 2;
         if (e.clientX <= middlePos) {
-          const data = { shift: this.handlerViewFrom.getLength() / 2, e, handler: this.handlerViewFrom };
+          const data = {
+            shift: this.handlerViewFrom.getLength() / 2,
+            e,
+            handler: this.handlerViewFrom,
+          };
           this.mouseMove(data);
         } else {
-          const data = { shift: this.handlerView.getLength() / 2, e, handler: this.handlerView };
+          const data = {
+            shift: this.handlerView.getLength() / 2,
+            e,
+            handler: this.handlerView,
+          };
           this.mouseMove(data);
         }
       } else {
@@ -127,15 +155,27 @@ export default class View extends EventObserver {
         const oddToFrom: number = handlerToPos - handlerFromPos;
         const middlePos = oddToFrom / 2 + handlerFromPos + this.handlerView.getLength() / 2;
         if (e.clientY >= middlePos) {
-          const data = { shift: this.handlerViewFrom.getLength() / 2, e, handler: this.handlerViewFrom };
+          const data = {
+            shift: this.handlerViewFrom.getLength() / 2,
+            e,
+            handler: this.handlerViewFrom,
+          };
           this.mouseMove(data);
         } else {
-          const data = { shift: this.handlerView.getLength() / 2, e, handler: this.handlerView };
+          const data = {
+            shift: this.handlerView.getLength() / 2,
+            e,
+            handler: this.handlerView,
+          };
           this.mouseMove(data);
         }
       }
     } else {
-      const data = { shift: this.handlerView.getLength() / 2, e, handler: this.handlerView };
+      const data = {
+        shift: this.handlerView.getLength() / 2,
+        e,
+        handler: this.handlerView,
+      };
       this.mouseMove(data);
     }
   }
@@ -159,19 +199,23 @@ export default class View extends EventObserver {
     this.valueNoteViewFrom.setVerticalView(vertical);
   }
 
-  private moveHandler(data): void {
+  private moveHandler(data: { event: MouseEvent; handler: HTMLElement }): void {
     this.calcShift(data.event, data.handler);
   }
 
-  private mouseMove(data: { shift: number, e: MouseEvent, handler: HandlerView }): void {
+  private mouseMove(data: {
+    shift: number;
+    e: MouseEvent;
+    handler: HandlerView;
+  }): void {
     let newPos;
     if (data.e.type === 'mousedown') {
-      newPos = this.calcnewPos(data.shift, data.e);
+      newPos = this.calcNewPos(data.shift, data.e);
     } else {
-      newPos = this.calcnewPos(this.handlerShift, data.e);
+      newPos = this.calcNewPos(this.handlerShift, data.e);
     }
     const edge: number = this.getEdge(data.handler);
-    newPos = this.checknewPos(newPos);
+    newPos = this.checkNewPos(newPos);
     const data2 = { newPos, edge, handler: data.handler.$handler };
     this.broadcast('handlerMove', data2);
   }
@@ -181,7 +225,7 @@ export default class View extends EventObserver {
     return edge;
   }
 
-  private checknewPos(newPos: number): number {
+  private checkNewPos(newPos: number): number {
     const edge = this.getEdge(this.handlerView);
     let newPosCopy = newPos;
     if (newPos < 0) {
@@ -216,17 +260,22 @@ export default class View extends EventObserver {
     return false;
   }
 
-  private calcnewPos(shift: number, e: MouseEvent): number {
+  private calcNewPos(shift: number, e: MouseEvent): number {
     let newPos;
     if (this.isVertical()) {
-      newPos = this.trackView.$track.getBoundingClientRect().bottom - e.clientY - shift;
+      newPos = this.trackView.$track.getBoundingClientRect().bottom
+        - e.clientY
+        - shift;
     } else {
       newPos = e.clientX - shift - this.trackView.$track.getBoundingClientRect().left;
     }
     return newPos;
   }
 
-  public setViewOfOneNote(options: any): void {
+  public setViewOfOneNote(options: {
+    valueFrom: number;
+    valueTo: number;
+  }): void {
     if (this.isSmallDistanceBetweenNotes()) {
       this.makeCommonNoteView(options.valueFrom, options.valueTo);
     } else if (this.valueNoteViewCommon) {
@@ -268,16 +317,37 @@ export default class View extends EventObserver {
     this.valueNoteView.showValueNote(true);
     this.valueNoteViewFrom.showValueNote(true);
     this.valueNoteViewCommon.$note.remove();
-    this.valueNoteViewCommon = null;
+    delete this.valueNoteViewCommon;
   }
 
   private addObservers(): void {
-    this.handlerView.addObserver('handlerMousedownEvent', this.moveHandler.bind(this));
-    this.handlerViewFrom.addObserver('handlerMousedownEvent', this.moveHandler.bind(this));
-    this.handlerView.addObserver('handlerMousemoveEvent', this.mouseMove.bind(this));
-    this.handlerViewFrom.addObserver('handlerMousemoveEvent', this.mouseMove.bind(this));
-    this.trackView.addObserver('handlerMousedownEvent', this.changeHandlerPos.bind(this));
-    this.barView.addObserver('handlerMousedownEvent', this.changeHandlerPos.bind(this));
-    this.scaleView.addObserver('handlerMousedownEvent', this.changeHandlerPos.bind(this));
+    this.handlerView.addObserver(
+      'handlerMousedownEvent',
+      this.moveHandler.bind(this),
+    );
+    this.handlerViewFrom.addObserver(
+      'handlerMousedownEvent',
+      this.moveHandler.bind(this),
+    );
+    this.handlerView.addObserver(
+      'handlerMousemoveEvent',
+      this.mouseMove.bind(this),
+    );
+    this.handlerViewFrom.addObserver(
+      'handlerMousemoveEvent',
+      this.mouseMove.bind(this),
+    );
+    this.trackView.addObserver(
+      'handlerMousedownEvent',
+      this.changeHandlerPos.bind(this),
+    );
+    this.barView.addObserver(
+      'handlerMousedownEvent',
+      this.changeHandlerPos.bind(this),
+    );
+    this.scaleView.addObserver(
+      'handlerMousedownEvent',
+      this.changeHandlerPos.bind(this),
+    );
   }
 }

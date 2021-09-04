@@ -110,13 +110,13 @@
     cursor: pointer;
     &_horizontal {
       bottom: -15px;
-      padding-top: 15px;
+      padding-top: 27px;
       padding-bottom: 20px;  
     }
     &_vertical {
       left: -15px;
       padding-left: 20px;
-      padding-right: 15px;
+      padding-right: 27px;
       flex-direction: column-reverse;
     }
   

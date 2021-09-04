@@ -1,10 +1,12 @@
 export default class EventObserver {
+  // eslint-disable-next-line @typescript-eslint/ban-types
   public observers: { [event: string]: Function[] };
 
   constructor() {
     this.observers = {};
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-types
   public addObserver(event: string, newObserver: Function): void {
     if (this.observers[event]) {
       if (this.observers[event].includes(newObserver)) {
@@ -17,7 +19,7 @@ export default class EventObserver {
     }
   }
 
-  public broadcast(event: string, data?: any): void {
+  public broadcast(event: string, data?: unknown): void {
     if (this.observers[event] === undefined) {
       throw new Error('There is no such observer in the list!');
     }

@@ -8,6 +8,10 @@ export default class BarView extends EventObserver {
   constructor($parent: HTMLElement) {
     super();
     this.render($parent);
+    this.addListeners();
+  }
+
+  private addListeners(): void {
     this.$bar.addEventListener('mousedown', this.changeHandlerPos.bind(this));
   }
 
@@ -51,13 +55,22 @@ export default class BarView extends EventObserver {
     }
   }
 
-  public setLengthForDouble(options: any): void {
+  public setLengthForDouble(options: {
+    valueFrom: number;
+    limits: { min: number; max: number };
+    valueTo: number;
+    edge: number;
+    handler: HTMLElement;
+  }): void {
     const oddFromMin: number = options.valueFrom - options.limits.min;
     const oddToMin: number = options.valueTo - options.limits.min;
     const oddMaxMin: number = options.limits.max - options.limits.min;
     const handlerPosFrom: number = options.edge * (oddFromMin / oddMaxMin);
     const handlerPosTo: number = options.edge * (oddToMin / oddMaxMin);
-    const handlerLength: number = parseInt(getComputedStyle(options.handler).width, 10);
+    const handlerLength: number = parseInt(
+      getComputedStyle(options.handler).width,
+      10,
+    );
     const sumToLength: number = handlerPosTo + handlerLength / 2;
     const sumFromLength: number = handlerPosFrom + handlerLength / 2;
     const barLength: number = Math.abs(sumToLength - sumFromLength);

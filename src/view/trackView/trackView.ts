@@ -6,6 +6,10 @@ export default class TrackView extends EventObserver {
   constructor($parent: HTMLElement) {
     super();
     this.render($parent);
+    this.addListeners();
+  }
+
+  private addListeners(): void {
     this.$track.addEventListener('mousedown', this.changeHandlerPos.bind(this));
   }
 

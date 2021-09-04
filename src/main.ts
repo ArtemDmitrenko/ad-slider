@@ -1,6 +1,6 @@
 import DemoPage from './demoPage/demoPage';
 
-let options1 = {
+const options1 = {
   limits: { min: 0, max: 100 },
   curValue: 12,
   showValueNote: true,
@@ -41,12 +41,13 @@ const options4 = {
   vertical: true,
 };
 
-$('.container1').adslider(options1);
-$('.container2').adslider(options2);
-$('.container3').adslider(options3);
-$('.container4').adslider(options4);
+$('.js-container1').adslider(options1);
+$('.js-container2').adslider(options2);
+$('.js-container3').adslider(options3);
+$('.js-container4').adslider(options4);
 
-const demopage1 = new DemoPage('.container1');
-const demopage2 = new DemoPage('.container2');
-const demopage3 = new DemoPage('.container3');
-const demopage4 = new DemoPage('.container4');
+/* eslint-disable no-new */
+new DemoPage('.js-container1');
+new DemoPage('.js-container2');
+new DemoPage('.js-container3');
+new DemoPage('.js-container4');

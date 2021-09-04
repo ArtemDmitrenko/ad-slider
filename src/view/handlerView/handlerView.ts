@@ -7,9 +7,9 @@ export default class HandlerView extends EventObserver {
 
   private handlerPos!: number;
 
-  private mouseMoveListener!: any;
+  private mouseMoveListener!: (e:MouseEvent) => void;
 
-  private mouseUpListener!: any;
+  private mouseUpListener!: (e:MouseEvent) => void;
 
   constructor($parent: HTMLElement) {
     super();
@@ -35,10 +35,10 @@ export default class HandlerView extends EventObserver {
   private bindMousemove(event: MouseEvent): void {
     this.mouseMoveListener = this.mouseMove.bind(this);
     this.mouseUpListener = this.mouseUp.bind(this);
-    // if (event.type === 'mousedown') {
-    document.addEventListener('mousemove', this.mouseMoveListener);
-    document.addEventListener('mouseup', this.mouseUpListener);
-    // }
+    if (event.type === 'mousedown') {
+      document.addEventListener('mousemove', this.mouseMoveListener);
+      document.addEventListener('mouseup', this.mouseUpListener);
+    }
   }
 
   private mouseMove(e: MouseEvent): void {

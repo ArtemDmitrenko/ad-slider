@@ -3,27 +3,27 @@ import { Config } from '../model/model';
 export default class DemoPage {
   private selector: string;
 
-  private $container!: HTMLElement | null;
+  private $container!: HTMLElement;
 
-  private $inputCurValue!: HTMLInputElement | null;
+  private $inputCurValue!: HTMLInputElement;
 
-  private $inputMinValue!: HTMLInputElement | null;
+  private $inputMinValue!: HTMLInputElement;
 
-  private $inputMaxValue!: HTMLInputElement | null;
+  private $inputMaxValue!: HTMLInputElement;
 
-  private $inputShowValue!: HTMLInputElement | null;
+  private $inputShowValue!: HTMLInputElement;
 
-  private $inputStep!: HTMLInputElement | null;
+  private $inputStep!: HTMLInputElement;
 
-  private $inputVertical!: HTMLInputElement | null;
+  private $inputVertical!: HTMLInputElement;
 
-  private $inputDouble!: HTMLInputElement | null;
+  private $inputDouble!: HTMLInputElement;
 
-  private $inputFrom!: HTMLInputElement | null;
+  private $inputFrom!: HTMLInputElement;
 
-  private $inputTo!: HTMLInputElement | null;
+  private $inputTo!: HTMLInputElement;
 
-  private $curValueOnSlider!: HTMLElement | null;
+  private $curValueOnSlider!: HTMLElement;
 
   private options!: Config;
 
@@ -37,18 +37,18 @@ export default class DemoPage {
   }
 
   private findInputs(): void {
-    this.$container = document.querySelector(this.selector);
+    this.$container = document.querySelector(this.selector) as HTMLElement;
     if (this.$container) {
-      this.$inputCurValue = this.$container.querySelector('.panel__curValue');
-      this.$inputMinValue = this.$container.querySelector('.panel__minValue');
-      this.$inputMaxValue = this.$container.querySelector('.panel__maxValue');
-      this.$inputShowValue = this.$container.querySelector('.panel__showNoteValue');
-      this.$inputStep = this.$container.querySelector('.panel__step');
-      this.$inputVertical = this.$container.querySelector('.panel__verticalView');
-      this.$inputDouble = this.$container.querySelector('.panel__double');
-      this.$inputFrom = this.$container.querySelector('.panel__from');
-      this.$inputTo = this.$container.querySelector('.panel__to');
-      this.$curValueOnSlider = this.$container.querySelector('.adslider__value');
+      this.$inputCurValue = this.$container.querySelector('.panel__curValue') as HTMLInputElement;
+      this.$inputMinValue = this.$container.querySelector('.panel__minValue') as HTMLInputElement;
+      this.$inputMaxValue = this.$container.querySelector('.panel__maxValue') as HTMLInputElement;
+      this.$inputShowValue = this.$container.querySelector('.panel__showNoteValue') as HTMLInputElement;
+      this.$inputStep = this.$container.querySelector('.panel__step') as HTMLInputElement;
+      this.$inputVertical = this.$container.querySelector('.panel__verticalView') as HTMLInputElement;
+      this.$inputDouble = this.$container.querySelector('.panel__double') as HTMLInputElement;
+      this.$inputFrom = this.$container.querySelector('.panel__from') as HTMLInputElement;
+      this.$inputTo = this.$container.querySelector('.panel__to') as HTMLInputElement;
+      this.$curValueOnSlider = this.$container.querySelector('.adslider__value') as HTMLElement;
     }
   }
 
@@ -130,15 +130,15 @@ export default class DemoPage {
   }
 
   private updateCurInput(): void {
-    this.$inputCurValue.value = this.$curValueOnSlider.textContent;
+    this.$inputCurValue.value = this.$curValueOnSlider.textContent as string;
   }
 
   private updateInputFromTo(): void {
     if (this.$inputDouble.checked) {
-      const $noteFrom = this.$container.querySelector('.adslider__note_from');
-      const $valueFrom = $noteFrom.querySelector('.adslider__value');
-      const $noteTo = this.$container.querySelector('.adslider__note');
-      const $valueTo = $noteTo.querySelector('.adslider__value');
+      const $noteFrom = this.$container.querySelector('.adslider__note_from') as HTMLElement;
+      const $valueFrom = $noteFrom.querySelector('.adslider__value') as HTMLElement;
+      const $noteTo = this.$container.querySelector('.adslider__note') as HTMLElement;
+      const $valueTo = $noteTo.querySelector('.adslider__value') as HTMLElement;
       this.updateFromInput($valueFrom);
       this.updateToInput($valueTo);
       this.$inputCurValue.style.visibility = 'hidden';
@@ -154,10 +154,10 @@ export default class DemoPage {
   }
 
   private updateFromInput($valueFrom: HTMLElement): void {
-    this.$inputFrom.value = $valueFrom.textContent;
+    this.$inputFrom.value = $valueFrom.textContent as string;
   }
 
   private updateToInput($valueTo: HTMLElement): void {
-    this.$inputTo.value = $valueTo.textContent;
+    this.$inputTo.value = $valueTo.textContent as string;
   }
 }
