@@ -29,7 +29,7 @@ export default class ValueNoteView {
   }
 
   public showValueNote(data: boolean): void {
-    if (data === true) {
+    if (data) {
       this.$note.classList.remove('adslider__note_hide');
       this.$note.classList.add('adslider__note_show');
     } else {
@@ -71,29 +71,14 @@ export default class ValueNoteView {
   }
 
   public getSize(): number {
-    let size: number;
-    if (this.$note.classList.contains('adslider__note_vertical')) {
-      size = parseInt(getComputedStyle(this.$note).height, 10);
-    } else {
-      size = parseInt(getComputedStyle(this.$note).width, 10);
-    }
-    return size;
+    return this.$note.classList.contains('adslider__note_vertical') ? parseInt(getComputedStyle(this.$note).height, 10) : parseInt(getComputedStyle(this.$note).width, 10);
   }
 
   public getPos(): number {
-    let pos: number;
-    if (this.$note.classList.contains('adslider__note_vertical')) {
-      pos = parseInt(getComputedStyle(this.$note).bottom, 10);
-    } else {
-      pos = parseInt(getComputedStyle(this.$note).left, 10);
-    }
-    return pos;
+    return this.$note.classList.contains('adslider__note_vertical') ? parseInt(getComputedStyle(this.$note).bottom, 10) : parseInt(getComputedStyle(this.$note).left, 10);
   }
 
   private isVertical(): boolean {
-    if (this.$note.classList.contains('adslider__note_vertical')) {
-      return true;
-    }
-    return false;
+    return this.$note.classList.contains('adslider__note_vertical');
   }
 }

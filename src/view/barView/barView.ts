@@ -11,18 +11,18 @@ export default class BarView extends EventObserver {
     this.addListeners();
   }
 
+  private render($parent: HTMLElement): void {
+    this.$bar = document.createElement('div');
+    this.$bar.classList.add('adslider__bar');
+    $parent.append(this.$bar);
+  }
+
   private addListeners(): void {
     this.$bar.addEventListener('mousedown', this.changeHandlerPos.bind(this));
   }
 
   private changeHandlerPos(event: MouseEvent): void {
     this.broadcast('handlerMousedownEvent', event);
-  }
-
-  private render($parent: HTMLElement): void {
-    this.$bar = document.createElement('div');
-    this.$bar.classList.add('adslider__bar');
-    $parent.append(this.$bar);
   }
 
   public setVerticalView(verticalView: boolean): void {
@@ -98,10 +98,8 @@ export default class BarView extends EventObserver {
     handlerPosTo: number,
     handlerLength: number,
   ): void {
-    if (handlerPosFrom < handlerPosTo) {
-      this.barPos = handlerPosFrom + handlerLength / 2;
-    } else {
-      this.barPos = handlerPosTo + handlerLength / 2;
-    }
+    this.barPos = handlerPosFrom < handlerPosTo
+      ? handlerPosFrom + handlerLength / 2
+      : handlerPosTo + handlerLength / 2;
   }
 }

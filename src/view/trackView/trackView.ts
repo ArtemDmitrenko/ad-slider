@@ -9,6 +9,12 @@ export default class TrackView extends EventObserver {
     this.addListeners();
   }
 
+  private render($parent: HTMLElement): void {
+    this.$track = document.createElement('div');
+    this.$track.classList.add('adslider__track');
+    $parent.append(this.$track);
+  }
+
   private addListeners(): void {
     this.$track.addEventListener('mousedown', this.changeHandlerPos.bind(this));
   }
@@ -17,20 +23,8 @@ export default class TrackView extends EventObserver {
     this.broadcast('handlerMousedownEvent', event);
   }
 
-  private render($parent: HTMLElement): void {
-    this.$track = document.createElement('div');
-    this.$track.classList.add('adslider__track');
-    $parent.append(this.$track);
-  }
-
   public getLength(): number {
-    let length: number;
-    if (this.$track.classList.contains('adslider__track_vertical')) {
-      length = parseInt(getComputedStyle(this.$track).height, 10);
-    } else {
-      length = parseInt(getComputedStyle(this.$track).width, 10);
-    }
-    return length;
+    return this.$track.classList.contains('adslider__track_vertical') ? parseInt(getComputedStyle(this.$track).height, 10) : parseInt(getComputedStyle(this.$track).width, 10);
   }
 
   public setVerticalView(verticalView: boolean): void {

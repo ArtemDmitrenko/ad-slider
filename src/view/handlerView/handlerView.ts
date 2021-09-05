@@ -7,9 +7,9 @@ export default class HandlerView extends EventObserver {
 
   private handlerPos!: number;
 
-  private mouseMoveListener!: (e:MouseEvent) => void;
+  private mouseMoveListener!: (e: MouseEvent) => void;
 
-  private mouseUpListener!: (e:MouseEvent) => void;
+  private mouseUpListener!: (e: MouseEvent) => void;
 
   constructor($parent: HTMLElement) {
     super();
@@ -52,26 +52,21 @@ export default class HandlerView extends EventObserver {
   }
 
   public getLength(): number {
-    let length: number;
-    if (this.isVertical()) {
-      length = parseInt(getComputedStyle(this.$handler).height, 10);
-    } else {
-      length = parseInt(getComputedStyle(this.$handler).width, 10);
-    }
-    return length;
+    return this.isVertical()
+      ? parseInt(getComputedStyle(this.$handler).height, 10)
+      : parseInt(getComputedStyle(this.$handler).width, 10);
   }
 
   public getPos(): number {
-    if (this.isVertical()) {
-      return parseInt(getComputedStyle(this.$handler).bottom, 10);
-    }
-    return parseInt(getComputedStyle(this.$handler).left, 10);
+    return this.isVertical()
+      ? parseInt(getComputedStyle(this.$handler).bottom, 10)
+      : parseInt(getComputedStyle(this.$handler).left, 10);
   }
 
   public calcPos(options: {
-    edge: number,
-    value: number,
-    limits: { min: number, max: number }
+    edge: number;
+    value: number;
+    limits: { min: number; max: number };
   }): void {
     const oddValMin: number = options.value - options.limits.min;
     const oddMaxMin: number = options.limits.max - options.limits.min;
@@ -99,9 +94,6 @@ export default class HandlerView extends EventObserver {
   }
 
   private isVertical(): boolean {
-    if (this.$handler.classList.contains('adslider__handler_vertical')) {
-      return true;
-    }
-    return false;
+    return this.$handler.classList.contains('adslider__handler_vertical');
   }
 }

@@ -14,20 +14,30 @@ export default class ScaleView extends EventObserver {
     this.addListeners();
   }
 
+  private render($parent: HTMLElement): void {
+    this.$parent = $parent;
+    this.$scale = document.createElement('div');
+    this.$scale.classList.add('adslider__scale');
+    this.$parent.append(this.$scale);
+  }
+
+  private renderScaleLine(): HTMLElement {
+    const line: HTMLElement = document.createElement('div');
+    line.classList.add('adslider__scaleLine');
+    if (this.isVertical()) {
+      line.classList.add('adslider__scaleLine_vertical');
+    } else {
+      line.classList.add('adslider__scaleLine_horizontal');
+    }
+    return line;
+  }
+
   private addListeners(): void {
     this.$scale.addEventListener('mousedown', this.changeHandlerPos.bind(this));
   }
 
   private changeHandlerPos(event: MouseEvent): void {
     this.broadcast('handlerMousedownEvent', event);
-  }
-
-  private render($parent: HTMLElement): void {
-    this.$parent = $parent;
-    this.$scale = document.createElement('div');
-    this.$scale.classList.add('adslider__scale');
-    this.$parent.append(this.$scale);
-    this.renderScaleLine();
   }
 
   public drawScale(options: Config, $handler: HTMLElement): void {
@@ -47,9 +57,8 @@ export default class ScaleView extends EventObserver {
     this.renderScaleSign(options);
   }
 
-  private calcNumberOfLines(step: number, odd: number): number {
+  private calcNumberOfLines(step: number, odd: number): void {
     this.numberOfLines = odd % step === 0 ? odd / step + 1 : Math.floor(odd / step + 2);
-    return this.numberOfLines;
   }
 
   private setScalePos($handler: HTMLElement): void {
@@ -73,17 +82,6 @@ export default class ScaleView extends EventObserver {
       this.$scale.style.width = `${scaleLength}px`;
       this.$scale.style.left = `${handlerLength / 2}px`;
     }
-  }
-
-  private renderScaleLine(): HTMLElement {
-    const line: HTMLElement = document.createElement('div');
-    line.classList.add('adslider__scaleLine');
-    if (this.isVertical()) {
-      line.classList.add('adslider__scaleLine_vertical');
-    } else {
-      line.classList.add('adslider__scaleLine_horizontal');
-    }
-    return line;
   }
 
   private createListOfScaleLines(options: Config): void {
@@ -130,9 +128,6 @@ export default class ScaleView extends EventObserver {
   }
 
   private isVertical(): boolean {
-    if (this.$scale.classList.contains('adslider__scale_vertical')) {
-      return true;
-    }
-    return false;
+    return this.$scale.classList.contains('adslider__scale_vertical');
   }
 }

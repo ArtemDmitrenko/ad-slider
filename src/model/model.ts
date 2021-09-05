@@ -89,7 +89,9 @@ export class Model extends EventObserver {
       throw new Error('Value must be in range of min and max limits');
     }
     if (this.step) {
-      const newVal = this.setRoundedCurVal(value, this.step, this.limits.min, this.limits.max);
+      const newVal: number = this.setRoundedCurVal(
+        value, this.step, this.limits.min, this.limits.max,
+      );
       this.curValue = this.to || newVal;
       this.options.curValue = this.to || newVal;
     }
@@ -101,8 +103,8 @@ export class Model extends EventObserver {
     if (odd === 0) {
       return value;
     }
-    const numberOfSteps = Math.round(value / step);
-    let newCurValue = step * numberOfSteps;
+    const numberOfSteps: number = Math.round(value / step);
+    let newCurValue: number = step * numberOfSteps;
     if (newCurValue < min) {
       newCurValue += step;
     }
@@ -117,7 +119,9 @@ export class Model extends EventObserver {
       throw new Error('Value must be in range of min and max limits');
     }
     if (this.step) {
-      const newVal = this.setRoundedCurVal(value, this.step, this.limits.min, this.limits.max);
+      const newVal: number = this.setRoundedCurVal(
+        value, this.step, this.limits.min, this.limits.max,
+      );
       this.to = newVal;
       this.options.to = newVal;
     }
@@ -145,6 +149,50 @@ export class Model extends EventObserver {
     this.options.step = value || 1;
   }
 
+  private setValFromAndBroadcast(value: number, edge: number, handler: HTMLElement): boolean {
+    this.from = this.calcValueWithStep(value, this.from);
+    if (this.isValFromMovesOverValTo()) {
+      return true;
+    }
+    const options = { edge, value: this.from, limits: this.limits };
+    this.broadcast('calcHandlerPosForDouble', options);
+    this.broadcast('setHandlerPosForDouble');
+    this.broadcast('calcValueNotePosForDouble', handler);
+    this.broadcast('setValueNotePosForDouble');
+    this.broadcast('setValueOfNoteForDouble', this.from);
+    return false;
+  }
+
+  private setValCurAndBroadcast(value: number, edge: number, handler: HTMLElement): boolean {
+    this.curValue = this.calcValueWithStep(value, this.curValue);
+    if (this.double && this.isValFromMovesOverValTo()) {
+      return true;
+    }
+    const options = { edge, value: this.curValue, limits: this.limits };
+    this.broadcast('calcHandlerPos', options);
+    this.broadcast('setHandlerPos');
+    this.broadcast('calcValueNotePos', handler);
+    this.broadcast('setValueNotePos');
+    this.broadcast('setValueOfNote', this.curValue);
+    return false;
+  }
+
+  private broadcastDouble(edge: number, handler: HTMLElement): void {
+    if (this.double) {
+      const optionsForBar = {
+        edge,
+        valueFrom: this.from,
+        valueTo: this.curValue,
+        limits: this.limits,
+        handler,
+      };
+      this.broadcast('setBarWidthForDouble', optionsForBar);
+      this.broadcast('setOneNote', optionsForBar);
+    } else {
+      this.broadcast('setBarWidth', handler);
+    }
+  }
+
   public setValueFromHandlerPos(data: {
     newPos: number,
     edge: number,
@@ -152,54 +200,26 @@ export class Model extends EventObserver {
   }): void {
     const value = this.calcValueFromHandlerPos(data.newPos, data.edge);
     if (data.handler.classList.contains('adslider__handler_from')) {
-      this.from = this.calcValueWithStep(value, this.from);
-      if (this.isValFromMovesOverValTo()) {
+      if (this.setValFromAndBroadcast(value, data.edge, data.handler)) {
         return;
       }
-      const options = { edge: data.edge, value: this.from, limits: this.limits };
-      this.broadcast('calcHandlerPosForDouble', options);
-      this.broadcast('setHandlerPosForDouble');
-      this.broadcast('calcValueNotePosForDouble', data.handler);
-      this.broadcast('setValueNotePosForDouble');
-      this.broadcast('setValueOfNoteForDouble', this.from);
+      this.setValFromAndBroadcast(value, data.edge, data.handler);
     } else {
-      this.curValue = this.calcValueWithStep(value, this.curValue);
-      if (this.double && this.isValFromMovesOverValTo()) {
+      if (this.setValCurAndBroadcast(value, data.edge, data.handler)) {
         return;
       }
-      const options = { edge: data.edge, value: this.curValue, limits: this.limits };
-      this.broadcast('calcHandlerPos', options);
-      this.broadcast('setHandlerPos');
-      this.broadcast('calcValueNotePos', data.handler);
-      this.broadcast('setValueNotePos');
-      this.broadcast('setValueOfNote', this.curValue);
+      this.setValCurAndBroadcast(value, data.edge, data.handler);
     }
-    if (this.double) {
-      const optionsForBar = {
-        edge: data.edge,
-        valueFrom: this.from,
-        valueTo: this.curValue,
-        limits: this.limits,
-        handler: data.handler,
-      };
-      this.broadcast('setBarWidthForDouble', optionsForBar);
-      this.broadcast('setOneNote', optionsForBar);
-    } else {
-      this.broadcast('setBarWidth', data.handler);
-    }
+    this.broadcastDouble(data.edge, data.handler);
   }
 
   private isValFromMovesOverValTo(): boolean {
-    if (this.curValue - this.from < this.step && this.from > this.curValue) {
-      return true;
-    }
-    return false;
+    return !!(this.curValue - this.from < this.step && this.from > this.curValue);
   }
 
   public calcValueFromHandlerPos(newPos: number, edge: number): number {
     const odds: number = this.limits.max - this.limits.min;
-    const value: number = Math.round(this.limits.min + odds * (newPos / edge));
-    return value;
+    return Math.round(this.limits.min + odds * (newPos / edge));
   }
 
   private calcValueWithStep(value: number, curValue: number): number {
