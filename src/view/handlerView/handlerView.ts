@@ -7,9 +7,9 @@ export default class HandlerView extends EventObserver {
 
   private handlerPos!: number;
 
-  private mouseMoveListener!: (e: MouseEvent) => void;
+  private handleMouseMove!: (e: MouseEvent) => void;
 
-  private mouseUpListener!: (e: MouseEvent) => void;
+  private handleMouseUp!: (e: MouseEvent) => void;
 
   constructor($parent: HTMLElement) {
     super();
@@ -21,10 +21,10 @@ export default class HandlerView extends EventObserver {
     this.$handler = document.createElement('div');
     this.$handler.classList.add('adslider__handler');
     this.$parent.append(this.$handler);
-    this.$handler.addEventListener('mousedown', this.moveHandler.bind(this));
+    this.$handler.addEventListener('mousedown', this.handleHandlerMouseDown.bind(this));
   }
 
-  private moveHandler(event: MouseEvent): void {
+  private handleHandlerMouseDown(event: MouseEvent): void {
     event.preventDefault();
     event.stopPropagation();
     const data = { event, handler: this.$handler };
@@ -33,11 +33,11 @@ export default class HandlerView extends EventObserver {
   }
 
   private bindMousemove(event: MouseEvent): void {
-    this.mouseMoveListener = this.mouseMove.bind(this);
-    this.mouseUpListener = this.mouseUp.bind(this);
+    this.handleMouseMove = this.mouseMove.bind(this);
+    this.handleMouseUp = this.mouseUp.bind(this);
     if (event.type === 'mousedown') {
-      document.addEventListener('mousemove', this.mouseMoveListener);
-      document.addEventListener('mouseup', this.mouseUpListener);
+      document.addEventListener('mousemove', this.handleMouseMove);
+      document.addEventListener('mouseup', this.handleMouseUp);
     }
   }
 
@@ -47,8 +47,8 @@ export default class HandlerView extends EventObserver {
   }
 
   private mouseUp(): void {
-    document.removeEventListener('mouseup', this.mouseUpListener);
-    document.removeEventListener('mousemove', this.mouseMoveListener);
+    document.removeEventListener('mouseup', this.handleMouseUp);
+    document.removeEventListener('mousemove', this.handleMouseMove);
   }
 
   public getLength(): number {

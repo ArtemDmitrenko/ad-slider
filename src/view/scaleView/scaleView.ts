@@ -33,10 +33,10 @@ export default class ScaleView extends EventObserver {
   }
 
   private addListeners(): void {
-    this.$scale.addEventListener('mousedown', this.changeHandlerPos.bind(this));
+    this.$scale.addEventListener('mousedown', this.handleScaleMouseDown.bind(this));
   }
 
-  private changeHandlerPos(event: MouseEvent): void {
+  private handleScaleMouseDown(event: MouseEvent): void {
     this.broadcast('handlerMousedownEvent', event);
   }
 

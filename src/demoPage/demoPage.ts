@@ -90,7 +90,7 @@ export default class DemoPage {
     }
   }
 
-  private updateSlider(): void {
+  private handleInputChange(): void {
     this.options.curValue = Number(this.$inputCurValue.value);
     this.options.limits.min = Number(this.$inputMinValue.value);
     this.options.limits.max = Number(this.$inputMaxValue.value);
@@ -116,15 +116,15 @@ export default class DemoPage {
   }
 
   private addListeners(): void {
-    this.$inputCurValue.addEventListener('change', this.updateSlider.bind(this));
-    this.$inputMinValue.addEventListener('change', this.updateSlider.bind(this));
-    this.$inputMaxValue.addEventListener('change', this.updateSlider.bind(this));
-    this.$inputShowValue.addEventListener('change', this.updateSlider.bind(this));
-    this.$inputStep.addEventListener('change', this.updateSlider.bind(this));
-    this.$inputVertical.addEventListener('change', this.updateSlider.bind(this));
-    this.$inputDouble.addEventListener('change', this.updateSlider.bind(this));
-    this.$inputFrom.addEventListener('change', this.updateSlider.bind(this));
-    this.$inputTo.addEventListener('change', this.updateSlider.bind(this));
+    this.$inputCurValue.addEventListener('change', this.handleInputChange.bind(this));
+    this.$inputMinValue.addEventListener('change', this.handleInputChange.bind(this));
+    this.$inputMaxValue.addEventListener('change', this.handleInputChange.bind(this));
+    this.$inputShowValue.addEventListener('change', this.handleInputChange.bind(this));
+    this.$inputStep.addEventListener('change', this.handleInputChange.bind(this));
+    this.$inputVertical.addEventListener('change', this.handleInputChange.bind(this));
+    this.$inputDouble.addEventListener('change', this.handleInputChange.bind(this));
+    this.$inputFrom.addEventListener('change', this.handleInputChange.bind(this));
+    this.$inputTo.addEventListener('change', this.handleInputChange.bind(this));
     this.$curValueOnSlider.addEventListener('DOMSubtreeModified', this.updateCurInput.bind(this));
     this.$inputDouble.addEventListener('change', this.updateInputFromTo.bind(this));
   }

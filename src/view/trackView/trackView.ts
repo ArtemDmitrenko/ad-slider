@@ -16,10 +16,10 @@ export default class TrackView extends EventObserver {
   }
 
   private addListeners(): void {
-    this.$track.addEventListener('mousedown', this.changeHandlerPos.bind(this));
+    this.$track.addEventListener('mousedown', this.handleTrackMouseDown.bind(this));
   }
 
-  private changeHandlerPos(event: MouseEvent): void {
+  private handleTrackMouseDown(event: MouseEvent): void {
     this.broadcast('handlerMousedownEvent', event);
   }
 
