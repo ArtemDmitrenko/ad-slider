@@ -20,7 +20,7 @@ describe('scaleView', () => {
   test('Function drawScale: should draw scale depending on input data', () => {
     const $handler: HTMLElement = document.createElement('div');
     $handler.style.height = '30px';
-    $parent.style.height = '400px'
+    $parent.style.height = '400px';
     const options = {
       limits: { min: 0, max: 120 },
       curValue: 85,
@@ -37,9 +37,9 @@ describe('scaleView', () => {
     expect(window.getComputedStyle(scaleView.$scale).left).toBe('');
     expect(window.getComputedStyle(scaleView.$scale).height).toBe('370px');
     expect(window.getComputedStyle(scaleView.$scale).top).toBe('15px');
-    expect(scaleView.$scale.children.length).toBe(3);
+    expect(scaleView.$scale.children.length).toBe(9);
     expect(scaleView.$scale.children[0].children[0].innerText).toBe('0');
-    expect(scaleView.$scale.children[1].children[0].innerText).toBe('60');
-    expect(scaleView.$scale.children[2].children[0].innerText).toBe('120');
+    expect(scaleView.$scale.children[1].children[0].innerText).toBe('15');
+    expect(scaleView.$scale.children[2].children[0].innerText).toBe('30');
   });
 });

@@ -148,7 +148,7 @@ describe('view', () => {
           to: 41,
         };
         view.updateView(options);
-        expect(view.valueNoteViewCommon).toBeNull();
+        expect(view.valueNoteViewCommon).toBeUndefined();
       });
       test('Should delete values From if we choose single slider', () => {
         options = {
@@ -159,7 +159,7 @@ describe('view', () => {
           vertical: true,
         };
         view.updateView(options);
-        expect(view.valueNoteViewFrom).toBeNull();
+        expect(view.valueNoteViewFrom).toBeUndefined();
       });
     });
   });

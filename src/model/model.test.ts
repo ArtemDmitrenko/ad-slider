@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable no-new */
 import { Model } from './model';
 
 describe('model', () => {
@@ -7,18 +9,18 @@ describe('model', () => {
     beforeEach(() => {
       options = {
         limits: { min: 0, max: 100 },
-        curValue: 85,
+        curValue: 0,
         showValueNote: true,
-        step: 15,
+        step: 60,
         double: true,
-        from: 40,
-        to: 90,
+        from: 5,
+        to: 95,
         vertical: true,
       };
       model = new Model(options);
     });
     test('should set correct curValue', () => {
-      expect(model.curValue).toBe(90);
+      expect(model.curValue).toBe(60);
     });
     test('should set correct min limit', () => {
       expect(model.limits.min).toBe(0);
@@ -30,16 +32,16 @@ describe('model', () => {
       expect(model.showValueNote).toBe(true);
     });
     test('should set step', () => {
-      expect(model.step).toBe(15);
+      expect(model.step).toBe(60);
     });
     test('should set double', () => {
       expect(model.double).toBe(true);
     });
     test('should set valFrom', () => {
-      expect(model.from).toBe(40);
+      expect(model.from).toBe(0);
     });
     test('should set valTo', () => {
-      expect(model.to).toBe(90);
+      expect(model.to).toBe(60);
     });
     test('should set vertical', () => {
       expect(model.vertical).toBe(true);
@@ -101,6 +103,11 @@ describe('model', () => {
     let callback5: Function;
     let callback6: Function;
     let callback7: Function;
+    let callback8: Function;
+    let callback9: Function;
+    let callback10: Function;
+    let callback11: Function;
+    let callback12: Function;
     const $handler: HTMLElement = document.createElement('div');
 
     describe('for single slider', () => {
@@ -147,7 +154,7 @@ describe('model', () => {
       test('check that function calcValueWithStep is working properly (val more limits.max)', () => {
         const data = { newPos: 400, edge: 370, handler: $handler };
         model.setValueFromHandlerPos(data);
-        expect(model.curValue).toBe(107);
+        expect(model.curValue).toBe(100);
       });
     });
 
@@ -157,7 +164,7 @@ describe('model', () => {
           limits: { min: 0, max: 100 },
           curValue: 85,
           showValueNote: true,
-          step: 5,
+          step: 10,
           double: true,
           from: 5,
           to: 10,
@@ -170,6 +177,12 @@ describe('model', () => {
         callback5 = jest.fn();
         callback6 = jest.fn();
         callback7 = jest.fn();
+        callback8 = jest.fn();
+        callback9 = jest.fn();
+        callback10 = jest.fn();
+        callback11 = jest.fn();
+        callback12 = jest.fn();
+
         model.addObserver('calcHandlerPosForDouble', callback1);
         model.addObserver('setHandlerPosForDouble', callback2);
         model.addObserver('calcValueNotePosForDouble', callback3);
@@ -177,20 +190,26 @@ describe('model', () => {
         model.addObserver('setValueOfNoteForDouble', callback5);
         model.addObserver('setBarWidthForDouble', callback6);
         model.addObserver('setOneNote', callback7);
+
+        model.addObserver('calcHandlerPos', callback8);
+        model.addObserver('setHandlerPos', callback9);
+        model.addObserver('calcValueNotePos', callback10);
+        model.addObserver('setValueNotePos', callback11);
+        model.addObserver('setValueOfNote', callback12);
       });
 
       test('should set curValue and check function isValFromMovesOverValTo is return true', () => {
         $handler.classList.add('adslider__handler_from');
         const data = { newPos: 100, edge: 370, handler: $handler };
         model.setValueFromHandlerPos(data);
-        expect(model.from).toBe(25);
+        expect(model.from).toBe(30);
       });
 
       test('should set curValue and check function isValFromMovesOverValTo is return false', () => {
         $handler.classList.add('adslider__handler_from');
         const data = { newPos: 10, edge: 370, handler: $handler };
         model.setValueFromHandlerPos(data);
-        expect(model.from).toBe(5);
+        expect(model.from).toBe(0);
       });
 
       test('should broadcast events', () => {
@@ -211,6 +230,51 @@ describe('model', () => {
         const data = { newPos: -10, edge: 370, handler: $handler };
         model.setValueFromHandlerPos(data);
         expect(model.curValue).toBe(0);
+      });
+    });
+
+    describe('for double slider with another options', () => {
+      beforeEach(() => {
+        options = {
+          limits: { min: 0, max: 100 },
+          showValueNote: true,
+          step: 30,
+          double: true,
+          from: 0,
+          to: 90,
+        };
+        model = new Model(options);
+        callback1 = jest.fn();
+        callback2 = jest.fn();
+        callback3 = jest.fn();
+        callback4 = jest.fn();
+        callback5 = jest.fn();
+        callback6 = jest.fn();
+        callback7 = jest.fn();
+        callback8 = jest.fn();
+        callback9 = jest.fn();
+        callback10 = jest.fn();
+        callback11 = jest.fn();
+        callback12 = jest.fn();
+
+        model.addObserver('calcHandlerPosForDouble', callback1);
+        model.addObserver('setHandlerPosForDouble', callback2);
+        model.addObserver('calcValueNotePosForDouble', callback3);
+        model.addObserver('setValueNotePosForDouble', callback4);
+        model.addObserver('setValueOfNoteForDouble', callback5);
+        model.addObserver('setBarWidthForDouble', callback6);
+        model.addObserver('setOneNote', callback7);
+        model.addObserver('calcHandlerPos', callback8);
+        model.addObserver('setHandlerPos', callback9);
+        model.addObserver('calcValueNotePos', callback10);
+        model.addObserver('setValueNotePos', callback11);
+        model.addObserver('setValueOfNote', callback12);
+      });
+      test('check that function calcValueWithStep() is working', () => {
+        $handler.classList.remove('adslider__handler_from');
+        const data = { newPos: 481, edge: 504, handler: $handler };
+        model.setValueFromHandlerPos(data);
+        expect(model.curValue).toBe(90);
       });
     });
   });

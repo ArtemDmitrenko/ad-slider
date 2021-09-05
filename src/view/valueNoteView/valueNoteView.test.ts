@@ -76,11 +76,6 @@ describe('valueNoteView', () => {
     expect(valueNoteView.$note.classList.contains('adslider__note_vertical')).toBe(true);
   });
 
-  test('Function getValue: return value of note', () => {
-    valueNoteView.$value.textContent = '44';
-    expect(valueNoteView.getValue()).toBe(44);
-  });
-
   test('Function getPos: return pos of note', () => {
     valueNoteView.$note.style.left = '30px';
     expect(valueNoteView.getPos()).toBe(30);

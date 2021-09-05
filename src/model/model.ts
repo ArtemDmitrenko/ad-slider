@@ -90,7 +90,7 @@ export class Model extends EventObserver {
     }
     if (this.step) {
       const newVal: number = this.setRoundedCurVal(
-        value, this.step, this.limits.min, this.limits.max,
+        value, this.step, this.limits.max,
       );
       this.curValue = this.to || newVal;
       this.options.curValue = this.to || newVal;
@@ -98,16 +98,13 @@ export class Model extends EventObserver {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  private setRoundedCurVal(value: number, step: number, min: number, max: number): number {
+  private setRoundedCurVal(value: number, step: number, max: number): number {
     const odd: number = value % step;
     if (odd === 0) {
       return value;
     }
     const numberOfSteps: number = Math.round(value / step);
     let newCurValue: number = step * numberOfSteps;
-    if (newCurValue < min) {
-      newCurValue += step;
-    }
     if (newCurValue > max) {
       newCurValue -= step;
     }
@@ -120,7 +117,7 @@ export class Model extends EventObserver {
     }
     if (this.step) {
       const newVal: number = this.setRoundedCurVal(
-        value, this.step, this.limits.min, this.limits.max,
+        value, this.step, this.limits.max,
       );
       this.to = newVal;
       this.options.to = newVal;
@@ -135,7 +132,7 @@ export class Model extends EventObserver {
       throw new Error('Value From must be less than To');
     }
     if (this.step) {
-      const newVal = this.setRoundedCurVal(value, this.step, this.limits.min, this.limits.max);
+      const newVal = this.setRoundedCurVal(value, this.step, this.limits.max);
       this.from = newVal;
       this.options.from = newVal;
     }
