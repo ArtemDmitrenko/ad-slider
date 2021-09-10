@@ -211,7 +211,7 @@ export class Model extends EventObserver {
   }
 
   private isValFromMovesOverValTo(): boolean {
-    return !!(this.curValue - this.from < this.step && this.from > this.curValue);
+    return (this.curValue - this.from < this.step && this.from > this.curValue);
   }
 
   public calcValueFromHandlerPos(newPos: number, edge: number): number {

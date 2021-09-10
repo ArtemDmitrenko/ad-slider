@@ -95,21 +95,9 @@ export default class DemoPage {
     this.options.limits.min = Number(this.$inputMinValue.value);
     this.options.limits.max = Number(this.$inputMaxValue.value);
     this.options.step = Number(this.$inputStep.value);
-    if (this.$inputShowValue.checked) {
-      this.options.showValueNote = true;
-    } else {
-      this.options.showValueNote = false;
-    }
-    if (this.$inputVertical.checked) {
-      this.options.vertical = true;
-    } else {
-      this.options.vertical = false;
-    }
-    if (this.$inputDouble.checked) {
-      this.options.double = true;
-    } else {
-      this.options.double = false;
-    }
+    this.options.showValueNote = this.$inputShowValue.checked;
+    this.options.vertical = this.$inputVertical.checked;
+    this.options.double = this.$inputDouble.checked;
     this.options.from = Number(this.$inputFrom.value);
     this.options.to = Number(this.$inputTo.value);
     $(this.selector).adslider('update', this.options);
