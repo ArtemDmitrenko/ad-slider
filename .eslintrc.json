@@ -1,7 +1,8 @@
 {
     "plugins": [
         "fsd",
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "pug"
     ],
     "env": {
         "browser": true,

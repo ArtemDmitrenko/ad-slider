@@ -1,4 +1,5 @@
 import View from './view';
+import { Config } from '../model/model';
 
 describe('view', () => {
   describe('Function render', () => {
@@ -30,7 +31,7 @@ describe('view', () => {
   describe('Function updateView', () => {
     describe('For single slider with horizontal view', () => {
       let view: View;
-      let options: any;
+      let options: Config;
       beforeEach(() => {
         const $container: HTMLElement = document.createElement('div');
         view = new View($container);
@@ -40,6 +41,11 @@ describe('view', () => {
           limits: { min: 0, max: 100 },
           curValue: 50,
           showValueNote: true,
+          vertical: false,
+          double: false,
+          from: 0,
+          to: 0,
+          step: 1,
         };
         view.updateView(options);
       });
@@ -79,7 +85,7 @@ describe('view', () => {
 
     describe('For double slider with horizontal view', () => {
       let view: View;
-      let options: any;
+      let options: Config;
       beforeEach(() => {
         const $container: HTMLElement = document.createElement('div');
         view = new View($container);
@@ -95,6 +101,7 @@ describe('view', () => {
           double: true,
           from: 40,
           to: 41,
+          vertical: false,
         };
         view.updateView(options);
       });
@@ -133,6 +140,7 @@ describe('view', () => {
           double: true,
           from: 40,
           to: 41,
+          vertical: false,
         };
         view.updateView(options);
         expect(view.handlerViewFrom.$handler).not.toBeNull();
@@ -146,6 +154,7 @@ describe('view', () => {
           double: true,
           from: 10,
           to: 41,
+          vertical: false,
         };
         view.updateView(options);
         expect(view.valueNoteViewCommon).toBeUndefined();
@@ -157,6 +166,9 @@ describe('view', () => {
           showValueNote: true,
           step: 15,
           vertical: true,
+          double: false,
+          from: 0,
+          to: 0,
         };
         view.updateView(options);
         expect(view.valueNoteViewFrom).toBeUndefined();
@@ -164,12 +176,11 @@ describe('view', () => {
     });
   });
 
-
   describe('Function addListeners', () => {
     describe('For single slider with horizontal view', () => {
       let view: View;
-      let options: any;
-      let callback: Function;
+      let options: Config;
+      let callback: () => void;
       let mousedown: MouseEvent;
       let mousemove: MouseEvent;
       let mouseup: MouseEvent;
@@ -182,9 +193,13 @@ describe('view', () => {
           limits: { min: 0, max: 100 },
           curValue: 50,
           showValueNote: true,
+          step: 15,
+          vertical: true,
+          double: false,
+          from: 0,
+          to: 0,
         };
         view.updateView(options);
-
 
         view.handlerView.$handler.getBoundingClientRect = jest.fn(() => ({
           bottom: 0,
@@ -260,8 +275,8 @@ describe('view', () => {
     });
     describe('For double slider with vertical view', () => {
       let view: View;
-      let options: any;
-      let callback: Function;
+      let options: Config;
+      let callback: () => void;
       let mousedown: MouseEvent;
       let mousemove: MouseEvent;
       beforeEach(() => {
@@ -277,6 +292,7 @@ describe('view', () => {
           double: true,
           from: 10,
           to: 41,
+          step: 1,
         };
         view.updateView(options);
 
@@ -314,10 +330,8 @@ describe('view', () => {
           y: 0,
           toJSON: jest.fn,
         }));
-
         callback = jest.fn();
         view.addObserver('handlerMove', callback);
-
         mousedown = new MouseEvent('mousedown', { clientY: 30 });
         mousemove = new MouseEvent('mousemove', { clientY: 50 });
       });
@@ -337,14 +351,12 @@ describe('view', () => {
         view.trackView.$track.dispatchEvent(mousedown);
         expect(callback).toBeCalled();
       });
-
     });
     describe('For double slider with horizontal view', () => {
       let view: View;
-      let options: any;
-      let callback: Function;
+      let options: Config;
+      let callback: () => void;
       let mousedown: MouseEvent;
-      let mousemove: MouseEvent;
       beforeEach(() => {
         const $container: HTMLElement = document.createElement('div');
         view = new View($container);
@@ -357,9 +369,10 @@ describe('view', () => {
           double: true,
           from: 10,
           to: 41,
+          step: 1,
+          vertical: false,
         };
         view.updateView(options);
-
         view.handlerView.$handler.getBoundingClientRect = jest.fn(() => ({
           bottom: 0,
           height: 0,
@@ -394,14 +407,10 @@ describe('view', () => {
           y: 0,
           toJSON: jest.fn,
         }));
-
         callback = jest.fn();
         view.addObserver('handlerMove', callback);
-
         mousedown = new MouseEvent('mousedown', { clientX: 30 });
-        mousemove = new MouseEvent('mousemove', { clientX: 50 });
       });
-
       test('Should call function mouseMove when event mousemove happens on track', () => {
         view.trackView.$track.dispatchEvent(mousedown);
         expect(callback).toBeCalled();

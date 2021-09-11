@@ -2,8 +2,8 @@ import EventObserver from './eventObserver';
 
 describe('EventObserver', () => {
   let eventObserver: EventObserver;
-  let mockFn: Function;
-  let newmockFn: Function;
+  let mockFn: (data: number) => number;
+  let newmockFn: (data: number) => number;
   describe('function addObserver', () => {
     test('should add new observer to the list', () => {
       eventObserver = new EventObserver();

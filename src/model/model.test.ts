@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable no-new */
-import { Model } from './model';
+import { Model, Config } from './model';
 
 describe('model', () => {
-  let options: any;
+  let options: Config;
   let model: Model;
   describe('init function', () => {
     beforeEach(() => {

@@ -103,7 +103,7 @@ export class Model extends EventObserver {
     if (odd === 0) {
       return value;
     }
-    const numberOfSteps: number = Math.round((min - value) / step);    
+    const numberOfSteps: number = Math.round((min - value) / step);
     let newCurValue: number = step * Math.abs(numberOfSteps) + min;
     if (newCurValue > max) {
       newCurValue -= step;

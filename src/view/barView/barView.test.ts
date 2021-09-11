@@ -19,9 +19,13 @@ describe('barView', () => {
 
   test('Function setVerticalView: should set vertical or horizontal view of bar', () => {
     barView.setVerticalView(false);
-    expect(barView.$bar.classList.contains('adslider__bar_horizontal')).toBe(true);
+    expect(barView.$bar.classList.contains('adslider__bar_horizontal')).toBe(
+      true,
+    );
     barView.setVerticalView(true);
-    expect(barView.$bar.classList.contains('adslider__bar_vertical')).toBe(true);
+    expect(barView.$bar.classList.contains('adslider__bar_vertical')).toBe(
+      true,
+    );
   });
 
   test('Function setLength: should set length of bar for single slider for horizontal view', () => {
@@ -49,7 +53,13 @@ describe('barView', () => {
   test('Function setLengthForDouble: should set length of bar for double slider for horizontal view when valFrom less than valTo', () => {
     const $handler: HTMLElement = document.createElement('div');
     $handler.style.width = '30px';
-    const options: any = {
+    const options: {
+      handler: HTMLElement;
+      edge: number;
+      limits: { min: number; max: number };
+      valueFrom: number;
+      valueTo: number;
+    } = {
       handler: $handler,
       edge: 370,
       limits: { min: 0, max: 100 },
@@ -69,7 +79,13 @@ describe('barView', () => {
   test('Function setLengthForDouble: should set length of bar for double slider for vertical view when valFrom more than valTo', () => {
     const $handler: HTMLElement = document.createElement('div');
     $handler.style.width = '30px';
-    const options: any = {
+    const options: {
+      handler: HTMLElement;
+      edge: number;
+      limits: { min: number; max: number };
+      valueFrom: number;
+      valueTo: number;
+    } = {
       handler: $handler,
       edge: 370,
       limits: { min: 0, max: 100 },
