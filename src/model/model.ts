@@ -90,7 +90,7 @@ export class Model extends EventObserver {
     }
     if (this.step) {
       const newVal: number = this.setRoundedCurVal(
-        value, this.step, this.limits.max,
+        value, this.step, this.limits.max, this.limits.min,
       );
       this.curValue = this.to || newVal;
       this.options.curValue = this.to || newVal;
@@ -98,13 +98,13 @@ export class Model extends EventObserver {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  private setRoundedCurVal(value: number, step: number, max: number): number {
-    const odd: number = value % step;
+  private setRoundedCurVal(value: number, step: number, max: number, min: number): number {
+    const odd: number = (min - value) % step;
     if (odd === 0) {
       return value;
     }
-    const numberOfSteps: number = Math.round(value / step);
-    let newCurValue: number = step * numberOfSteps;
+    const numberOfSteps: number = Math.round((min - value) / step);    
+    let newCurValue: number = step * Math.abs(numberOfSteps) + min;
     if (newCurValue > max) {
       newCurValue -= step;
     }
@@ -115,9 +115,9 @@ export class Model extends EventObserver {
     if (value < this.limits.min || value > this.limits.max) {
       throw new Error('Value must be in range of min and max limits');
     }
-    if (this.step) {
+    if (this.step && value) {
       const newVal: number = this.setRoundedCurVal(
-        value, this.step, this.limits.max,
+        value, this.step, this.limits.max, this.limits.min,
       );
       this.to = newVal;
       this.options.to = newVal;
@@ -131,8 +131,8 @@ export class Model extends EventObserver {
     if (value > this.to && this.to) {
       throw new Error('Value From must be less than To');
     }
-    if (this.step) {
-      const newVal = this.setRoundedCurVal(value, this.step, this.limits.max);
+    if (this.step && value) {
+      const newVal = this.setRoundedCurVal(value, this.step, this.limits.max, this.limits.min);
       this.from = newVal;
       this.options.from = newVal;
     }

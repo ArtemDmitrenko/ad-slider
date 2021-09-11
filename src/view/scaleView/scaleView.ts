@@ -122,7 +122,7 @@ export default class ScaleView extends EventObserver {
     } else if (index === this.numberOfLines - 1) {
       value = options.limits.max;
     } else {
-      value = index * options.step;
+      value = index * options.step + options.limits.min;
     }
     return Math.round(value);
   }

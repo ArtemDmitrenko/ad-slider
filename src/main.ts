@@ -2,7 +2,7 @@ import DemoPage from './demoPage/demoPage';
 
 const options1 = {
   limits: { min: 0, max: 100 },
-  curValue: 12,
+  curValue: 0,
   showValueNote: true,
   step: 30,
   // double: true,
