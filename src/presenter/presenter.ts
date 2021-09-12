@@ -1,7 +1,7 @@
 import { Config, Model } from '../model/model';
 import View from '../view/view';
 
-export default class Presenter {
+class Presenter {
   private model: Model;
 
   private view: View;
@@ -63,3 +63,5 @@ export default class Presenter {
     }
   }
 }
+
+export default Presenter;

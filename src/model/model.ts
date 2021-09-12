@@ -1,6 +1,6 @@
 import EventObserver from '../eventObserver/eventObserver';
 
-export interface Config {
+interface Config {
   limits: {
     min: number,
     max: number
@@ -14,7 +14,7 @@ export interface Config {
   to: number;
 }
 
-export class Model extends EventObserver {
+class Model extends EventObserver {
   public limits!: {
     min: number
     max: number
@@ -88,7 +88,7 @@ export class Model extends EventObserver {
     if (value < this.limits.min || value > this.limits.max) {
       throw new Error('Value must be in range of min and max limits');
     }
-    if (this.step && value) {
+    if (this.step) {
       const newVal: number = this.setRoundedCurVal(
         value, this.step, this.limits.max, this.limits.min,
       );
@@ -221,7 +221,7 @@ export class Model extends EventObserver {
 
   private calcValueWithStep(value: number, curValue: number): number {
     const AllNumberOfSteps: number = Math.floor((this.limits.max - this.limits.min) / this.step);
-    const maxStepValue: number = AllNumberOfSteps * this.step;
+    const maxStepValue: number = this.limits.min + AllNumberOfSteps * this.step;
     const numberOfSteps = Math.round((value - curValue) / this.step);
     let newValue: number = curValue + this.step * numberOfSteps;
     if (newValue < this.limits.min) {
@@ -240,3 +240,5 @@ export class Model extends EventObserver {
     return newValue;
   }
 }
+
+export { Model, Config };

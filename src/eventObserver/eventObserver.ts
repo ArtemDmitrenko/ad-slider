@@ -1,4 +1,4 @@
-export default class EventObserver {
+class EventObserver {
   // eslint-disable-next-line @typescript-eslint/ban-types
   public observers: { [event: string]: Function[] };
 
@@ -29,3 +29,5 @@ export default class EventObserver {
     });
   }
 }
+
+export default EventObserver;

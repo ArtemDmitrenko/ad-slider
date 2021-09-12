@@ -1,6 +1,6 @@
 import EventObserver from '../../eventObserver/eventObserver';
 
-export default class HandlerView extends EventObserver {
+class HandlerView extends EventObserver {
   public $handler!: HTMLElement;
 
   private $parent!: HTMLElement;
@@ -97,3 +97,5 @@ export default class HandlerView extends EventObserver {
     return this.$handler.classList.contains('adslider__handler_vertical');
   }
 }
+
+export default HandlerView;

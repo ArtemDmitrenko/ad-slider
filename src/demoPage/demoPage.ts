@@ -1,6 +1,6 @@
 import { Config } from '../model/model';
 
-export default class DemoPage {
+class DemoPage {
   private selector: string;
 
   private $container!: HTMLElement;
@@ -149,3 +149,5 @@ export default class DemoPage {
     this.$inputTo.value = $valueTo.textContent as string;
   }
 }
+
+export default DemoPage;

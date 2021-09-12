@@ -1,4 +1,4 @@
-export default class ValueNoteView {
+class ValueNoteView {
   public $note!: HTMLElement;
 
   public $value!: HTMLElement;
@@ -82,3 +82,5 @@ export default class ValueNoteView {
     return this.$note.classList.contains('adslider__note_vertical');
   }
 }
+
+export default ValueNoteView;

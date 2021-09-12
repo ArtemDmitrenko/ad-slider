@@ -1,6 +1,6 @@
 import EventObserver from '../../eventObserver/eventObserver';
 
-export default class TrackView extends EventObserver {
+class TrackView extends EventObserver {
   public $track!: HTMLElement;
 
   constructor($parent: HTMLElement) {
@@ -37,3 +37,5 @@ export default class TrackView extends EventObserver {
     }
   }
 }
+
+export default TrackView;

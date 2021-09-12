@@ -1,7 +1,7 @@
 import { Config } from '../../model/model';
 import EventObserver from '../../eventObserver/eventObserver';
 
-export default class ScaleView extends EventObserver {
+class ScaleView extends EventObserver {
   private $parent!: HTMLElement;
 
   public $scale!: HTMLElement;
@@ -131,3 +131,5 @@ export default class ScaleView extends EventObserver {
     return this.$scale.classList.contains('adslider__scale_vertical');
   }
 }
+
+export default ScaleView;

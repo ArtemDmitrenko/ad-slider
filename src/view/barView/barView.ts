@@ -1,6 +1,6 @@
 import EventObserver from '../../eventObserver/eventObserver';
 
-export default class BarView extends EventObserver {
+class BarView extends EventObserver {
   public $bar!: HTMLElement;
 
   private barPos!: number;
@@ -103,3 +103,5 @@ export default class BarView extends EventObserver {
       : handlerPosTo + handlerLength / 2;
   }
 }
+
+export default BarView;

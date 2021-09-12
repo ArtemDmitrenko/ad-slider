@@ -5,7 +5,7 @@ import BarView from './barView/barView';
 import ScaleView from './scaleView/scaleView';
 import EventObserver from '../eventObserver/eventObserver';
 
-export default class View extends EventObserver {
+class View extends EventObserver {
   public $el!: HTMLElement | null;
 
   public handlerView!: HandlerView;
@@ -372,3 +372,5 @@ export default class View extends EventObserver {
     );
   }
 }
+
+export default View;
