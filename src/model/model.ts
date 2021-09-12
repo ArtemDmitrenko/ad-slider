@@ -88,7 +88,7 @@ export class Model extends EventObserver {
     if (value < this.limits.min || value > this.limits.max) {
       throw new Error('Value must be in range of min and max limits');
     }
-    if (this.step) {
+    if (this.step && value) {
       const newVal: number = this.setRoundedCurVal(
         value, this.step, this.limits.max, this.limits.min,
       );
