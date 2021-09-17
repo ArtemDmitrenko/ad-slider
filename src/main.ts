@@ -5,10 +5,6 @@ const options1 = {
   curValue: 0,
   showValueNote: true,
   step: 30,
-  // double: true,
-  // from: 2000,
-  // to: 3000,
-  // vertical: true,
 };
 const options2 = {
   limits: { min: 0, max: 100 },
@@ -18,16 +14,12 @@ const options2 = {
   double: true,
   from: 40,
   to: 90,
-  // vertical: true,
 };
 const options3 = {
   limits: { min: 0, max: 1000 },
   curValue: 500,
   showValueNote: true,
   step: 100,
-  // double: true,
-  // from: 40,
-  // to: 90,
   vertical: true,
 };
 const options4 = {
