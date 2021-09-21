@@ -9,7 +9,7 @@ import Presenter from './presenter/presenter';
 
 (function ($) {
   const methods = {
-    init(container: HTMLElement, options: Config) {
+    init(container: HTMLElement, options: Config): void {
       if ($(this).data('inited')) {
         $.error('Plugin has already been initialized on this selector!');
       } else {
@@ -19,14 +19,14 @@ import Presenter from './presenter/presenter';
         });
       }
     },
-    update(options: Config) {
+    update(options: Config): void {
       const { model } = $(this).data('presenter');
       const presenter = $(this).data('presenter');
       model.options = options;
       model.init(model.options);
       presenter.updateView();
     },
-    updateCurValue(curValue: number) {
+    updateCurValue(curValue: number): void {
       const { model } = $(this).data('presenter');
       const presenter = $(this).data('presenter');
       model.options.curValue = curValue;
@@ -38,7 +38,14 @@ import Presenter from './presenter/presenter';
     },
   };
 
-  $.fn.adslider = function (methodOrOptions) {
+  type methods = {
+    init(container: HTMLElement, options: Config): void,
+    update(options: Config): void,
+    updateCurValue(curValue: number): void,
+    getOptions(): Config,
+  };
+
+  $.fn.adslider = function (methodOrOptions: keyof methods) {
     if (methods[methodOrOptions]) {
       return methods[methodOrOptions].apply(this, Array.prototype.slice.call(arguments, 1));
     }

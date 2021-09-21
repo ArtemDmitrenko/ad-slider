@@ -10,13 +10,13 @@ class View extends EventObserver {
 
   public handlerView!: HandlerView;
 
-  public handlerViewFrom!: HandlerView;
+  public handlerViewFrom?: HandlerView;
 
-  public valueNoteViewFrom!: ValueNoteView;
+  public valueNoteViewFrom?: ValueNoteView;
 
   public valueNoteViewTo!: ValueNoteView;
 
-  public valueNoteViewCommon!: ValueNoteView;
+  public valueNoteViewCommon?: ValueNoteView;
 
   public trackView!: TrackView;
 
@@ -26,7 +26,7 @@ class View extends EventObserver {
 
   public scaleView!: ScaleView;
 
-  private $adslider!: HTMLElement;
+  public $adslider!: HTMLElement;
 
   private handlerShift!: number;
 
@@ -95,10 +95,12 @@ class View extends EventObserver {
   }
 
   private deleteHandlerFrom(): void {
-    this.handlerViewFrom.$handler.remove();
-    this.valueNoteViewFrom.$note.remove();
-    delete this.handlerViewFrom;
-    delete this.valueNoteViewFrom;
+    if (this.handlerViewFrom && this.valueNoteViewFrom) {
+      this.handlerViewFrom.$handler.remove();
+      this.valueNoteViewFrom.$note.remove();
+      delete this.handlerViewFrom;
+      delete this.valueNoteViewFrom;
+    }
   }
 
   private updateViewForDouble(
@@ -113,23 +115,25 @@ class View extends EventObserver {
       this.renderHandlerFrom();
     }
     this.setVerticalViewForDouble(vertical);
-    this.handlerViewFrom.calcPos({
-      edge: this.getEdge(this.handlerViewFrom),
-      value: from,
-      limits,
-    });
-    this.handlerViewFrom.setPos();
-    this.valueNoteViewFrom.calcPos(this.handlerViewFrom.$handler);
-    this.valueNoteViewFrom.setPos();
-    this.valueNoteViewFrom.setValue(from);
-    this.valueNoteViewFrom.showValueNote(showValueNote);
-    this.barView.setLengthForDouble({
-      edge: this.getEdge(this.handlerViewFrom),
-      valueFrom: from,
-      valueTo: curValue,
-      limits,
-      handler: this.handlerView.$handler,
-    });
+    if (this.handlerViewFrom && this.valueNoteViewFrom) {
+      this.handlerViewFrom.calcPos({
+        edge: this.getEdge(this.handlerViewFrom),
+        value: from,
+        limits,
+      });
+      this.handlerViewFrom.setPos();
+      this.valueNoteViewFrom.calcPos(this.handlerViewFrom.$handler);
+      this.valueNoteViewFrom.setPos();
+      this.valueNoteViewFrom.setValue(from);
+      this.valueNoteViewFrom.showValueNote(showValueNote);
+      this.barView.setLengthForDouble({
+        edge: this.getEdge(this.handlerViewFrom),
+        valueFrom: from,
+        valueTo: curValue,
+        limits,
+        handler: this.handlerView.$handler,
+      });
+    }
     const data = { valueFrom: from, valueTo: to };
     this.setViewOfOneNote(data);
   }
@@ -171,46 +175,50 @@ class View extends EventObserver {
   }
 
   private changeHandlerPosForDoubleVertical(e: MouseEvent): void {
-    const handlerFromPos = this.handlerViewFrom.$handler.getBoundingClientRect().top;
-    const handlerToPos = this.handlerView.$handler.getBoundingClientRect().top;
-    const oddToFrom: number = handlerToPos - handlerFromPos;
-    const middlePos = oddToFrom / 2 + handlerFromPos + this.handlerView.getLength() / 2;
-    if (e.clientY >= middlePos) {
-      const data = {
-        shift: this.handlerViewFrom.getLength() / 2,
-        e,
-        handler: this.handlerViewFrom,
-      };
-      this.mouseMove(data);
-    } else {
-      const data = {
-        shift: this.handlerView.getLength() / 2,
-        e,
-        handler: this.handlerView,
-      };
-      this.mouseMove(data);
+    if (this.handlerViewFrom) {
+      const handlerFromPos = this.handlerViewFrom.$handler.getBoundingClientRect().top;
+      const handlerToPos = this.handlerView.$handler.getBoundingClientRect().top;
+      const oddToFrom: number = handlerToPos - handlerFromPos;
+      const middlePos = oddToFrom / 2 + handlerFromPos + this.handlerView.getLength() / 2;
+      if (e.clientY >= middlePos) {
+        const data = {
+          shift: this.handlerViewFrom.getLength() / 2,
+          e,
+          handler: this.handlerViewFrom,
+        };
+        this.mouseMove(data);
+      } else {
+        const data = {
+          shift: this.handlerView.getLength() / 2,
+          e,
+          handler: this.handlerView,
+        };
+        this.mouseMove(data);
+      }
     }
   }
 
   private changeHandlerPosForDoubleHorizontal(e: MouseEvent): void {
-    const handlerFromPos = this.handlerViewFrom.$handler.getBoundingClientRect().left;
-    const handlerToPos = this.handlerView.$handler.getBoundingClientRect().left;
-    const oddToFrom: number = handlerToPos - handlerFromPos;
-    const middlePos = oddToFrom / 2 + handlerFromPos + this.handlerView.getLength() / 2;
-    if (e.clientX <= middlePos) {
-      const data = {
-        shift: this.handlerViewFrom.getLength() / 2,
-        e,
-        handler: this.handlerViewFrom,
-      };
-      this.mouseMove(data);
-    } else {
-      const data = {
-        shift: this.handlerView.getLength() / 2,
-        e,
-        handler: this.handlerView,
-      };
-      this.mouseMove(data);
+    if (this.handlerViewFrom) {
+      const handlerFromPos = this.handlerViewFrom.$handler.getBoundingClientRect().left;
+      const handlerToPos = this.handlerView.$handler.getBoundingClientRect().left;
+      const oddToFrom: number = handlerToPos - handlerFromPos;
+      const middlePos = oddToFrom / 2 + handlerFromPos + this.handlerView.getLength() / 2;
+      if (e.clientX <= middlePos) {
+        const data = {
+          shift: this.handlerViewFrom.getLength() / 2,
+          e,
+          handler: this.handlerViewFrom,
+        };
+        this.mouseMove(data);
+      } else {
+        const data = {
+          shift: this.handlerView.getLength() / 2,
+          e,
+          handler: this.handlerView,
+        };
+        this.mouseMove(data);
+      }
     }
   }
 
@@ -229,8 +237,10 @@ class View extends EventObserver {
   }
 
   private setVerticalViewForDouble(vertical: boolean): void {
-    this.handlerViewFrom.setVerticalView(vertical);
-    this.valueNoteViewFrom.setVerticalView(vertical);
+    if (this.handlerViewFrom && this.valueNoteViewFrom) {
+      this.handlerViewFrom.setVerticalView(vertical);
+      this.valueNoteViewFrom.setVerticalView(vertical);
+    }
   }
 
   private moveHandler(data: { event: MouseEvent; handler: HTMLElement }): void {
@@ -305,16 +315,21 @@ class View extends EventObserver {
   }
 
   private isSmallDistanceBetweenNotes(): boolean {
-    const distBetweenNotes: number = this.valueNoteView.getPos() - this.valueNoteViewFrom.getPos();
-    if (distBetweenNotes < this.valueNoteView.getSize()) {
-      return true;
+    if (this.valueNoteViewFrom) {
+      const distAmongNotes: number = this.valueNoteView.getPos() - this.valueNoteViewFrom.getPos();
+      if (distAmongNotes < this.valueNoteView.getSize()) {
+        return true;
+      }
+      return false;
     }
     return false;
   }
 
   private makeCommonNoteView(valueFrom: number, valueTo: number): void {
+    if (this.valueNoteViewFrom) {
+      this.valueNoteViewFrom.showValueNote(false);
+    }
     this.valueNoteView.showValueNote(false);
-    this.valueNoteViewFrom.showValueNote(false);
     if (this.valueNoteViewCommon) {
       this.updateCommonNoteView(valueFrom, valueTo);
     } else {
@@ -326,19 +341,23 @@ class View extends EventObserver {
   }
 
   private updateCommonNoteView(valueFrom: number, valueTo: number): void {
-    this.valueNoteViewCommon.setValueForTwo(valueFrom, valueTo);
-    const leftEdgeOfHandlerFrom = this.handlerViewFrom.getPos();
-    const rightEdgeOfHandlerTo = this.handlerView.getPos() + this.handlerView.getLength();
-    const distBetweenEdgesOfHandlers = rightEdgeOfHandlerTo - leftEdgeOfHandlerFrom;
-    this.valueNoteViewCommon.valueNotePos = leftEdgeOfHandlerFrom + distBetweenEdgesOfHandlers / 2;
-    this.valueNoteViewCommon.setPos();
+    if (this.handlerViewFrom && this.valueNoteViewCommon) {
+      this.valueNoteViewCommon.setValueForTwo(valueFrom, valueTo);
+      const leftEdgeOfHandlerFrom = this.handlerViewFrom.getPos();
+      const rightEdgeOfHandlerTo = this.handlerView.getPos() + this.handlerView.getLength();
+      const distAmongEdgesOfHandlers = rightEdgeOfHandlerTo - leftEdgeOfHandlerFrom;
+      this.valueNoteViewCommon.valueNotePos = leftEdgeOfHandlerFrom + distAmongEdgesOfHandlers / 2;
+      this.valueNoteViewCommon.setPos();
+    }
   }
 
   private removeValueNotesFromAndTo(): void {
-    this.valueNoteView.showValueNote(true);
-    this.valueNoteViewFrom.showValueNote(true);
-    this.valueNoteViewCommon.$note.remove();
-    delete this.valueNoteViewCommon;
+    if (this.valueNoteViewFrom && this.valueNoteViewCommon) {
+      this.valueNoteView.showValueNote(true);
+      this.valueNoteViewFrom.showValueNote(true);
+      this.valueNoteViewCommon.$note.remove();
+      delete this.valueNoteViewCommon;
+    }
   }
 
   private addObservers(): void {
@@ -346,15 +365,17 @@ class View extends EventObserver {
       'handlerMousedownEvent',
       this.moveHandler.bind(this),
     );
-    this.handlerViewFrom.addObserver(
-      'handlerMousedownEvent',
-      this.moveHandler.bind(this),
-    );
+    if (this.handlerViewFrom) {
+      this.handlerViewFrom.addObserver(
+        'handlerMousedownEvent',
+        this.moveHandler.bind(this),
+      );
+      this.handlerViewFrom.addObserver(
+        'handlerMousemoveEvent',
+        this.mouseMove.bind(this),
+      );
+    }
     this.handlerView.addObserver(
-      'handlerMousemoveEvent',
-      this.mouseMove.bind(this),
-    );
-    this.handlerViewFrom.addObserver(
       'handlerMousemoveEvent',
       this.mouseMove.bind(this),
     );

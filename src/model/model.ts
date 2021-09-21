@@ -30,7 +30,7 @@ class Model extends EventObserver {
 
   private double: boolean;
 
-  private from: number;
+  public from: number;
 
   private to: number;
 

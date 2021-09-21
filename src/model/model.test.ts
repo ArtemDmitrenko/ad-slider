@@ -20,77 +20,165 @@ describe('model', () => {
       model = new Model(options);
     });
     test('should set correct curValue', () => {
-      expect(model.curValue).toBe(60);
+      expect(model.options.curValue).toBe(60);
     });
     test('should set correct min limit', () => {
-      expect(model.limits.min).toBe(0);
+      expect(model.options.limits.min).toBe(0);
     });
     test('should set correct max limit', () => {
-      expect(model.limits.max).toBe(100);
+      expect(model.options.limits.max).toBe(100);
     });
     test('should set correct showValueNote', () => {
-      expect(model.showValueNote).toBe(true);
+      expect(model.options.showValueNote).toBe(true);
     });
     test('should set step', () => {
-      expect(model.step).toBe(60);
+      expect(model.options.step).toBe(60);
     });
     test('should set double', () => {
-      expect(model.double).toBe(true);
+      expect(model.options.double).toBe(true);
     });
     test('should set valFrom', () => {
-      expect(model.from).toBe(0);
+      expect(model.options.from).toBe(0);
     });
     test('should set valTo', () => {
-      expect(model.to).toBe(60);
+      expect(model.options.to).toBe(60);
     });
     test('should set vertical', () => {
-      expect(model.vertical).toBe(true);
+      expect(model.options.vertical).toBe(true);
     });
   });
 
   describe('init function if options are not correct', () => {
     test('should set valFrom if there are double and no valFrom', () => {
       options = {
-        limits: { min: 0, max: 100 }, curValue: 85, double: true, to: 90,
+        limits: { min: 0, max: 100 },
+        curValue: 85,
+        showValueNote: true,
+        step: 1,
+        double: true,
+        from: 0,
+        to: 90,
+        vertical: false,
       };
       model = new Model(options);
-      expect(model.from).toBe(0);
+      expect(model.options.from).toBe(0);
     });
     test('should set curValue if there are no valTo', () => {
-      options = { limits: { min: 0, max: 100 }, curValue: 85, showValueNote: true };
+      options = {
+        limits: { min: 0, max: 100 },
+        curValue: 85,
+        showValueNote: true,
+        step: 1,
+        double: false,
+        from: 0,
+        to: 0,
+        vertical: false,
+      };
       model = new Model(options);
-      expect(model.curValue).toBe(85);
+      expect(model.options.curValue).toBe(85);
     });
     test('should throw error if curValue is less than min limit', () => {
-      options = { curValue: -50, limits: { min: 0, max: 100 }, showValueNote: true };
+      options = {
+        limits: { min: 0, max: 100 },
+        curValue: -50,
+        showValueNote: true,
+        step: 1,
+        double: false,
+        from: 0,
+        to: 0,
+        vertical: false,
+      };
       expect(() => { new Model(options); }).toThrowError(/^Value must be in range of min and max limits$/);
     });
     test('should throw error if curValue is more than max limit', () => {
-      options = { curValue: 150, limits: { min: 0, max: 100 }, showValueNote: true };
+      options = {
+        limits: { min: 0, max: 100 },
+        curValue: 150,
+        showValueNote: true,
+        step: 1,
+        double: false,
+        from: 0,
+        to: 0,
+        vertical: false,
+      };
       expect(() => { new Model(options); }).toThrowError(/^Value must be in range of min and max limits$/);
     });
     test('should throw error if min limit is more than max limit', () => {
-      options = { curValue: 50, limits: { min: 100, max: 0 }, showValueNote: true };
+      options = {
+        limits: { min: 100, max: 0 },
+        curValue: 50,
+        showValueNote: true,
+        step: 1,
+        double: false,
+        from: 0,
+        to: 0,
+        vertical: false,
+      };
       expect(() => { new Model(options); }).toThrowError(/^Min can not be the same or more than Max$/);
     });
     test('should throw error if min limit is more than max limit', () => {
-      options = { curValue: 50, limits: { min: 100, max: 0 }, showValueNote: true };
+      options = {
+        limits: { min: 100, max: 0 },
+        curValue: 50,
+        showValueNote: true,
+        step: 1,
+        double: false,
+        from: 0,
+        to: 0,
+        vertical: false,
+      };
       expect(() => { new Model(options); }).toThrowError(/^Min can not be the same or more than Max$/);
     });
     test('should throw error if valTo is more than limits.max or less than limits.min', () => {
-      options = { limits: { min: 50, max: 100 }, from: 30, to: 120 };
+      options = {
+        limits: { min: 50, max: 100 },
+        curValue: 85,
+        showValueNote: true,
+        step: 1,
+        double: false,
+        from: 30,
+        to: 120,
+        vertical: false,
+      };
       expect(() => { new Model(options); }).toThrowError(/^Value must be in range of min and max limits$/);
     });
     test('should throw error if valFrom is more than limits.max or less than limits.min', () => {
-      options = { limits: { min: 50, max: 100 }, from: 30 };
+      options = {
+        limits: { min: 50, max: 100 },
+        curValue: 85,
+        showValueNote: true,
+        step: 1,
+        double: false,
+        from: 30,
+        to: 0,
+        vertical: false,
+      };
       expect(() => { new Model(options); }).toThrowError(/^Value must be in range of min and max limits$/);
     });
     test('should throw error if valFrom is more than valTo', () => {
-      options = { limits: { min: 0, max: 100 }, from: 80, to: 30 };
+      options = {
+        limits: { min: 0, max: 100 },
+        curValue: 85,
+        showValueNote: true,
+        step: 1,
+        double: false,
+        from: 80,
+        to: 30,
+        vertical: false,
+      };
       expect(() => { new Model(options); }).toThrowError(/^Value From must be less than To$/);
     });
     test('should throw error if step is more than difference between limits.max and limits.min', () => {
-      options = { limits: { min: 0, max: 100 }, step: 120 };
+      options = {
+        limits: { min: 0, max: 100 },
+        curValue: 85,
+        showValueNote: true,
+        step: 120,
+        double: false,
+        from: 0,
+        to: 0,
+        vertical: false,
+      };
       expect(() => { new Model(options); }).toThrowError(/^Step can not be more than odd min and max limits$/);
     });
   });
@@ -115,6 +203,12 @@ describe('model', () => {
         options = {
           limits: { min: 0, max: 100 },
           curValue: 85,
+          showValueNote: true,
+          step: 1,
+          double: false,
+          from: 10,
+          to: 0,
+          vertical: false,
         };
         model = new Model(options);
         callback1 = jest.fn();
@@ -168,6 +262,7 @@ describe('model', () => {
           double: true,
           from: 5,
           to: 10,
+          vertical: false,
         };
         model = new Model(options);
         callback1 = jest.fn();
@@ -209,7 +304,7 @@ describe('model', () => {
         $handler.classList.add('adslider__handler_from');
         const data = { newPos: 10, edge: 370, handler: $handler };
         model.setValueFromHandlerPos(data);
-        expect(model.from).toBe(0);
+        expect(model.options.from).toBe(0);
       });
 
       test('should broadcast events', () => {
@@ -237,11 +332,13 @@ describe('model', () => {
       beforeEach(() => {
         options = {
           limits: { min: 0, max: 100 },
+          curValue: 85,
           showValueNote: true,
           step: 30,
           double: true,
           from: 0,
           to: 90,
+          vertical: false,
         };
         model = new Model(options);
         callback1 = jest.fn();
@@ -274,7 +371,7 @@ describe('model', () => {
         $handler.classList.remove('adslider__handler_from');
         const data = { newPos: 481, edge: 504, handler: $handler };
         model.setValueFromHandlerPos(data);
-        expect(model.curValue).toBe(90);
+        expect(model.options.curValue).toBe(90);
       });
     });
   });

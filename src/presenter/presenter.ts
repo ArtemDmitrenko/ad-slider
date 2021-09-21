@@ -53,7 +53,7 @@ class Presenter {
   }
 
   private updateObservers(): void {
-    if (this.view.handlerViewFrom) {
+    if (this.view.handlerViewFrom && this.view.valueNoteViewFrom) {
       this.model.addObserver('calcHandlerPosForDouble', this.view.handlerViewFrom.calcPos.bind(this.view.handlerViewFrom));
       this.model.addObserver('setHandlerPosForDouble', this.view.handlerViewFrom.setPos.bind(this.view.handlerViewFrom));
       this.model.addObserver('calcValueNotePosForDouble', this.view.valueNoteViewFrom.calcPos.bind(this.view.valueNoteViewFrom));

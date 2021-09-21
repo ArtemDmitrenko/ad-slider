@@ -15,15 +15,15 @@ describe('view', () => {
       expect(view.barView.$bar).not.toBeNull();
       expect(view.scaleView.$scale).not.toBeNull();
       expect(view.handlerView.$handler).not.toBeNull();
-      expect(view.handlerViewFrom.$handler).not.toBeNull();
+      expect(view.handlerViewFrom?.$handler).not.toBeNull();
       expect(view.valueNoteView.$note).not.toBeNull();
-      expect(view.valueNoteViewFrom.$note).not.toBeNull();
+      expect(view.valueNoteViewFrom?.$note).not.toBeNull();
     });
 
     test('Function render: should add classes adslider elements', () => {
       expect(view.$adslider.classList.contains('adslider')).toBe(true);
-      expect(view.handlerViewFrom.$handler.classList.contains('adslider__handler_from')).toBe(true);
-      expect(view.valueNoteViewFrom.$note.classList.contains('adslider__note_from')).toBe(true);
+      expect(view.handlerViewFrom?.$handler.classList.contains('adslider__handler_from')).toBe(true);
+      expect(view.valueNoteViewFrom?.$note.classList.contains('adslider__note_from')).toBe(true);
       expect(view.valueNoteView.$note.classList.contains('adslider__note_to')).toBe(true);
     });
   });
@@ -79,7 +79,7 @@ describe('view', () => {
           vertical: true,
         };
         view.updateView(options);
-        expect(view.handlerViewFrom.$handler).not.toBeNull();
+        expect(view.handlerViewFrom?.$handler).not.toBeNull();
       });
     });
 
@@ -91,7 +91,9 @@ describe('view', () => {
         view = new View($container);
         view.trackView.$track.style.width = '400px';
         view.handlerView.$handler.style.width = '30px';
-        view.handlerViewFrom.$handler.style.width = '30px';
+        if (view.handlerViewFrom) {
+          view.handlerViewFrom.$handler.style.width = '30px';
+        }
         view.valueNoteView.$note.style.width = '2rem';
         options = {
           limits: { min: 0, max: 100 },
@@ -117,19 +119,25 @@ describe('view', () => {
         expect(getComputedStyle(view.handlerView.$handler).left).toBe('151.7px');
       });
       test('Should set handlerFrom position depending on the valueFrom', () => {
-        expect(getComputedStyle(view.handlerViewFrom.$handler).left).toBe('148px');
+        if (view.handlerViewFrom) {
+          expect(getComputedStyle(view.handlerViewFrom.$handler).left).toBe('148px');
+        }
       });
       test('Should set valueNote position depending on the handler position', () => {
         expect(getComputedStyle(view.valueNoteView.$note).left).toBe('166px');
       });
       test('Should set valueNoteFrom position depending on the handler position', () => {
-        expect(getComputedStyle(view.valueNoteViewFrom.$note).left).toBe('163px');
+        if (view.valueNoteViewFrom) {
+          expect(getComputedStyle(view.valueNoteViewFrom.$note).left).toBe('163px');
+        }
       });
       test('Should set note value depending on the curValue', () => {
         expect(view.valueNoteView.$value.textContent).toBe('41');
       });
       test('Should set noteFrom value depending on the valFrom', () => {
-        expect(view.valueNoteViewFrom.$value.textContent).toBe('40');
+        if (view.valueNoteViewFrom) {
+          expect(view.valueNoteViewFrom.$value.textContent).toBe('40');
+        }
       });
       test('Should removeValueNotesFromAndTo if we have valueNoteViewCommon', () => {
         options = {
@@ -143,7 +151,9 @@ describe('view', () => {
           vertical: false,
         };
         view.updateView(options);
-        expect(view.handlerViewFrom.$handler).not.toBeNull();
+        if (view.handlerViewFrom) {
+          expect(view.handlerViewFrom.$handler).not.toBeNull();
+        }
       });
       test('Should remove values From and To if we already have common valueNote', () => {
         options = {
@@ -307,18 +317,19 @@ describe('view', () => {
           y: 0,
           toJSON: jest.fn,
         }));
-
-        view.handlerViewFrom.$handler.getBoundingClientRect = jest.fn(() => ({
-          bottom: 100,
-          height: 30,
-          left: 0,
-          right: 0,
-          top: 50,
-          width: 30,
-          x: 0,
-          y: 0,
-          toJSON: jest.fn,
-        }));
+        if (view.handlerViewFrom) {
+          view.handlerViewFrom.$handler.getBoundingClientRect = jest.fn(() => ({
+            bottom: 100,
+            height: 30,
+            left: 0,
+            right: 0,
+            top: 50,
+            width: 30,
+            x: 0,
+            y: 0,
+            toJSON: jest.fn,
+          }));
+        }
         view.trackView.$track.getBoundingClientRect = jest.fn(() => ({
           bottom: 74,
           height: 400,
@@ -384,18 +395,19 @@ describe('view', () => {
           y: 0,
           toJSON: jest.fn,
         }));
-
-        view.handlerViewFrom.$handler.getBoundingClientRect = jest.fn(() => ({
-          bottom: 0,
-          height: 0,
-          left: 100,
-          right: 0,
-          top: 0,
-          width: 30,
-          x: 0,
-          y: 0,
-          toJSON: jest.fn,
-        }));
+        if (view.handlerViewFrom) {
+          view.handlerViewFrom.$handler.getBoundingClientRect = jest.fn(() => ({
+            bottom: 0,
+            height: 0,
+            left: 100,
+            right: 0,
+            top: 0,
+            width: 30,
+            x: 0,
+            y: 0,
+            toJSON: jest.fn,
+          }));
+        }
         view.trackView.$track.getBoundingClientRect = jest.fn(() => ({
           bottom: 0,
           height: 0,
