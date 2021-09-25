@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import DemoPage from './demoPage/demoPage';
 
 const options1 = {

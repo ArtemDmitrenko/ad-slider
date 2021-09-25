@@ -2,9 +2,9 @@ import EventObserver from '../eventObserver/eventObserver';
 
 interface Config {
   limits: {
-    min: number,
-    max: number
-  }
+    min: number;
+    max: number;
+  };
   curValue: number;
   showValueNote: boolean;
   step: number;
@@ -16,9 +16,9 @@ interface Config {
 
 class Model extends EventObserver {
   public limits!: {
-    min: number
-    max: number
-  }
+    min: number;
+    max: number;
+  };
 
   public curValue!: number;
 
@@ -76,7 +76,7 @@ class Model extends EventObserver {
     this.options.double = double;
   }
 
-  private setLimits(limits: { min: number, max: number }): void {
+  private setLimits(limits: { min: number; max: number }): void {
     if (limits.min >= limits.max) {
       throw new Error('Min can not be the same or more than Max');
     }
@@ -90,7 +90,10 @@ class Model extends EventObserver {
     }
     if (this.step) {
       const newVal: number = this.setRoundedCurVal(
-        value, this.step, this.limits.max, this.limits.min,
+        value,
+        this.step,
+        this.limits.max,
+        this.limits.min,
       );
       this.curValue = this.to || newVal;
       this.options.curValue = this.to || newVal;
@@ -98,7 +101,12 @@ class Model extends EventObserver {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  private setRoundedCurVal(value: number, step: number, max: number, min: number): number {
+  private setRoundedCurVal(
+    value: number,
+    step: number,
+    max: number,
+    min: number,
+  ): number {
     const odd: number = (min - value) % step;
     if (odd === 0) {
       return value;
@@ -117,7 +125,10 @@ class Model extends EventObserver {
     }
     if (this.step && value) {
       const newVal: number = this.setRoundedCurVal(
-        value, this.step, this.limits.max, this.limits.min,
+        value,
+        this.step,
+        this.limits.max,
+        this.limits.min,
       );
       this.to = newVal;
       this.options.to = newVal;
@@ -132,7 +143,12 @@ class Model extends EventObserver {
       throw new Error('Value From must be less than To');
     }
     if (this.step && value) {
-      const newVal = this.setRoundedCurVal(value, this.step, this.limits.max, this.limits.min);
+      const newVal = this.setRoundedCurVal(
+        value,
+        this.step,
+        this.limits.max,
+        this.limits.min,
+      );
       this.from = newVal;
       this.options.from = newVal;
     }
@@ -146,32 +162,32 @@ class Model extends EventObserver {
     this.options.step = value || 1;
   }
 
-  private setValFromAndBroadcast(value: number, edge: number, handler: HTMLElement): boolean {
-    this.from = this.calcValueWithStep(value, this.from);
-    if (this.isValFromMovesOverValTo()) {
-      return true;
-    }
+  private setValFromAndBroadcast(
+    value: number,
+    edge: number,
+    handler: HTMLElement,
+  ): void {
+    this.from = this.calcValueWithStep(value);
     const options = { edge, value: this.from, limits: this.limits };
     this.broadcast('calcHandlerPosForDouble', options);
     this.broadcast('setHandlerPosForDouble');
     this.broadcast('calcValueNotePosForDouble', handler);
     this.broadcast('setValueNotePosForDouble');
     this.broadcast('setValueOfNoteForDouble', this.from);
-    return false;
   }
 
-  private setValCurAndBroadcast(value: number, edge: number, handler: HTMLElement): boolean {
-    this.curValue = this.calcValueWithStep(value, this.curValue);
-    if (this.double && this.isValFromMovesOverValTo()) {
-      return true;
-    }
+  private setValCurAndBroadcast(
+    value: number,
+    edge: number,
+    handler: HTMLElement,
+  ): void {
+    this.curValue = this.calcValueWithStep(value);
     const options = { edge, value: this.curValue, limits: this.limits };
     this.broadcast('calcHandlerPos', options);
     this.broadcast('setHandlerPos');
     this.broadcast('calcValueNotePos', handler);
     this.broadcast('setValueNotePos');
     this.broadcast('setValueOfNote', this.curValue);
-    return false;
   }
 
   private broadcastDouble(edge: number, handler: HTMLElement): void {
@@ -191,18 +207,18 @@ class Model extends EventObserver {
   }
 
   public setValueFromHandlerPos(data: {
-    newPos: number,
-    edge: number,
-    handler: HTMLElement
+    newPos: number;
+    edge: number;
+    handler: HTMLElement;
   }): void {
     const value = this.calcValueFromHandlerPos(data.newPos, data.edge);
     if (data.handler.classList.contains('adslider__handler_from')) {
-      if (this.setValFromAndBroadcast(value, data.edge, data.handler)) {
+      if (this.isValFromMovesOverValTo(value)) {
         return;
       }
       this.setValFromAndBroadcast(value, data.edge, data.handler);
     } else {
-      if (this.setValCurAndBroadcast(value, data.edge, data.handler)) {
+      if (this.double && this.isValToMovesOverValFrom(value)) {
         return;
       }
       this.setValCurAndBroadcast(value, data.edge, data.handler);
@@ -210,8 +226,12 @@ class Model extends EventObserver {
     this.broadcastDouble(data.edge, data.handler);
   }
 
-  private isValFromMovesOverValTo(): boolean {
-    return (this.curValue - this.from < this.step && this.from > this.curValue);
+  private isValFromMovesOverValTo(value: number): boolean {
+    return value > this.curValue;
+  }
+
+  private isValToMovesOverValFrom(value: number): boolean {
+    return value < this.from;
   }
 
   public calcValueFromHandlerPos(newPos: number, edge: number): number {
@@ -219,11 +239,15 @@ class Model extends EventObserver {
     return Math.round(this.limits.min + odds * (newPos / edge));
   }
 
-  private calcValueWithStep(value: number, curValue: number): number {
-    const AllNumberOfSteps: number = Math.floor((this.limits.max - this.limits.min) / this.step);
+  private calcValueWithStep(value: number): number {
+    const AllNumberOfSteps: number = Math.floor(
+      Math.abs(this.limits.max - this.limits.min) / this.step,
+    );
     const maxStepValue: number = this.limits.min + AllNumberOfSteps * this.step;
-    const numberOfSteps = Math.round((value - curValue) / this.step);
-    let newValue: number = curValue + this.step * numberOfSteps;
+    const numberOfSteps: number = Math.round(
+      (value - this.limits.min) / this.step,
+    );
+    let newValue: number = this.limits.min + this.step * numberOfSteps;
     if (newValue < this.limits.min) {
       newValue += this.step;
     }
