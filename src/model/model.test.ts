@@ -297,7 +297,7 @@ describe('model', () => {
         $handler.classList.add('adslider__handler_from');
         const data = { newPos: 100, edge: 370, handler: $handler };
         model.setValueFromHandlerPos(data);
-        expect(model.from).toBe(30);
+        expect(model.from).toBe(0);
       });
 
       test('should set curValue and check function isValFromMovesOverValTo is return false', () => {
@@ -324,7 +324,7 @@ describe('model', () => {
         $handler.classList.remove('adslider__handler_from');
         const data = { newPos: -10, edge: 370, handler: $handler };
         model.setValueFromHandlerPos(data);
-        expect(model.curValue).toBe(0);
+        expect(model.curValue).toBe(10);
       });
     });
 

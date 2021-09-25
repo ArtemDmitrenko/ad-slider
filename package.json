@@ -2,12 +2,11 @@
   "name": "ad-slider",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "test": "jest",
-    "dev": "parcel src/index.pug --out-dir dist --open",
+    "dev": "parcel src/index.pug --dist-dir dist --open",
     "eslint": "eslint --ext js,jsx,ts,tsx src",
-    "build": "parcel build src/index.pug --public-url ./ --no-content-hash --out-dir docs"
+    "build": "parcel build src/index.pug --public-url ./ --no-content-hash --dist-dir docs"
   },
   "jest": {
     "collectCoverage": true,
@@ -21,6 +20,9 @@
     "@babel/core": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-typescript": "^7.12.7",
+    "@parcel/transformer-pug": "^2.0.0-rc.0",
+    "@parcel/transformer-sass": "^2.0.0-rc.0",
+    "@parcel/validator-typescript": "^2.0.0-alpha.3",
     "@types/jest": "^26.0.19",
     "@types/jquery": "^3.5.5",
     "@typescript-eslint/eslint-plugin": "^4.10.0",
@@ -33,7 +35,7 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-pug": "^1.2.4",
     "jest": "^26.6.3",
-    "parcel-bundler": "^1.12.5",
+    "parcel": "^2.0.0-rc.0",
     "pug": "^3.0.0",
     "sass": "^1.29.0",
     "typescript": "^4.1.3"
