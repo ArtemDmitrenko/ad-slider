@@ -317,10 +317,7 @@ class View extends EventObserver {
   private isSmallDistanceBetweenNotes(): boolean {
     if (this.valueNoteViewFrom) {
       const distAmongNotes: number = this.valueNoteView.getPos() - this.valueNoteViewFrom.getPos();
-      if (distAmongNotes < this.valueNoteView.getSize()) {
-        return true;
-      }
-      return false;
+      return distAmongNotes < this.valueNoteView.getSize();
     }
     return false;
   }
