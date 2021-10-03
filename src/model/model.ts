@@ -15,46 +15,19 @@ interface Config {
 }
 
 class Model extends EventObserver {
-  public limits!: {
-    min: number;
-    max: number;
-  };
-
-  public curValue!: number;
-
-  public showValueNote: boolean;
-
-  private step: number;
-
-  private vertical: boolean;
-
-  private double: boolean;
-
-  public from: number;
-
-  private to: number;
-
   public options: Config;
 
   constructor(options: Config) {
     super();
-    this.limits = options.limits;
-    this.showValueNote = options.showValueNote;
-    this.step = options.step;
-    this.vertical = options.vertical;
-    this.double = options.double;
-    this.from = options.from;
-    this.to = options.to;
-    this.curValue = options.to || options.curValue;
     this.options = {
-      limits: this.limits,
-      curValue: this.curValue,
-      showValueNote: this.showValueNote,
-      step: this.step,
-      vertical: this.vertical,
-      double: this.double,
-      from: this.from,
-      to: this.to,
+      limits: options.limits,
+      curValue: options.to || options.curValue,
+      showValueNote: options.showValueNote,
+      step: options.step,
+      vertical: options.vertical,
+      double: options.double,
+      from: options.from,
+      to: options.to,
     };
     this.init(this.options);
   }
@@ -70,9 +43,8 @@ class Model extends EventObserver {
 
   private setDouble(double: boolean, from: number): void {
     if (double && !from) {
-      this.from = this.limits.min;
+      this.options.from = this.options.limits.min;
     }
-    this.double = double;
     this.options.double = double;
   }
 
@@ -80,23 +52,21 @@ class Model extends EventObserver {
     if (limits.min >= limits.max) {
       throw new Error('Min can not be the same or more than Max');
     }
-    this.limits = { min: limits.min, max: limits.max };
     this.options.limits = { min: limits.min, max: limits.max };
   }
 
   private setCurValue(value: number): void {
-    if (value < this.limits.min || value > this.limits.max) {
+    if (value < this.options.limits.min || value > this.options.limits.max) {
       throw new Error('Value must be in range of min and max limits');
     }
-    if (this.step) {
+    if (this.options.step) {
       const newVal: number = this.setRoundedCurVal(
         value,
-        this.step,
-        this.limits.max,
-        this.limits.min,
+        this.options.step,
+        this.options.limits.max,
+        this.options.limits.min,
       );
-      this.curValue = this.to || newVal;
-      this.options.curValue = this.to || newVal;
+      this.options.curValue = this.options.to || newVal;
     }
   }
 
@@ -120,45 +90,42 @@ class Model extends EventObserver {
   }
 
   private setValueTo(value: number): void {
-    if (value < this.limits.min || value > this.limits.max) {
+    if (value < this.options.limits.min || value > this.options.limits.max) {
       throw new Error('Value must be in range of min and max limits');
     }
-    if (this.step && value) {
+    if (this.options.step && value) {
       const newVal: number = this.setRoundedCurVal(
         value,
-        this.step,
-        this.limits.max,
-        this.limits.min,
+        this.options.step,
+        this.options.limits.max,
+        this.options.limits.min,
       );
-      this.to = newVal;
       this.options.to = newVal;
     }
   }
 
   private setValueFrom(value: number): void {
-    if (value < this.limits.min || value > this.limits.max) {
+    if (value < this.options.limits.min || value > this.options.limits.max) {
       throw new Error('Value must be in range of min and max limits');
     }
-    if (value > this.to && this.to) {
+    if (value > this.options.to && this.options.to) {
       throw new Error('Value From must be less than To');
     }
-    if (this.step && value) {
+    if (this.options.step && value) {
       const newVal = this.setRoundedCurVal(
         value,
-        this.step,
-        this.limits.max,
-        this.limits.min,
+        this.options.step,
+        this.options.limits.max,
+        this.options.limits.min,
       );
-      this.from = newVal;
       this.options.from = newVal;
     }
   }
 
   private setStep(value: number): void {
-    if (value > this.limits.max - this.limits.min) {
+    if (value > this.options.limits.max - this.options.limits.min) {
       throw new Error('Step can not be more than odd min and max limits');
     }
-    this.step = value || 1;
     this.options.step = value || 1;
   }
 
@@ -167,13 +134,13 @@ class Model extends EventObserver {
     edge: number,
     handler: HTMLElement,
   ): void {
-    this.from = this.calcValueWithStep(value);
-    const options = { edge, value: this.from, limits: this.limits };
+    this.options.from = this.calcValueWithStep(value);
+    const options = { edge, value: this.options.from, limits: this.options.limits };
     this.broadcast('calcHandlerPosForDouble', options);
     this.broadcast('setHandlerPosForDouble');
     this.broadcast('calcValueNotePosForDouble', handler);
     this.broadcast('setValueNotePosForDouble');
-    this.broadcast('setValueOfNoteForDouble', this.from);
+    this.broadcast('setValueOfNoteForDouble', this.options.from);
   }
 
   private setValCurAndBroadcast(
@@ -181,22 +148,22 @@ class Model extends EventObserver {
     edge: number,
     handler: HTMLElement,
   ): void {
-    this.curValue = this.calcValueWithStep(value);
-    const options = { edge, value: this.curValue, limits: this.limits };
+    this.options.curValue = this.calcValueWithStep(value);
+    const options = { edge, value: this.options.curValue, limits: this.options.limits };
     this.broadcast('calcHandlerPos', options);
     this.broadcast('setHandlerPos');
     this.broadcast('calcValueNotePos', handler);
     this.broadcast('setValueNotePos');
-    this.broadcast('setValueOfNote', this.curValue);
+    this.broadcast('setValueOfNote', this.options.curValue);
   }
 
   private broadcastDouble(edge: number, handler: HTMLElement): void {
-    if (this.double) {
+    if (this.options.double) {
       const optionsForBar = {
         edge,
-        valueFrom: this.from,
-        valueTo: this.curValue,
-        limits: this.limits,
+        valueFrom: this.options.from,
+        valueTo: this.options.curValue,
+        limits: this.options.limits,
         handler,
       };
       this.broadcast('setBarWidthForDouble', optionsForBar);
@@ -219,7 +186,7 @@ class Model extends EventObserver {
       }
       this.setValFromAndBroadcast(value, data.edge, data.handler);
     } else {
-      if (this.double && this.isValToMovesOverValFrom(value)) {
+      if (this.options.double && this.isValToMovesOverValFrom(value)) {
         return;
       }
       this.setValCurAndBroadcast(value, data.edge, data.handler);
@@ -228,36 +195,36 @@ class Model extends EventObserver {
   }
 
   private isValFromMovesOverValTo(value: number): boolean {
-    return value > this.curValue;
+    return value > this.options.curValue;
   }
 
   private isValToMovesOverValFrom(value: number): boolean {
-    return value < this.from;
+    return value < this.options.from;
   }
 
   public calcValueFromHandlerPos(newPos: number, edge: number): number {
-    const odds: number = this.limits.max - this.limits.min;
-    return Math.round(this.limits.min + odds * (newPos / edge));
+    const odds: number = this.options.limits.max - this.options.limits.min;
+    return Math.round(this.options.limits.min + odds * (newPos / edge));
   }
 
   private calcValueWithStep(value: number): number {
     const AllNumberOfSteps: number = Math.floor(
-      Math.abs(this.limits.max - this.limits.min) / this.step,
+      Math.abs(this.options.limits.max - this.options.limits.min) / this.options.step,
     );
-    const maxStepValue: number = this.limits.min + AllNumberOfSteps * this.step;
+    const maxStepValue: number = this.options.limits.min + AllNumberOfSteps * this.options.step;
     const numberOfSteps: number = Math.round(
-      (value - this.limits.min) / this.step,
+      (value - this.options.limits.min) / this.options.step,
     );
-    let newValue: number = this.limits.min + this.step * numberOfSteps;
-    if (newValue < this.limits.min) {
-      newValue += this.step;
+    let newValue: number = this.options.limits.min + this.options.step * numberOfSteps;
+    if (newValue < this.options.limits.min) {
+      newValue += this.options.step;
     }
-    if (newValue > this.limits.max) {
-      newValue -= this.step;
+    if (newValue > this.options.limits.max) {
+      newValue -= this.options.step;
     }
     if (value > maxStepValue) {
-      if (value > maxStepValue + (this.limits.max - maxStepValue) / 2) {
-        newValue = this.limits.max;
+      if (value > maxStepValue + (this.options.limits.max - maxStepValue) / 2) {
+        newValue = this.options.limits.max;
       } else {
         newValue = maxStepValue;
       }
