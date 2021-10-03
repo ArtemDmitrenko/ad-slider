@@ -248,9 +248,9 @@ class View extends EventObserver {
   }
 
   private mouseMove(data: {
-    shift: number;
-    e: MouseEvent;
-    handler: HandlerView;
+    shift: number,
+    e: MouseEvent,
+    handler: HandlerView
   }): void {
     let newPos;
     if (data.e.type === 'mousedown') {
@@ -260,7 +260,8 @@ class View extends EventObserver {
     }
     const edge: number = this.getEdge(data.handler);
     newPos = this.checkNewPos(newPos);
-    const options = { newPos, edge, handler: data.handler.$handler };
+    const isHandlerFrom = data.handler.$handler.classList.contains('adslider__handler_from');
+    const options = { newPos, edge, handler: data.handler.$handler, isHandlerFrom };
     this.broadcast('handlerMove', options);
   }
 

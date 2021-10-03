@@ -207,12 +207,13 @@ class Model extends EventObserver {
   }
 
   public setValueFromHandlerPos(data: {
-    newPos: number;
-    edge: number;
-    handler: HTMLElement;
+    newPos: number,
+    edge: number,
+    handler: HTMLElement,
+    isHandlerFrom: boolean
   }): void {
     const value = this.calcValueFromHandlerPos(data.newPos, data.edge);
-    if (data.handler.classList.contains('adslider__handler_from')) {
+    if (data.isHandlerFrom) {
       if (this.isValFromMovesOverValTo(value)) {
         return;
       }
