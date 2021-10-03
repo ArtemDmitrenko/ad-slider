@@ -27,11 +27,11 @@ class BarView extends EventObserver {
 
   public setVerticalView(verticalView: boolean): void {
     if (verticalView) {
-      this.$bar.classList.remove('adslider__bar_horizontal');
-      this.$bar.classList.add('adslider__bar_vertical');
+      this.$bar.classList.remove('adslider__bar_direction_horizontal');
+      this.$bar.classList.add('adslider__bar_direction_vertical');
     } else {
-      this.$bar.classList.remove('adslider__bar_vertical');
-      this.$bar.classList.add('adslider__bar_horizontal');
+      this.$bar.classList.remove('adslider__bar_direction_vertical');
+      this.$bar.classList.add('adslider__bar_direction_horizontal');
     }
   }
 
@@ -40,7 +40,7 @@ class BarView extends EventObserver {
     let handlerLength: number;
     this.$bar.style.bottom = '';
     this.$bar.style.left = '';
-    if (this.$bar.classList.contains('adslider__bar_horizontal')) {
+    if (this.$bar.classList.contains('adslider__bar_direction_horizontal')) {
       this.$bar.style.height = '';
       handlerPos = parseInt(getComputedStyle($handler).left, 10);
       handlerLength = parseInt(getComputedStyle($handler).width, 10);
@@ -74,7 +74,7 @@ class BarView extends EventObserver {
     const sumToLength: number = handlerPosTo + handlerLength / 2;
     const sumFromLength: number = handlerPosFrom + handlerLength / 2;
     const barLength: number = Math.abs(sumToLength - sumFromLength);
-    if (this.$bar.classList.contains('adslider__bar_horizontal')) {
+    if (this.$bar.classList.contains('adslider__bar_direction_horizontal')) {
       this.$bar.style.height = '';
       this.$bar.style.bottom = '';
       this.$bar.style.width = `${barLength}px`;

@@ -19,11 +19,11 @@ describe('barView', () => {
 
   test('Function setVerticalView: should set vertical or horizontal view of bar', () => {
     barView.setVerticalView(false);
-    expect(barView.$bar.classList.contains('adslider__bar_horizontal')).toBe(
+    expect(barView.$bar.classList.contains('adslider__bar_direction_horizontal')).toBe(
       true,
     );
     barView.setVerticalView(true);
-    expect(barView.$bar.classList.contains('adslider__bar_vertical')).toBe(
+    expect(barView.$bar.classList.contains('adslider__bar_direction_vertical')).toBe(
       true,
     );
   });

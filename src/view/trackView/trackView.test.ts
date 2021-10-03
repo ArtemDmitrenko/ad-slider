@@ -20,15 +20,15 @@ describe('trackView', () => {
   test('Function getLength: should get length of track', () => {
     trackView.$track.style.width = '20px';
     expect(trackView.getLength()).toBe(20);
-    trackView.$track.classList.add('adslider__track_vertical');
+    trackView.$track.classList.add('adslider__track_direction_vertical');
     trackView.$track.style.height = '55px';
     expect(trackView.getLength()).toBe(55);
   });
 
   test('Function setVerticalView: should set vertical or horizontal view of track', () => {
     trackView.setVerticalView(false);
-    expect(trackView.$track.classList.contains('adslider__track_horizontal')).toBe(true);
+    expect(trackView.$track.classList.contains('adslider__track_direction_horizontal')).toBe(true);
     trackView.setVerticalView(true);
-    expect(trackView.$track.classList.contains('adslider__track_vertical')).toBe(true);
+    expect(trackView.$track.classList.contains('adslider__track_direction_vertical')).toBe(true);
   });
 });

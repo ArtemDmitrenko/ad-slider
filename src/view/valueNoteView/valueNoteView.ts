@@ -51,7 +51,7 @@ class ValueNoteView {
   }
 
   public setPos(): void {
-    if (this.$note.classList.contains('adslider__note_vertical')) {
+    if (this.$note.classList.contains('adslider__note_direction_vertical')) {
       this.$note.style.left = '';
       this.$note.style.bottom = `${this.valueNotePos}px`;
     } else {
@@ -62,24 +62,24 @@ class ValueNoteView {
 
   public setVerticalView(verticalView: boolean): void {
     if (verticalView) {
-      this.$note.classList.remove('adslider__note_horizontal');
-      this.$note.classList.add('adslider__note_vertical');
+      this.$note.classList.remove('adslider__note_direction_horizontal');
+      this.$note.classList.add('adslider__note_direction_vertical');
     } else {
-      this.$note.classList.remove('adslider__note_vertical');
-      this.$note.classList.add('adslider__note_horizontal');
+      this.$note.classList.remove('adslider__note_direction_vertical');
+      this.$note.classList.add('adslider__note_direction_horizontal');
     }
   }
 
   public getSize(): number {
-    return this.$note.classList.contains('adslider__note_vertical') ? parseInt(getComputedStyle(this.$note).height, 10) : parseInt(getComputedStyle(this.$note).width, 10);
+    return this.$note.classList.contains('adslider__note_direction_vertical') ? parseInt(getComputedStyle(this.$note).height, 10) : parseInt(getComputedStyle(this.$note).width, 10);
   }
 
   public getPos(): number {
-    return this.$note.classList.contains('adslider__note_vertical') ? parseInt(getComputedStyle(this.$note).bottom, 10) : parseInt(getComputedStyle(this.$note).left, 10);
+    return this.$note.classList.contains('adslider__note_direction_vertical') ? parseInt(getComputedStyle(this.$note).bottom, 10) : parseInt(getComputedStyle(this.$note).left, 10);
   }
 
   private isVertical(): boolean {
-    return this.$note.classList.contains('adslider__note_vertical');
+    return this.$note.classList.contains('adslider__note_direction_vertical');
   }
 }
 

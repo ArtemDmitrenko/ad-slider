@@ -85,16 +85,16 @@ class HandlerView extends EventObserver {
 
   public setVerticalView(verticalView: boolean): void {
     if (verticalView) {
-      this.$handler.classList.remove('adslider__handler_horizontal');
-      this.$handler.classList.add('adslider__handler_vertical');
+      this.$handler.classList.remove('adslider__handler_direction_horizontal');
+      this.$handler.classList.add('adslider__handler_direction_vertical');
     } else {
-      this.$handler.classList.remove('adslider__handler_vertical');
-      this.$handler.classList.add('adslider__handler_horizontal');
+      this.$handler.classList.remove('adslider__handler_direction_vertical');
+      this.$handler.classList.add('adslider__handler_direction_horizontal');
     }
   }
 
   private isVertical(): boolean {
-    return this.$handler.classList.contains('adslider__handler_vertical');
+    return this.$handler.classList.contains('adslider__handler_direction_vertical');
   }
 }
 

@@ -25,9 +25,9 @@ class ScaleView extends EventObserver {
     const line: HTMLElement = document.createElement('div');
     line.classList.add('adslider__scaleLine');
     if (this.isVertical()) {
-      line.classList.add('adslider__scaleLine_vertical');
+      line.classList.add('adslider__scaleLine_direction_vertical');
     } else {
-      line.classList.add('adslider__scaleLine_horizontal');
+      line.classList.add('adslider__scaleLine_direction_horizontal');
     }
     return line;
   }
@@ -42,11 +42,11 @@ class ScaleView extends EventObserver {
 
   public drawScale(options: Config, $handler: HTMLElement): void {
     if (options.vertical) {
-      this.$scale.classList.remove('adslider__scale_horizontal');
-      this.$scale.classList.add('adslider__scale_vertical');
+      this.$scale.classList.remove('adslider__scale_direction_horizontal');
+      this.$scale.classList.add('adslider__scale_direction_vertical');
     } else {
-      this.$scale.classList.remove('adslider__scale_vertical');
-      this.$scale.classList.add('adslider__scale_horizontal');
+      this.$scale.classList.remove('adslider__scale_direction_vertical');
+      this.$scale.classList.add('adslider__scale_direction_horizontal');
     }
     const { step } = options;
     const odd: number = options.limits.max - options.limits.min;
@@ -106,9 +106,9 @@ class ScaleView extends EventObserver {
       const $text = document.createElement('div');
       $text.classList.add('adslider__scaleText');
       if (this.isVertical()) {
-        $text.classList.add('adslider__scaleText_vertical');
+        $text.classList.add('adslider__scaleText_direction_vertical');
       } else {
-        $text.classList.add('adslider__scaleText_horizontal');
+        $text.classList.add('adslider__scaleText_direction_horizontal');
       }
       $text.innerText = `${value}`;
       el.append($text);
@@ -128,7 +128,7 @@ class ScaleView extends EventObserver {
   }
 
   private isVertical(): boolean {
-    return this.$scale.classList.contains('adslider__scale_vertical');
+    return this.$scale.classList.contains('adslider__scale_direction_vertical');
   }
 }
 

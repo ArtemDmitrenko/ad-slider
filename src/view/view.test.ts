@@ -51,12 +51,12 @@ describe('view', () => {
       });
 
       test('Should add classes to the elements of slider', () => {
-        expect(view.$adslider.classList.contains('adslider_horizontal')).toBe(true);
-        expect(view.trackView.$track.classList.contains('adslider__track_horizontal')).toBe(true);
-        expect(view.handlerView.$handler.classList.contains('adslider__handler_horizontal')).toBe(true);
-        expect(view.barView.$bar.classList.contains('adslider__bar_horizontal')).toBe(true);
+        expect(view.$adslider.classList.contains('adslider_direction_horizontal')).toBe(true);
+        expect(view.trackView.$track.classList.contains('adslider__track_direction_horizontal')).toBe(true);
+        expect(view.handlerView.$handler.classList.contains('adslider__handler_direction_horizontal')).toBe(true);
+        expect(view.barView.$bar.classList.contains('adslider__bar_direction_horizontal')).toBe(true);
         expect(view.valueNoteView.$note.classList.contains('adslider__note_show')).toBe(true);
-        expect(view.scaleView.$scale.classList.contains('adslider__scale_horizontal')).toBe(true);
+        expect(view.scaleView.$scale.classList.contains('adslider__scale_direction_horizontal')).toBe(true);
       });
       test('Should set handler position depending on the curValue', () => {
         expect(getComputedStyle(view.handlerView.$handler).left).toBe('185px');
@@ -109,11 +109,11 @@ describe('view', () => {
       });
 
       test('Should add classes to the elements of slider', () => {
-        expect(view.$adslider.classList.contains('adslider_horizontal')).toBe(true);
-        expect(view.trackView.$track.classList.contains('adslider__track_horizontal')).toBe(true);
-        expect(view.handlerView.$handler.classList.contains('adslider__handler_horizontal')).toBe(true);
-        expect(view.barView.$bar.classList.contains('adslider__bar_horizontal')).toBe(true);
-        expect(view.scaleView.$scale.classList.contains('adslider__scale_horizontal')).toBe(true);
+        expect(view.$adslider.classList.contains('adslider_direction_horizontal')).toBe(true);
+        expect(view.trackView.$track.classList.contains('adslider__track_direction_horizontal')).toBe(true);
+        expect(view.handlerView.$handler.classList.contains('adslider__handler_direction_horizontal')).toBe(true);
+        expect(view.barView.$bar.classList.contains('adslider__bar_direction_horizontal')).toBe(true);
+        expect(view.scaleView.$scale.classList.contains('adslider__scale_direction_horizontal')).toBe(true);
       });
       test('Should set handler position depending on the curValue', () => {
         expect(getComputedStyle(view.handlerView.$handler).left).toBe('151.7px');

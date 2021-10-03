@@ -157,7 +157,7 @@ class View extends EventObserver {
     if (this.isDouble()) {
       if (
         this.handlerView.$handler.classList.contains(
-          'adslider__handler_horizontal',
+          'adslider__handler_direction_horizontal',
         )
       ) {
         this.changeHandlerPosForDoubleHorizontal(e);
@@ -224,11 +224,11 @@ class View extends EventObserver {
 
   private setVerticalViewForSingle(vertical: boolean): void {
     if (vertical) {
-      this.$adslider.classList.remove('adslider_horizontal');
-      this.$adslider.classList.add('adslider_vertical');
+      this.$adslider.classList.remove('adslider_direction_horizontal');
+      this.$adslider.classList.add('adslider_direction_vertical');
     } else {
-      this.$adslider.classList.remove('adslider_vertical');
-      this.$adslider.classList.add('adslider_horizontal');
+      this.$adslider.classList.remove('adslider_direction_vertical');
+      this.$adslider.classList.add('adslider_direction_horizontal');
     }
     this.trackView.setVerticalView(vertical);
     this.handlerView.setVerticalView(vertical);
@@ -287,7 +287,7 @@ class View extends EventObserver {
   }
 
   private isVertical(): boolean {
-    return this.$adslider.classList.contains('adslider_vertical');
+    return this.$adslider.classList.contains('adslider_direction_vertical');
   }
 
   private isDouble(): boolean {

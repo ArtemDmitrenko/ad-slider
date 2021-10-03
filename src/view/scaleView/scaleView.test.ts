@@ -32,7 +32,7 @@ describe('scaleView', () => {
       vertical: true,
     };
     scaleView.drawScale(options, $handler);
-    expect(scaleView.$scale.classList.contains('adslider__scale_vertical')).toBe(true);
+    expect(scaleView.$scale.classList.contains('adslider__scale_direction_vertical')).toBe(true);
     expect(window.getComputedStyle(scaleView.$scale).width).toBe('');
     expect(window.getComputedStyle(scaleView.$scale).left).toBe('');
     expect(window.getComputedStyle(scaleView.$scale).height).toBe('370px');

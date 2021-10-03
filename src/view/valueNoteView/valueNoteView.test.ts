@@ -71,9 +71,9 @@ describe('valueNoteView', () => {
 
   test('Function setVerticalView: should set vertical or horizontal view of note', () => {
     valueNoteView.setVerticalView(false);
-    expect(valueNoteView.$note.classList.contains('adslider__note_horizontal')).toBe(true);
+    expect(valueNoteView.$note.classList.contains('adslider__note_direction_horizontal')).toBe(true);
     valueNoteView.setVerticalView(true);
-    expect(valueNoteView.$note.classList.contains('adslider__note_vertical')).toBe(true);
+    expect(valueNoteView.$note.classList.contains('adslider__note_direction_vertical')).toBe(true);
   });
 
   test('Function getPos: return pos of note', () => {

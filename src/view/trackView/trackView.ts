@@ -24,16 +24,16 @@ class TrackView extends EventObserver {
   }
 
   public getLength(): number {
-    return this.$track.classList.contains('adslider__track_vertical') ? parseInt(getComputedStyle(this.$track).height, 10) : parseInt(getComputedStyle(this.$track).width, 10);
+    return this.$track.classList.contains('adslider__track_direction_vertical') ? parseInt(getComputedStyle(this.$track).height, 10) : parseInt(getComputedStyle(this.$track).width, 10);
   }
 
   public setVerticalView(verticalView: boolean): void {
     if (verticalView) {
-      this.$track.classList.remove('adslider__track_horizontal');
-      this.$track.classList.add('adslider__track_vertical');
+      this.$track.classList.remove('adslider__track_direction_horizontal');
+      this.$track.classList.add('adslider__track_direction_vertical');
     } else {
-      this.$track.classList.remove('adslider__track_vertical');
-      this.$track.classList.add('adslider__track_horizontal');
+      this.$track.classList.remove('adslider__track_direction_vertical');
+      this.$track.classList.add('adslider__track_direction_horizontal');
     }
   }
 }

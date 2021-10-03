@@ -25,7 +25,7 @@ describe('handlerView', () => {
   test('Function getLength: should get length of handler', () => {
     handlerView.$handler.style.width = '10px';
     expect(handlerView.getLength()).toBe(10);
-    handlerView.$handler.classList.add('adslider__handler_vertical');
+    handlerView.$handler.classList.add('adslider__handler_direction_vertical');
     handlerView.$handler.style.height = '20px';
     expect(handlerView.getLength()).toBe(20);
   });
@@ -45,15 +45,15 @@ describe('handlerView', () => {
   test('Function getPos: should get position of handler', () => {
     handlerView.$handler.style.left = '15px';
     expect(handlerView.getPos()).toBe(15);
-    handlerView.$handler.classList.add('adslider__handler_vertical');
+    handlerView.$handler.classList.add('adslider__handler_direction_vertical');
     handlerView.$handler.style.bottom = '25px';
     expect(handlerView.getPos()).toBe(25);
   });
 
   test('Function setVerticalView: should set vertical or horizontal view of slider', () => {
     handlerView.setVerticalView(false);
-    expect(handlerView.$handler.classList.contains('adslider__handler_horizontal')).toBe(true);
+    expect(handlerView.$handler.classList.contains('adslider__handler_direction_horizontal')).toBe(true);
     handlerView.setVerticalView(true);
-    expect(handlerView.$handler.classList.contains('adslider__handler_vertical')).toBe(true);
+    expect(handlerView.$handler.classList.contains('adslider__handler_direction_vertical')).toBe(true);
   });
 });
