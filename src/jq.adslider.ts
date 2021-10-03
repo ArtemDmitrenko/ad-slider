@@ -1,10 +1,4 @@
-/* eslint-disable linebreak-style */
-/* eslint-disable prefer-rest-params */
-/* eslint-disable consistent-return */
-/* eslint-disable func-names */
-/* eslint-disable no-param-reassign */
 import './main.scss';
-
 import { Config } from './model/model';
 import Presenter from './presenter/presenter';
 

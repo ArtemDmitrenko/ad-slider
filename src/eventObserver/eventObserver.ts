@@ -1,12 +1,10 @@
 class EventObserver {
-  // eslint-disable-next-line @typescript-eslint/ban-types
   public observers: { [event: string]: Function[] };
 
   constructor() {
     this.observers = {};
   }
 
-  // eslint-disable-next-line @typescript-eslint/ban-types
   public addObserver(event: string, newObserver: Function): void {
     if (this.observers[event]) {
       if (this.observers[event].includes(newObserver)) {

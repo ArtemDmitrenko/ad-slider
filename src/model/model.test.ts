@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
-/* eslint-disable no-new */
 import { Model, Config } from './model';
 
 describe('model', () => {
@@ -226,12 +224,16 @@ describe('model', () => {
       });
 
       test('should set curValue', () => {
-        const data = { newPos: 220, edge: 370, handler: $handler };
+        const data = {
+          newPos: 220, edge: 370, handler: $handler, isHandlerFrom: false,
+        };
         model.setValueFromHandlerPos(data);
-        expect(model.curValue).toBe(59);
+        expect(model.options.curValue).toBe(59);
       });
       test('should broadcast events', () => {
-        const data = { newPos: 220, edge: 370, handler: $handler };
+        const data = {
+          newPos: 220, edge: 370, handler: $handler, isHandlerFrom: false,
+        };
         model.setValueFromHandlerPos(data);
         expect(callback1).toBeCalled();
         expect(callback2).toBeCalled();
@@ -241,14 +243,18 @@ describe('model', () => {
         expect(callback6).toBeCalled();
       });
       test('check that function calcValueWithStep is working properly (val less limits.min)', () => {
-        const data = { newPos: -20, edge: 370, handler: $handler };
+        const data = {
+          newPos: -20, edge: 370, handler: $handler, isHandlerFrom: false,
+        };
         model.setValueFromHandlerPos(data);
-        expect(model.curValue).toBe(-4);
+        expect(model.options.curValue).toBe(-4);
       });
       test('check that function calcValueWithStep is working properly (val more limits.max)', () => {
-        const data = { newPos: 400, edge: 370, handler: $handler };
+        const data = {
+          newPos: 400, edge: 370, handler: $handler, isHandlerFrom: false,
+        };
         model.setValueFromHandlerPos(data);
-        expect(model.curValue).toBe(100);
+        expect(model.options.curValue).toBe(100);
       });
     });
 
@@ -295,21 +301,27 @@ describe('model', () => {
 
       test('should set curValue and check function isValFromMovesOverValTo is return true', () => {
         $handler.classList.add('adslider__handler_from');
-        const data = { newPos: 100, edge: 370, handler: $handler };
+        const data = {
+          newPos: 100, edge: 370, handler: $handler, isHandlerFrom: true,
+        };
         model.setValueFromHandlerPos(data);
-        expect(model.from).toBe(0);
+        expect(model.options.from).toBe(0);
       });
 
       test('should set curValue and check function isValFromMovesOverValTo is return false', () => {
         $handler.classList.add('adslider__handler_from');
-        const data = { newPos: 10, edge: 370, handler: $handler };
+        const data = {
+          newPos: 10, edge: 370, handler: $handler, isHandlerFrom: true,
+        };
         model.setValueFromHandlerPos(data);
         expect(model.options.from).toBe(0);
       });
 
       test('should broadcast events', () => {
         $handler.classList.add('adslider__handler_from');
-        const data = { newPos: 10, edge: 370, handler: $handler };
+        const data = {
+          newPos: 10, edge: 370, handler: $handler, isHandlerFrom: true,
+        };
         model.setValueFromHandlerPos(data);
         expect(callback1).toBeCalled();
         expect(callback2).toBeCalled();
@@ -322,9 +334,11 @@ describe('model', () => {
 
       test('check that function isValFromMovesOverValTo() is working', () => {
         $handler.classList.remove('adslider__handler_from');
-        const data = { newPos: -10, edge: 370, handler: $handler };
+        const data = {
+          newPos: -10, edge: 370, handler: $handler, isHandlerFrom: true,
+        };
         model.setValueFromHandlerPos(data);
-        expect(model.curValue).toBe(10);
+        expect(model.options.curValue).toBe(10);
       });
     });
 
@@ -369,7 +383,9 @@ describe('model', () => {
       });
       test('check that function calcValueWithStep() is working', () => {
         $handler.classList.remove('adslider__handler_from');
-        const data = { newPos: 481, edge: 504, handler: $handler };
+        const data = {
+          newPos: 481, edge: 504, handler: $handler, isHandlerFrom: true,
+        };
         model.setValueFromHandlerPos(data);
         expect(model.options.curValue).toBe(90);
       });

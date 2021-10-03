@@ -1,4 +1,3 @@
-/* eslint-disable linebreak-style */
 import DemoPage from './demoPage/demoPage';
 
 const options1 = {
@@ -39,7 +38,6 @@ $('.js-container2').adslider(options2);
 $('.js-container3').adslider(options3);
 $('.js-container4').adslider(options4);
 
-/* eslint-disable no-new */
 new DemoPage('.js-container1');
 new DemoPage('.js-container2');
 new DemoPage('.js-container3');

@@ -261,7 +261,9 @@ class View extends EventObserver {
     const edge: number = this.getEdge(data.handler);
     newPos = this.checkNewPos(newPos);
     const isHandlerFrom = data.handler.$handler.classList.contains('adslider__handler_from');
-    const options = { newPos, edge, handler: data.handler.$handler, isHandlerFrom };
+    const options = {
+      newPos, edge, handler: data.handler.$handler, isHandlerFrom,
+    };
     this.broadcast('handlerMove', options);
   }
 

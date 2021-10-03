@@ -36,7 +36,13 @@
                 "ts": "never",
                 "tsx": "never"
             }
-        ]
+        ],
+        "@typescript-eslint/ban-types": "off",
+        "no-new": "off",
+        "no-param-reassign": "off",
+        "prefer-rest-params": "off",
+        "consistent-return": "off",
+        "func-names": "off"
     },
     "settings": {
         "import/resolver": {
