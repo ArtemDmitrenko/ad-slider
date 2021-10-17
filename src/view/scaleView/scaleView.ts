@@ -23,11 +23,11 @@ class ScaleView extends EventObserver {
 
   private renderScaleLine(): HTMLElement {
     const line: HTMLElement = document.createElement('div');
-    line.classList.add('adslider__scaleLine');
+    line.classList.add('adslider__scale-line');
     if (this.isVertical()) {
-      line.classList.add('adslider__scaleLine_direction_vertical');
+      line.classList.add('adslider__scale-line_direction_vertical');
     } else {
-      line.classList.add('adslider__scaleLine_direction_horizontal');
+      line.classList.add('adslider__scale-line_direction_horizontal');
     }
     return line;
   }
@@ -100,15 +100,15 @@ class ScaleView extends EventObserver {
   }
 
   private renderScaleSign(options: Config): void {
-    const listOfLines = this.$scale.querySelectorAll('.adslider__scaleLine');
+    const listOfLines = this.$scale.querySelectorAll('.adslider__scale-line');
     listOfLines.forEach((el, index) => {
       const value: number = this.calcSigns(index, options);
       const $text = document.createElement('div');
-      $text.classList.add('adslider__scaleText');
+      $text.classList.add('adslider__scale-text');
       if (this.isVertical()) {
-        $text.classList.add('adslider__scaleText_direction_vertical');
+        $text.classList.add('adslider__scale-text_direction_vertical');
       } else {
-        $text.classList.add('adslider__scaleText_direction_horizontal');
+        $text.classList.add('adslider__scale-text_direction_horizontal');
       }
       $text.innerText = `${value}`;
       el.append($text);
