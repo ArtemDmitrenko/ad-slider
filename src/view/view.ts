@@ -294,10 +294,7 @@ class View extends EventObserver {
   }
 
   private isDouble(): boolean {
-    if (this.handlerViewFrom) {
-      return true;
-    }
-    return false;
+    return (!!this.handlerViewFrom);
   }
 
   private calcNewPos(shift: number, e: MouseEvent): number {
