@@ -300,7 +300,7 @@ describe('model', () => {
       });
 
       test('should set curValue and check function isValFromMovesOverValTo is return true', () => {
-        $handler.classList.add('adslider__handler_from');
+        $handler.classList.add('adslider__handler_type_from');
         const data = {
           newPos: 100, edge: 370, handler: $handler, isHandlerFrom: true,
         };
@@ -309,7 +309,7 @@ describe('model', () => {
       });
 
       test('should set curValue and check function isValFromMovesOverValTo is return false', () => {
-        $handler.classList.add('adslider__handler_from');
+        $handler.classList.add('adslider__handler_type_from');
         const data = {
           newPos: 10, edge: 370, handler: $handler, isHandlerFrom: true,
         };
@@ -318,7 +318,7 @@ describe('model', () => {
       });
 
       test('should broadcast events', () => {
-        $handler.classList.add('adslider__handler_from');
+        $handler.classList.add('adslider__handler_type_from');
         const data = {
           newPos: 10, edge: 370, handler: $handler, isHandlerFrom: true,
         };
@@ -333,7 +333,7 @@ describe('model', () => {
       });
 
       test('check that function isValFromMovesOverValTo() is working', () => {
-        $handler.classList.remove('adslider__handler_from');
+        $handler.classList.remove('adslider__handler_type_from');
         const data = {
           newPos: -10, edge: 370, handler: $handler, isHandlerFrom: true,
         };
@@ -382,7 +382,7 @@ describe('model', () => {
         model.addObserver('setValueOfNote', callback12);
       });
       test('check that function calcValueWithStep() is working', () => {
-        $handler.classList.remove('adslider__handler_from');
+        $handler.classList.remove('adslider__handler_type_from');
         const data = {
           newPos: 481, edge: 504, handler: $handler, isHandlerFrom: true,
         };

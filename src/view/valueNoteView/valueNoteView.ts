@@ -13,6 +13,9 @@ class ValueNoteView {
     this.$note = document.createElement('div');
     this.$value = document.createElement('p');
     this.$note.classList.add('adslider__note');
+    // this.$note.classList.add('adslider__note_type_from');
+    // this.$note.classList.add('adslider__note_type_to');
+
     this.$value.classList.add('adslider__value');
     this.$note.append(this.$value);
     parent.append(this.$note);

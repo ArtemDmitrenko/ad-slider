@@ -49,10 +49,10 @@ class View extends EventObserver {
     this.valueNoteView = new ValueNoteView(this.$adslider);
 
     this.handlerViewFrom = new HandlerView(this.trackView.$track);
-    this.handlerViewFrom.$handler.classList.add('adslider__handler_from');
+    this.handlerViewFrom.$handler.classList.add('adslider__handler_type_from');
     this.valueNoteViewFrom = new ValueNoteView(this.$adslider);
-    this.valueNoteViewFrom.$note.classList.add('adslider__note_from');
-    this.valueNoteView.$note.classList.add('adslider__note_to');
+    this.valueNoteViewFrom.$note.classList.add('adslider__note_type_from');
+    this.valueNoteView.$note.classList.add('adslider__note_type_to');
   }
 
   public updateView(options: {
@@ -140,9 +140,9 @@ class View extends EventObserver {
 
   private renderHandlerFrom(): void {
     this.handlerViewFrom = new HandlerView(this.trackView.$track);
-    this.handlerViewFrom.$handler.classList.add('adslider__handler_from');
+    this.handlerViewFrom.$handler.classList.add('adslider__handler_type_from');
     this.valueNoteViewFrom = new ValueNoteView(this.$adslider);
-    this.valueNoteViewFrom.$note.classList.add('adslider__note_from');
+    this.valueNoteViewFrom.$note.classList.add('adslider__note_type_from');
     this.handlerViewFrom.addObserver(
       'handlerMousedownEvent',
       this.moveHandler.bind(this),
@@ -260,7 +260,7 @@ class View extends EventObserver {
     }
     const edge: number = this.getEdge(data.handler);
     newPos = this.checkNewPos(newPos);
-    const isHandlerFrom = data.handler.$handler.classList.contains('adslider__handler_from');
+    const isHandlerFrom = data.handler.$handler.classList.contains('adslider__handler_type_from');
     const options = {
       newPos, edge, handler: data.handler.$handler, isHandlerFrom,
     };

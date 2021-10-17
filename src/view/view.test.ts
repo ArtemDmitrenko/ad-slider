@@ -22,9 +22,9 @@ describe('view', () => {
 
     test('Function render: should add classes adslider elements', () => {
       expect(view.$adslider.classList.contains('adslider')).toBe(true);
-      expect(view.handlerViewFrom?.$handler.classList.contains('adslider__handler_from')).toBe(true);
-      expect(view.valueNoteViewFrom?.$note.classList.contains('adslider__note_from')).toBe(true);
-      expect(view.valueNoteView.$note.classList.contains('adslider__note_to')).toBe(true);
+      expect(view.handlerViewFrom?.$handler.classList.contains('adslider__handler_type_from')).toBe(true);
+      expect(view.valueNoteViewFrom?.$note.classList.contains('adslider__note_type_from')).toBe(true);
+      expect(view.valueNoteView.$note.classList.contains('adslider__note_type_to')).toBe(true);
     });
   });
 

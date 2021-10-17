@@ -123,7 +123,7 @@ class DemoPage {
 
   private updateInputFromTo(): void {
     if (this.$inputDouble.checked) {
-      const $noteFrom = this.$container.querySelector('.adslider__note_from') as HTMLElement;
+      const $noteFrom = this.$container.querySelector('.adslider__note_type_from') as HTMLElement;
       const $valueFrom = $noteFrom.querySelector('.adslider__value') as HTMLElement;
       const $noteTo = this.$container.querySelector('.adslider__note') as HTMLElement;
       const $valueTo = $noteTo.querySelector('.adslider__value') as HTMLElement;
