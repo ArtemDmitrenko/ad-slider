@@ -73,7 +73,7 @@ class HandlerView extends EventObserver {
     this.handlerPos = options.edge * (oddValMin / oddMaxMin);
   }
 
-  public setPos(): void {
+  public setPos(isDouble: boolean): void {
     if (this.isVertical()) {
       this.$handler.style.left = '';
       this.$handler.style.bottom = `${this.handlerPos}px`;
@@ -81,6 +81,10 @@ class HandlerView extends EventObserver {
       this.$handler.style.bottom = '';
       this.$handler.style.left = `${this.handlerPos}px`;
     }
+    this.broadcast('calcValueNotePos', this.$handler);
+    this.broadcast('setValueNotePos');
+    const data = { $handler: this.$handler, vertical: this.isVertical(), double: isDouble };
+    this.broadcast('setBar', data);
   }
 
   public setVerticalView(verticalView: boolean): void {

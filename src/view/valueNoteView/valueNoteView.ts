@@ -1,4 +1,6 @@
-class ValueNoteView {
+import EventObserver from '../../eventObserver/eventObserver';
+
+class ValueNoteView extends EventObserver {
   public $note!: HTMLElement;
 
   public $value!: HTMLElement;
@@ -6,6 +8,7 @@ class ValueNoteView {
   public valueNotePos!: number;
 
   constructor(parent: HTMLElement) {
+    super();
     this.render(parent);
   }
 

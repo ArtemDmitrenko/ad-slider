@@ -71,9 +71,7 @@ class View extends EventObserver {
       value: options.curValue,
       limits: options.limits,
     });
-    this.handlerView.setPos();
-    this.valueNoteView.calcPos(this.handlerView.$handler);
-    this.valueNoteView.setPos();
+    this.handlerView.setPos(options.double);
     this.valueNoteView.setValue(options.curValue);
     this.valueNoteView.showValueNote(options.showValueNote);
     this.scaleView.drawScale(options, this.handlerView.$handler);
@@ -82,15 +80,11 @@ class View extends EventObserver {
         options.vertical,
         options.from,
         options.to,
-        options.curValue,
         options.limits,
         options.showValueNote,
       );
-    } else {
-      if (this.handlerViewFrom) {
-        this.deleteHandlerFrom();
-      }
-      this.barView.setLength(this.handlerView.$handler);
+    } else if (this.handlerViewFrom) {
+      this.deleteHandlerFrom();
     }
   }
 
@@ -107,13 +101,13 @@ class View extends EventObserver {
     vertical: boolean,
     from: number,
     to: number,
-    curValue: number,
     limits: { max: number; min: number },
     showValueNote: boolean,
   ): void {
     if (!this.handlerViewFrom) {
       this.renderHandlerFrom();
     }
+    this.updateObservers();
     this.setVerticalViewForDouble(vertical);
     if (this.handlerViewFrom && this.valueNoteViewFrom) {
       this.handlerViewFrom.calcPos({
@@ -121,16 +115,14 @@ class View extends EventObserver {
         value: from,
         limits,
       });
-      this.handlerViewFrom.setPos();
+      this.handlerViewFrom.setPos(true);
       this.valueNoteViewFrom.calcPos(this.handlerViewFrom.$handler);
       this.valueNoteViewFrom.setPos();
       this.valueNoteViewFrom.setValue(from);
       this.valueNoteViewFrom.showValueNote(showValueNote);
       this.barView.setLengthForDouble({
-        edge: this.getEdge(this.handlerViewFrom),
-        valueFrom: from,
-        valueTo: curValue,
-        limits,
+        valueFrom: this.handlerViewFrom.getPos(),
+        valueTo: this.handlerView.getPos(),
         handler: this.handlerView.$handler,
       });
     }
@@ -262,7 +254,7 @@ class View extends EventObserver {
     newPos = this.checkNewPos(newPos);
     const isHandlerFrom = data.handler.$handler.classList.contains('adslider__handler_type_from');
     const options = {
-      newPos, edge, handler: data.handler.$handler, isHandlerFrom,
+      newPos, edge, isHandlerFrom,
     };
     this.broadcast('handlerMove', options);
   }
@@ -357,6 +349,19 @@ class View extends EventObserver {
     }
   }
 
+  public setBar(data: { $handler: HTMLElement, vertical: boolean, double: boolean }): void {
+    if (!data.double) {
+      this.barView.setLength(data);
+    } else if (this.handlerViewFrom) {
+      const options = {
+        valueFrom: this.handlerViewFrom.getPos(),
+        valueTo: this.handlerView.getPos(),
+        handler: data.$handler,
+      };
+      this.barView.setLengthForDouble(options);
+    }
+  }
+
   private addObservers(): void {
     this.handlerView.addObserver(
       'handlerMousedownEvent',
@@ -388,6 +393,24 @@ class View extends EventObserver {
       'handlerMousedownEvent',
       this.changeHandlerPos.bind(this),
     );
+    this.handlerView.addObserver('calcValueNotePos', this.valueNoteView.calcPos.bind(this.valueNoteView));
+    this.handlerView.addObserver('setValueNotePos', this.valueNoteView.setPos.bind(this.valueNoteView));
+    if (this.valueNoteViewFrom && this.handlerViewFrom) {      
+      this.handlerViewFrom.addObserver('calcValueNotePos', this.valueNoteViewFrom.calcPos.bind(this.valueNoteViewFrom));
+      this.handlerViewFrom.addObserver('setValueNotePos', this.valueNoteViewFrom.setPos.bind(this.valueNoteViewFrom));
+    }
+    this.handlerView.addObserver('setBar', this.setBar.bind(this));
+    if (this.handlerViewFrom) {
+      this.handlerViewFrom.addObserver('setBar', this.setBar.bind(this));
+    }
+  }
+
+  private updateObservers(): void {
+    if (this.handlerViewFrom && this.valueNoteViewFrom) {
+      this.handlerViewFrom.addObserver('calcValueNotePos', this.valueNoteViewFrom.calcPos.bind(this.valueNoteViewFrom));
+      this.handlerViewFrom.addObserver('setValueNotePos', this.valueNoteViewFrom.setPos.bind(this.valueNoteViewFrom));
+      this.handlerViewFrom.addObserver('setBar', this.setBar.bind(this));
+    }
   }
 }
 

@@ -35,21 +35,21 @@ class BarView extends EventObserver {
     }
   }
 
-  public setLength($handler: HTMLElement): void {
+  public setLength(data: { $handler: HTMLElement, vertical: boolean, double: boolean }): void {
     let handlerPos: number;
     let handlerLength: number;
     this.$bar.style.bottom = '';
     this.$bar.style.left = '';
     if (this.$bar.classList.contains('adslider__bar_direction_horizontal')) {
       this.$bar.style.height = '';
-      handlerPos = parseInt(getComputedStyle($handler).left, 10);
-      handlerLength = parseInt(getComputedStyle($handler).width, 10);
+      handlerPos = parseInt(getComputedStyle(data.$handler).left, 10);
+      handlerLength = parseInt(getComputedStyle(data.$handler).width, 10);
       this.calcBarPosForSingle(handlerPos, handlerLength);
       this.$bar.style.width = `${this.barPos}px`;
     } else {
       this.$bar.style.width = '';
-      handlerPos = parseInt(getComputedStyle($handler).bottom, 10);
-      handlerLength = parseInt(getComputedStyle($handler).height, 10);
+      handlerPos = parseInt(getComputedStyle(data.$handler).bottom, 10);
+      handlerLength = parseInt(getComputedStyle(data.$handler).height, 10);
       this.calcBarPosForSingle(handlerPos, handlerLength);
       this.$bar.style.height = `${this.barPos}px`;
     }
@@ -57,34 +57,27 @@ class BarView extends EventObserver {
 
   public setLengthForDouble(options: {
     valueFrom: number;
-    limits: { min: number; max: number };
     valueTo: number;
-    edge: number;
     handler: HTMLElement;
   }): void {
-    const oddFromMin: number = options.valueFrom - options.limits.min;
-    const oddToMin: number = options.valueTo - options.limits.min;
-    const oddMaxMin: number = options.limits.max - options.limits.min;
-    const handlerPosFrom: number = options.edge * (oddFromMin / oddMaxMin);
-    const handlerPosTo: number = options.edge * (oddToMin / oddMaxMin);
     const handlerLength: number = parseInt(
       getComputedStyle(options.handler).width,
       10,
     );
-    const sumToLength: number = handlerPosTo + handlerLength / 2;
-    const sumFromLength: number = handlerPosFrom + handlerLength / 2;
-    const barLength: number = Math.abs(sumToLength - sumFromLength);
+    const barRightEdge: number = options.valueTo + handlerLength / 2;
+    const barLeftEdge: number = options.valueFrom + handlerLength / 2;
+    const barLength: number = Math.abs(barRightEdge - barLeftEdge);
     if (this.$bar.classList.contains('adslider__bar_direction_horizontal')) {
       this.$bar.style.height = '';
       this.$bar.style.bottom = '';
       this.$bar.style.width = `${barLength}px`;
-      this.calcBarPosForDouble(handlerPosFrom, handlerPosTo, handlerLength);
+      this.calcBarPosForDouble(options.valueFrom, options.valueTo, handlerLength);
       this.$bar.style.left = `${this.barPos}px`;
     } else {
       this.$bar.style.width = '';
       this.$bar.style.left = '';
       this.$bar.style.height = `${barLength}px`;
-      this.calcBarPosForDouble(handlerPosFrom, handlerPosTo, handlerLength);
+      this.calcBarPosForDouble(options.valueFrom, options.valueTo, handlerLength);
       this.$bar.style.bottom = `${this.barPos}px`;
     }
   }
