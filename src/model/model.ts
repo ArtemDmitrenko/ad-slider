@@ -129,35 +129,29 @@ class Model extends EventObserver {
     this.options.step = value || 1;
   }
 
-  private setValFromAndBroadcast(
+  private setValAndBroadcast(
     value: number,
     edge: number,
+    isHandlerFrom: boolean,
   ): void {
-    this.options.from = this.calcValueWithStep(value);
-    const options = { edge, value: this.options.from, limits: this.options.limits };
-    this.broadcast('calcHandlerPosForFrom', options);
-    this.broadcast('setHandlerPosForFrom', this.options.double);
-    this.broadcast('setValueOfNoteForFrom', this.options.from);
-  }
-
-  private setValCurAndBroadcast(
-    value: number,
-    edge: number,
-  ): void {
-    this.options.curValue = this.calcValueWithStep(value);
-    const options = { edge, value: this.options.curValue, limits: this.options.limits };
-    this.broadcast('calcHandlerPos', options);
-    this.broadcast('setHandlerPos', this.options.double);
-    this.broadcast('setValueOfNote', this.options.curValue);
-  }
-
-  private setNoteForDouble(): void {
-    if (this.options.double) {
+    if (isHandlerFrom) {
+      this.options.from = this.calcValueWithStep(value);
       const options = {
-        valueFrom: this.options.from,
-        valueTo: this.options.curValue,
+        edge, value: this.options.from, limits: this.options.limits, isHandlerFrom,
       };
-      this.broadcast('setOneNote', options);
+      this.broadcast('calcPos', options);
+      const data = { double: this.options.double, isHandlerFrom };
+      this.broadcast('setPos', data);
+      this.broadcast('setValueOfNoteForFrom', this.options.from);
+    } else {
+      this.options.curValue = this.calcValueWithStep(value);
+      const options = {
+        edge, value: this.options.curValue, limits: this.options.limits, isHandlerFrom,
+      };
+      this.broadcast('calcPos', options);
+      const data = { isDouble: this.options.double, isHandlerFrom };
+      this.broadcast('setPos', data);
+      this.broadcast('setValue', this.options.curValue);
     }
   }
 
@@ -171,14 +165,10 @@ class Model extends EventObserver {
       if (this.isValFromMovesOverValTo(value)) {
         return;
       }
-      this.setValFromAndBroadcast(value, data.edge);
-    } else {
-      if (this.options.double && this.isValToMovesOverValFrom(value)) {
-        return;
-      }
-      this.setValCurAndBroadcast(value, data.edge);
+    } else if (this.options.double && this.isValToMovesOverValFrom(value)) {
+      return;
     }
-    this.setNoteForDouble();
+    this.setValAndBroadcast(value, data.edge, data.isHandlerFrom);
   }
 
   private isValFromMovesOverValTo(value: number): boolean {

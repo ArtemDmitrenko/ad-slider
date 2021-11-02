@@ -215,11 +215,11 @@ describe('model', () => {
         callback4 = jest.fn();
         callback5 = jest.fn();
         callback6 = jest.fn();
-        model.addObserver('calcHandlerPos', callback1);
-        model.addObserver('setHandlerPos', callback2);
+        model.addObserver('calcPos', callback1);
+        model.addObserver('setPos', callback2);
         model.addObserver('calcValueNotePos', callback3);
         model.addObserver('setValueNotePos', callback4);
-        model.addObserver('setValueOfNote', callback5);
+        model.addObserver('setValue', callback5);
         model.addObserver('setBarWidth', callback6);
       });
 
@@ -292,11 +292,11 @@ describe('model', () => {
         model.addObserver('setBarWidthForDouble', callback6);
         model.addObserver('setOneNote', callback7);
 
-        model.addObserver('calcHandlerPos', callback8);
-        model.addObserver('setHandlerPos', callback9);
+        model.addObserver('calcPos', callback8);
+        model.addObserver('setPos', callback9);
         model.addObserver('calcValueNotePos', callback10);
         model.addObserver('setValueNotePos', callback11);
-        model.addObserver('setValueOfNote', callback12);
+        model.addObserver('setValue', callback12);
       });
 
       test('should set curValue and check function isValFromMovesOverValTo is return true', () => {
@@ -375,11 +375,11 @@ describe('model', () => {
         model.addObserver('setValueOfNoteForFrom', callback5);
         model.addObserver('setBarWidthForDouble', callback6);
         model.addObserver('setOneNote', callback7);
-        model.addObserver('calcHandlerPos', callback8);
-        model.addObserver('setHandlerPos', callback9);
+        model.addObserver('calcPos', callback8);
+        model.addObserver('setPos', callback9);
         model.addObserver('calcValueNotePos', callback10);
         model.addObserver('setValueNotePos', callback11);
-        model.addObserver('setValueOfNote', callback12);
+        model.addObserver('setValue', callback12);
       });
       test('check that function calcValueWithStep() is working', () => {
         $handler.classList.remove('adslider__handler_type_from');

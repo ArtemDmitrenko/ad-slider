@@ -20,19 +20,21 @@ class Presenter {
 
   private addObservers(): void {
     // When position of handler is changing - curValue in Model is updating
-    this.view.addObserver('handlerMove', this.model.setValueFromHandlerPos.bind(this.model));
+    this.view.addObserver('changePos', this.handleCalcAndSetValue);
 
     // When curVal in Model is changing - pos of handler is calc and then updating
-    this.model.addObserver('calcHandlerPos', this.view.handlerView.calcPos.bind(this.view.handlerView));
-    this.model.addObserver('setHandlerPos', this.view.handlerView.setPos.bind(this.view.handlerView));
-    if (this.view.handlerViewFrom) {
-      this.model.addObserver('calcHandlerPosForFrom', this.view.handlerViewFrom.calcPos.bind(this.view.handlerViewFrom));
-      this.model.addObserver('setHandlerPosForFrom', this.view.handlerViewFrom.setPos.bind(this.view.handlerViewFrom));
-    }
+    this.model.addObserver('calcPos', this.handleCalcPos);
+    this.model.addObserver('setPos', this.handleSetPos);
+
+
+
+
+
 
     // When curValue in Model is changing - value of valueNote is updating
-    this.model.addObserver('setOneNote', this.view.setViewOfOneNote.bind(this.view));
-    this.model.addObserver('setValueOfNote', this.view.valueNoteView.setValue.bind(this.view.valueNoteView));
+
+
+    this.model.addObserver('setValue', this.view.valueNoteView.setValue.bind(this.view.valueNoteView));
     if (this.view.valueNoteViewFrom) {
       this.model.addObserver('setValueOfNoteForFrom', this.view.valueNoteViewFrom.setValue.bind(this.view.valueNoteViewFrom));
     }
@@ -44,6 +46,30 @@ class Presenter {
       this.model.addObserver('setHandlerPosForFrom', this.view.handlerViewFrom.setPos.bind(this.view.handlerViewFrom));
       this.model.addObserver('setValueOfNoteForFrom', this.view.valueNoteViewFrom.setValue.bind(this.view.valueNoteViewFrom));
     }
+  }
+
+  private handleCalcAndSetValue = (data: {
+    newPos: number,
+    edge: number,
+    isHandlerFrom: boolean
+  }) => {
+    this.model.setValueFromHandlerPos(data);
+  }
+
+  private handleCalcPos = (options: {
+    edge: number,
+    value: number,
+    limits: { min: number; max: number },
+    isHandlerFrom: boolean
+  }) => {
+    this.view.calcPos(options);
+  }
+
+  private handleSetPos = (options: {
+    isDouble: boolean,
+    isHandlerFrom: boolean
+  }) => {
+    this.view.setPos(options);
   }
 }
 

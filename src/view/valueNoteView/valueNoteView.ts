@@ -25,6 +25,10 @@ class ValueNoteView extends EventObserver {
     this.$value.textContent = String(value);
   }
 
+  public getValue(): number {
+    return Number(this.$value.textContent);
+  }
+
   public setValueForTwo(valueFrom: number, valueTo: number): void {
     const valFrom = String(valueFrom);
     const valTo = String(valueTo);

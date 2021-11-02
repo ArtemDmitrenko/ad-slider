@@ -256,7 +256,7 @@ class View extends EventObserver {
     const options = {
       newPos, edge, isHandlerFrom,
     };
-    this.broadcast('handlerMove', options);
+    this.broadcast('changePos', options);
   }
 
   private getEdge(handler: HandlerView): number {
@@ -295,12 +295,9 @@ class View extends EventObserver {
       : e.clientX - shift - this.trackView.$track.getBoundingClientRect().left;
   }
 
-  public setViewOfOneNote(options: {
-    valueFrom: number;
-    valueTo: number;
-  }): void {
+  public setViewOfOneNote(): void {
     if (this.isSmallDistanceBetweenNotes()) {
-      this.makeCommonNoteView(options.valueFrom, options.valueTo);
+      this.makeCommonNoteView();
     } else if (this.valueNoteViewCommon) {
       this.removeValueNotesFromAndTo();
     }
@@ -314,24 +311,29 @@ class View extends EventObserver {
     return false;
   }
 
-  private makeCommonNoteView(valueFrom: number, valueTo: number): void {
+  private makeCommonNoteView(): void {
     if (this.valueNoteViewFrom) {
       this.valueNoteViewFrom.showValueNote(false);
     }
     this.valueNoteView.showValueNote(false);
     if (this.valueNoteViewCommon) {
-      this.updateCommonNoteView(valueFrom, valueTo);
+      this.updateCommonNoteView();
     } else {
       this.valueNoteViewCommon = new ValueNoteView(this.$adslider);
       this.valueNoteViewCommon.$note.classList.add('adslider__note_common');
       this.valueNoteViewCommon.setVerticalView(this.isVertical());
-      this.updateCommonNoteView(valueFrom, valueTo);
+      this.updateCommonNoteView();
     }
   }
 
-  private updateCommonNoteView(valueFrom: number, valueTo: number): void {
+  private updateCommonNoteView(): void {
     if (this.handlerViewFrom && this.valueNoteViewCommon) {
-      this.valueNoteViewCommon.setValueForTwo(valueFrom, valueTo);
+      const valueTo = this.valueNoteView.getValue();
+      let valueFrom: number;
+      if (this.valueNoteViewFrom) {
+        valueFrom = this.valueNoteViewFrom.getValue();
+        this.valueNoteViewCommon.setValueForTwo(valueFrom, valueTo);
+      }
       const leftEdgeOfHandlerFrom = this.handlerViewFrom.getPos();
       const rightEdgeOfHandlerTo = this.handlerView.getPos() + this.handlerView.getLength();
       const distAmongEdgesOfHandlers = rightEdgeOfHandlerTo - leftEdgeOfHandlerFrom;
@@ -410,6 +412,42 @@ class View extends EventObserver {
       this.handlerViewFrom.addObserver('calcValueNotePos', this.valueNoteViewFrom.calcPos.bind(this.valueNoteViewFrom));
       this.handlerViewFrom.addObserver('setValueNotePos', this.valueNoteViewFrom.setPos.bind(this.valueNoteViewFrom));
       this.handlerViewFrom.addObserver('setBar', this.setBar.bind(this));
+    }
+  }
+
+
+
+
+  public calcPos(options: {
+    edge: number,
+    value: number,
+    limits: { min: number; max: number },
+    isHandlerFrom: boolean,
+  }): void {
+    if (this.handlerViewFrom) {
+      if (options.isHandlerFrom) {
+        this.handlerViewFrom.calcPos(options);
+      } else {
+        this.handlerView.calcPos(options);
+      }
+    } else {
+      this.handlerView.calcPos(options);
+    }
+  }
+
+  public setPos(options: {
+    isDouble: boolean,
+    isHandlerFrom: boolean
+  }): void {
+    if (this.handlerViewFrom) {
+      if (options.isHandlerFrom) {
+        this.handlerViewFrom.setPos(options.isDouble);
+      } else {
+        this.handlerView.setPos(options.isDouble);
+      }
+      this.setViewOfOneNote();
+    } else {
+      this.handlerView.setPos(options.isDouble);
     }
   }
 }
