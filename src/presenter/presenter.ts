@@ -19,25 +19,9 @@ class Presenter {
   }
 
   private addObservers(): void {
-    // When position of handler is changing - curValue in Model is updating
-    this.view.addObserver('changePos', this.handleCalcAndSetValue);
-
-    // When curVal in Model is changing - pos of handler is calc and then updating
+    this.view.addObserver('changePos', this.handleCalcValue);
     this.model.addObserver('calcPos', this.handleCalcPos);
     this.model.addObserver('setPos', this.handleSetPos);
-
-
-
-
-
-
-    // When curValue in Model is changing - value of valueNote is updating
-
-
-    this.model.addObserver('setValue', this.view.valueNoteView.setValue.bind(this.view.valueNoteView));
-    if (this.view.valueNoteViewFrom) {
-      this.model.addObserver('setValueOfNoteForFrom', this.view.valueNoteViewFrom.setValue.bind(this.view.valueNoteViewFrom));
-    }
   }
 
   private updateObservers(): void {
@@ -48,7 +32,7 @@ class Presenter {
     }
   }
 
-  private handleCalcAndSetValue = (data: {
+  private handleCalcValue = (data: {
     newPos: number,
     edge: number,
     isHandlerFrom: boolean

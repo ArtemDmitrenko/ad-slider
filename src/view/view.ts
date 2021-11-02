@@ -424,14 +424,17 @@ class View extends EventObserver {
     limits: { min: number; max: number },
     isHandlerFrom: boolean,
   }): void {
-    if (this.handlerViewFrom) {
+    if (this.handlerViewFrom && this.valueNoteViewFrom) {
       if (options.isHandlerFrom) {
         this.handlerViewFrom.calcPos(options);
+        this.valueNoteViewFrom.setValue(options.value);
       } else {
         this.handlerView.calcPos(options);
+        this.valueNoteView.setValue(options.value);
       }
     } else {
       this.handlerView.calcPos(options);
+      this.valueNoteView.setValue(options.value);
     }
   }
 
@@ -450,6 +453,7 @@ class View extends EventObserver {
       this.handlerView.setPos(options.isDouble);
     }
   }
+
 }
 
 export default View;

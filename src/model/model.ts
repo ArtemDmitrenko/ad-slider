@@ -142,7 +142,6 @@ class Model extends EventObserver {
       this.broadcast('calcPos', options);
       const data = { double: this.options.double, isHandlerFrom };
       this.broadcast('setPos', data);
-      this.broadcast('setValueOfNoteForFrom', this.options.from);
     } else {
       this.options.curValue = this.calcValueWithStep(value);
       const options = {
@@ -151,7 +150,6 @@ class Model extends EventObserver {
       this.broadcast('calcPos', options);
       const data = { isDouble: this.options.double, isHandlerFrom };
       this.broadcast('setPos', data);
-      this.broadcast('setValue', this.options.curValue);
     }
   }
 
