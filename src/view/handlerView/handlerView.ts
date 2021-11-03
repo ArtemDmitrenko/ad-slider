@@ -67,7 +67,6 @@ class HandlerView extends EventObserver {
     edge: number,
     value: number,
     limits: { min: number; max: number },
-    isHandlerFrom: boolean,
   }): void {
     const oddValMin: number = options.value - options.limits.min;
     const oddMaxMin: number = options.limits.max - options.limits.min;

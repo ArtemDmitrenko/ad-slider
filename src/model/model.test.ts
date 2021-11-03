@@ -284,11 +284,8 @@ describe('model', () => {
         callback11 = jest.fn();
         callback12 = jest.fn();
 
-        model.addObserver('calcHandlerPosForFrom', callback1);
-        model.addObserver('setHandlerPosForFrom', callback2);
         model.addObserver('calcValueNotePosForDouble', callback3);
         model.addObserver('setValueNotePosForDouble', callback4);
-        model.addObserver('setValueOfNoteForFrom', callback5);
         model.addObserver('setBarWidthForDouble', callback6);
         model.addObserver('setOneNote', callback7);
 
@@ -368,11 +365,8 @@ describe('model', () => {
         callback11 = jest.fn();
         callback12 = jest.fn();
 
-        model.addObserver('calcHandlerPosForFrom', callback1);
-        model.addObserver('setHandlerPosForFrom', callback2);
         model.addObserver('calcValueNotePosForDouble', callback3);
         model.addObserver('setValueNotePosForDouble', callback4);
-        model.addObserver('setValueOfNoteForFrom', callback5);
         model.addObserver('setBarWidthForDouble', callback6);
         model.addObserver('setOneNote', callback7);
         model.addObserver('calcPos', callback8);

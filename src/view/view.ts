@@ -126,8 +126,7 @@ class View extends EventObserver {
         handler: this.handlerView.$handler,
       });
     }
-    const data = { valueFrom: from, valueTo: to };
-    this.setViewOfOneNote(data);
+    this.setViewOfOneNote();
   }
 
   private renderHandlerFrom(): void {
@@ -253,8 +252,9 @@ class View extends EventObserver {
     const edge: number = this.getEdge(data.handler);
     newPos = this.checkNewPos(newPos);
     const isHandlerFrom = data.handler.$handler.classList.contains('adslider__handler_type_from');
+    const relPosition = newPos / edge;
     const options = {
-      newPos, edge, isHandlerFrom,
+      relPosition, isHandlerFrom,
     };
     this.broadcast('changePos', options);
   }
@@ -369,6 +369,10 @@ class View extends EventObserver {
       'handlerMousedownEvent',
       this.moveHandler.bind(this),
     );
+    this.handlerView.addObserver(
+      'handlerMousemoveEvent',
+      this.mouseMove.bind(this),
+    );
     if (this.handlerViewFrom) {
       this.handlerViewFrom.addObserver(
         'handlerMousedownEvent',
@@ -379,10 +383,6 @@ class View extends EventObserver {
         this.mouseMove.bind(this),
       );
     }
-    this.handlerView.addObserver(
-      'handlerMousemoveEvent',
-      this.mouseMove.bind(this),
-    );
     this.trackView.addObserver(
       'handlerMousedownEvent',
       this.changeHandlerPos.bind(this),
@@ -397,7 +397,7 @@ class View extends EventObserver {
     );
     this.handlerView.addObserver('calcValueNotePos', this.valueNoteView.calcPos.bind(this.valueNoteView));
     this.handlerView.addObserver('setValueNotePos', this.valueNoteView.setPos.bind(this.valueNoteView));
-    if (this.valueNoteViewFrom && this.handlerViewFrom) {      
+    if (this.valueNoteViewFrom && this.handlerViewFrom) {
       this.handlerViewFrom.addObserver('calcValueNotePos', this.valueNoteViewFrom.calcPos.bind(this.valueNoteViewFrom));
       this.handlerViewFrom.addObserver('setValueNotePos', this.valueNoteViewFrom.setPos.bind(this.valueNoteViewFrom));
     }
@@ -415,25 +415,23 @@ class View extends EventObserver {
     }
   }
 
-
-
-
   public calcPos(options: {
-    edge: number,
     value: number,
     limits: { min: number; max: number },
     isHandlerFrom: boolean,
   }): void {
     if (this.handlerViewFrom && this.valueNoteViewFrom) {
+      const data = { edge: this.getEdge(this.handlerViewFrom), value: options.value, limits: options.limits };
       if (options.isHandlerFrom) {
-        this.handlerViewFrom.calcPos(options);
+        this.handlerViewFrom.calcPos(data);
         this.valueNoteViewFrom.setValue(options.value);
       } else {
-        this.handlerView.calcPos(options);
+        this.handlerView.calcPos(data);
         this.valueNoteView.setValue(options.value);
       }
     } else {
-      this.handlerView.calcPos(options);
+      const data = { edge: this.getEdge(this.handlerView), value: options.value, limits: options.limits };
+      this.handlerView.calcPos(data);
       this.valueNoteView.setValue(options.value);
     }
   }
@@ -453,7 +451,6 @@ class View extends EventObserver {
       this.handlerView.setPos(options.isDouble);
     }
   }
-
 }
 
 export default View;

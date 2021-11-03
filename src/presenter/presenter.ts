@@ -24,15 +24,13 @@ class Presenter {
   }
 
   private handleCalcValue = (data: {
-    newPos: number,
-    edge: number,
+    relPosition: number,
     isHandlerFrom: boolean
   }) => {
     this.model.setValueFromHandlerPos(data);
   }
 
   private handleCalcPos = (options: {
-    edge: number,
     value: number,
     limits: { min: number; max: number },
     isHandlerFrom: boolean

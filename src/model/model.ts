@@ -131,21 +131,20 @@ class Model extends EventObserver {
 
   private setValAndBroadcast(
     value: number,
-    edge: number,
     isHandlerFrom: boolean,
   ): void {
     if (isHandlerFrom) {
       this.options.from = this.calcValueWithStep(value);
       const options = {
-        edge, value: this.options.from, limits: this.options.limits, isHandlerFrom,
+        value: this.options.from, limits: this.options.limits, isHandlerFrom,
       };
       this.broadcast('calcPos', options);
-      const data = { double: this.options.double, isHandlerFrom };
+      const data = { isDouble: this.options.double, isHandlerFrom };
       this.broadcast('setPos', data);
     } else {
       this.options.curValue = this.calcValueWithStep(value);
       const options = {
-        edge, value: this.options.curValue, limits: this.options.limits, isHandlerFrom,
+        value: this.options.curValue, limits: this.options.limits, isHandlerFrom,
       };
       this.broadcast('calcPos', options);
       const data = { isDouble: this.options.double, isHandlerFrom };
@@ -154,11 +153,10 @@ class Model extends EventObserver {
   }
 
   public setValueFromHandlerPos(data: {
-    newPos: number,
-    edge: number,
+    relPosition: number,
     isHandlerFrom: boolean
   }): void {
-    const value = this.calcValueFromHandlerPos(data.newPos, data.edge);
+    const value = this.calcValueFromHandlerPos(data.relPosition);
     if (data.isHandlerFrom) {
       if (this.isValFromMovesOverValTo(value)) {
         return;
@@ -166,7 +164,7 @@ class Model extends EventObserver {
     } else if (this.options.double && this.isValToMovesOverValFrom(value)) {
       return;
     }
-    this.setValAndBroadcast(value, data.edge, data.isHandlerFrom);
+    this.setValAndBroadcast(value, data.isHandlerFrom);
   }
 
   private isValFromMovesOverValTo(value: number): boolean {
@@ -177,9 +175,9 @@ class Model extends EventObserver {
     return value < this.options.from;
   }
 
-  public calcValueFromHandlerPos(newPos: number, edge: number): number {
+  public calcValueFromHandlerPos(relPos: number): number {
     const odds: number = this.options.limits.max - this.options.limits.min;
-    return Math.round(this.options.limits.min + odds * (newPos / edge));
+    return Math.round(this.options.limits.min + odds * relPos);
   }
 
   private calcValueWithStep(value: number): number {
