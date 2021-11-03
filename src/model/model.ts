@@ -131,40 +131,40 @@ class Model extends EventObserver {
 
   private setValAndBroadcast(
     value: number,
-    isHandlerFrom: boolean,
+    isFrom: boolean,
   ): void {
-    if (isHandlerFrom) {
+    if (isFrom) {
       this.options.from = this.calcValueWithStep(value);
       const options = {
-        value: this.options.from, limits: this.options.limits, isHandlerFrom,
+        value: this.options.from, limits: this.options.limits, isFrom,
       };
       this.broadcast('calcPos', options);
-      const data = { isDouble: this.options.double, isHandlerFrom };
+      const data = { isDouble: this.options.double, isFrom };
       this.broadcast('setPos', data);
     } else {
       this.options.curValue = this.calcValueWithStep(value);
       const options = {
-        value: this.options.curValue, limits: this.options.limits, isHandlerFrom,
+        value: this.options.curValue, limits: this.options.limits, isFrom,
       };
       this.broadcast('calcPos', options);
-      const data = { isDouble: this.options.double, isHandlerFrom };
+      const data = { isDouble: this.options.double, isFrom };
       this.broadcast('setPos', data);
     }
   }
 
   public setValueFromHandlerPos(data: {
     relPosition: number,
-    isHandlerFrom: boolean
+    isFrom: boolean
   }): void {
     const value = this.calcValueFromHandlerPos(data.relPosition);
-    if (data.isHandlerFrom) {
+    if (data.isFrom) {
       if (this.isValFromMovesOverValTo(value)) {
         return;
       }
     } else if (this.options.double && this.isValToMovesOverValFrom(value)) {
       return;
     }
-    this.setValAndBroadcast(value, data.isHandlerFrom);
+    this.setValAndBroadcast(value, data.isFrom);
   }
 
   private isValFromMovesOverValTo(value: number): boolean {

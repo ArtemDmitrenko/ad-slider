@@ -134,17 +134,11 @@ class View extends EventObserver {
     this.handlerViewFrom.$handler.classList.add('adslider__handler_type_from');
     this.valueNoteViewFrom = new ValueNoteView(this.$adslider);
     this.valueNoteViewFrom.$note.classList.add('adslider__note_type_from');
-    this.handlerViewFrom.addObserver(
-      'handlerMousedownEvent',
-      this.moveHandler.bind(this),
-    );
-    this.handlerViewFrom.addObserver(
-      'handlerMousemoveEvent',
-      this.mouseMove.bind(this),
-    );
+    this.handlerViewFrom.addObserver('handlerMousedownEvent', this.handleMouseDown);
+    this.handlerViewFrom.addObserver('handlerMousemoveEvent', this.mouseMove);
   }
 
-  private changeHandlerPos(e: MouseEvent): void {
+  private handleChangePos = (e: MouseEvent): void => {
     if (this.isDouble()) {
       if (
         this.handlerView.$handler.classList.contains(
@@ -234,15 +228,15 @@ class View extends EventObserver {
     }
   }
 
-  private moveHandler(data: { event: MouseEvent; handler: HTMLElement }): void {
+  private handleMouseDown = (data: { event: MouseEvent; handler: HTMLElement }): void => {
     this.calcShift(data.event, data.handler);
   }
 
-  private mouseMove(data: {
+  private mouseMove = (data: {
     shift: number,
     e: MouseEvent,
     handler: HandlerView
-  }): void {
+  }): void => {
     let newPos;
     if (data.e.type === 'mousedown') {
       newPos = this.calcNewPos(data.shift, data.e);
@@ -251,10 +245,10 @@ class View extends EventObserver {
     }
     const edge: number = this.getEdge(data.handler);
     newPos = this.checkNewPos(newPos);
-    const isHandlerFrom = data.handler.$handler.classList.contains('adslider__handler_type_from');
+    const isFrom = data.handler.$handler.classList.contains('adslider__handler_type_from');
     const relPosition = newPos / edge;
     const options = {
-      relPosition, isHandlerFrom,
+      relPosition, isFrom,
     };
     this.broadcast('changePos', options);
   }
@@ -351,7 +345,7 @@ class View extends EventObserver {
     }
   }
 
-  public setBar(data: { $handler: HTMLElement, vertical: boolean, double: boolean }): void {
+  private handleSetBar = (data: { $handler: HTMLElement, vertical: boolean, double: boolean }): void => {
     if (!data.double) {
       this.barView.setLength(data);
     } else if (this.handlerViewFrom) {
@@ -365,64 +359,52 @@ class View extends EventObserver {
   }
 
   private addObservers(): void {
-    this.handlerView.addObserver(
-      'handlerMousedownEvent',
-      this.moveHandler.bind(this),
-    );
-    this.handlerView.addObserver(
-      'handlerMousemoveEvent',
-      this.mouseMove.bind(this),
-    );
+    this.handlerView.addObserver('handlerMousedownEvent', this.handleMouseDown);
+    this.handlerView.addObserver('handlerMousemoveEvent', this.mouseMove);
     if (this.handlerViewFrom) {
-      this.handlerViewFrom.addObserver(
-        'handlerMousedownEvent',
-        this.moveHandler.bind(this),
-      );
-      this.handlerViewFrom.addObserver(
-        'handlerMousemoveEvent',
-        this.mouseMove.bind(this),
-      );
+      this.handlerViewFrom.addObserver('handlerMousedownEvent', this.handleMouseDown);
+      this.handlerViewFrom.addObserver('handlerMousemoveEvent', this.mouseMove);
     }
-    this.trackView.addObserver(
-      'handlerMousedownEvent',
-      this.changeHandlerPos.bind(this),
-    );
-    this.barView.addObserver(
-      'handlerMousedownEvent',
-      this.changeHandlerPos.bind(this),
-    );
-    this.scaleView.addObserver(
-      'handlerMousedownEvent',
-      this.changeHandlerPos.bind(this),
-    );
-    this.handlerView.addObserver('calcValueNotePos', this.valueNoteView.calcPos.bind(this.valueNoteView));
-    this.handlerView.addObserver('setValueNotePos', this.valueNoteView.setPos.bind(this.valueNoteView));
-    if (this.valueNoteViewFrom && this.handlerViewFrom) {
-      this.handlerViewFrom.addObserver('calcValueNotePos', this.valueNoteViewFrom.calcPos.bind(this.valueNoteViewFrom));
-      this.handlerViewFrom.addObserver('setValueNotePos', this.valueNoteViewFrom.setPos.bind(this.valueNoteViewFrom));
-    }
-    this.handlerView.addObserver('setBar', this.setBar.bind(this));
-    if (this.handlerViewFrom) {
-      this.handlerViewFrom.addObserver('setBar', this.setBar.bind(this));
-    }
+    this.trackView.addObserver('handlerMousedownEvent', this.handleChangePos);
+    this.barView.addObserver('handlerMousedownEvent', this.handleChangePos);
+    this.scaleView.addObserver('handlerMousedownEvent', this.handleChangePos);
+    this.handlerView.addObserver('calcValueNotePos', this.handleCalcValueNotePos);
+    this.handlerView.addObserver('setValueNotePos', this.handleSetValueNotePos);
+    this.handlerView.addObserver('setBar', this.handleSetBar);
   }
 
   private updateObservers(): void {
     if (this.handlerViewFrom && this.valueNoteViewFrom) {
-      this.handlerViewFrom.addObserver('calcValueNotePos', this.valueNoteViewFrom.calcPos.bind(this.valueNoteViewFrom));
-      this.handlerViewFrom.addObserver('setValueNotePos', this.valueNoteViewFrom.setPos.bind(this.valueNoteViewFrom));
-      this.handlerViewFrom.addObserver('setBar', this.setBar.bind(this));
+      this.handlerViewFrom.addObserver('calcValueNotePos', this.handleCalcValueNoteFromPos);
+      this.handlerViewFrom.addObserver('setValueNotePos', this.handleSetValueNoteFromPos);
+      this.handlerViewFrom.addObserver('setBar', this.handleSetBar);
     }
+  }
+
+  private handleSetValueNoteFromPos = () => {
+    if (this.valueNoteViewFrom) this.valueNoteViewFrom.setPos();
+  }
+
+  private handleCalcValueNoteFromPos = (handler: HTMLElement) => {
+    if (this.valueNoteViewFrom) this.valueNoteViewFrom.calcPos(handler);
+  }
+
+  private handleSetValueNotePos = () => {
+    this.valueNoteView.setPos();
+  }
+
+  private handleCalcValueNotePos = (handler: HTMLElement) => {
+    this.valueNoteView.calcPos(handler);
   }
 
   public calcPos(options: {
     value: number,
     limits: { min: number; max: number },
-    isHandlerFrom: boolean,
+    isFrom: boolean,
   }): void {
     if (this.handlerViewFrom && this.valueNoteViewFrom) {
       const data = { edge: this.getEdge(this.handlerViewFrom), value: options.value, limits: options.limits };
-      if (options.isHandlerFrom) {
+      if (options.isFrom) {
         this.handlerViewFrom.calcPos(data);
         this.valueNoteViewFrom.setValue(options.value);
       } else {
@@ -438,10 +420,10 @@ class View extends EventObserver {
 
   public setPos(options: {
     isDouble: boolean,
-    isHandlerFrom: boolean
+    isFrom: boolean
   }): void {
     if (this.handlerViewFrom) {
-      if (options.isHandlerFrom) {
+      if (options.isFrom) {
         this.handlerViewFrom.setPos(options.isDouble);
       } else {
         this.handlerView.setPos(options.isDouble);

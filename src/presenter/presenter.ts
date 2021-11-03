@@ -13,7 +13,7 @@ class Presenter {
     this.addObservers();
   }
 
-  public updateView(): void {
+  private updateView(): void {
     this.view.updateView(this.model.options);
   }
 
@@ -25,7 +25,7 @@ class Presenter {
 
   private handleCalcValue = (data: {
     relPosition: number,
-    isHandlerFrom: boolean
+    isFrom: boolean
   }) => {
     this.model.setValueFromHandlerPos(data);
   }
@@ -33,14 +33,14 @@ class Presenter {
   private handleCalcPos = (options: {
     value: number,
     limits: { min: number; max: number },
-    isHandlerFrom: boolean
+    isFrom: boolean
   }) => {
     this.view.calcPos(options);
   }
 
   private handleSetPos = (options: {
     isDouble: boolean,
-    isHandlerFrom: boolean
+    isFrom: boolean
   }) => {
     this.view.setPos(options);
   }
