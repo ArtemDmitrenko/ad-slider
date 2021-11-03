@@ -1,7 +1,7 @@
 import EventObserver from '../../eventObserver/eventObserver';
 
 class BarView extends EventObserver {
-  public $bar!: HTMLElement;
+  private $bar!: HTMLElement;
 
   private barPos!: number;
 
@@ -9,20 +9,6 @@ class BarView extends EventObserver {
     super();
     this.render($parent);
     this.addListeners();
-  }
-
-  private render($parent: HTMLElement): void {
-    this.$bar = document.createElement('div');
-    this.$bar.classList.add('adslider__bar');
-    $parent.append(this.$bar);
-  }
-
-  private addListeners(): void {
-    this.$bar.addEventListener('mousedown', this.handleBarMouseDown);
-  }
-
-  private handleBarMouseDown = (event: MouseEvent): void => {
-    this.broadcast('handlerMousedownEvent', event);
   }
 
   public setVerticalView(verticalView: boolean): void {
@@ -80,6 +66,20 @@ class BarView extends EventObserver {
       this.calcBarPosForDouble(options.valueFrom, options.valueTo, handlerLength);
       this.$bar.style.bottom = `${this.barPos}px`;
     }
+  }
+
+  private render($parent: HTMLElement): void {
+    this.$bar = document.createElement('div');
+    this.$bar.classList.add('adslider__bar');
+    $parent.append(this.$bar);
+  }
+
+  private addListeners(): void {
+    this.$bar.addEventListener('mousedown', this.handleBarMouseDown);
+  }
+
+  private handleBarMouseDown = (event: MouseEvent): void => {
+    this.broadcast('handlerMousedownEvent', event);
   }
 
   private calcBarPosForSingle(handlerPos: number, handlerLength: number): void {

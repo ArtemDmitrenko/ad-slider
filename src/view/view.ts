@@ -6,27 +6,25 @@ import ScaleView from './scaleView/scaleView';
 import EventObserver from '../eventObserver/eventObserver';
 
 class View extends EventObserver {
-  public $el!: HTMLElement | null;
+  private $el!: HTMLElement | null;
 
-  public handlerView!: HandlerView;
+  private handlerView!: HandlerView;
 
-  public handlerViewFrom?: HandlerView;
+  private handlerViewFrom?: HandlerView;
 
-  public valueNoteViewFrom?: ValueNoteView;
+  private valueNoteViewFrom?: ValueNoteView;
 
-  public valueNoteViewTo!: ValueNoteView;
+  private valueNoteViewCommon?: ValueNoteView;
 
-  public valueNoteViewCommon?: ValueNoteView;
+  private trackView!: TrackView;
 
-  public trackView!: TrackView;
+  private valueNoteView!: ValueNoteView;
 
-  public valueNoteView!: ValueNoteView;
+  private barView!: BarView;
 
-  public barView!: BarView;
+  private scaleView!: ScaleView;
 
-  public scaleView!: ScaleView;
-
-  public $adslider!: HTMLElement;
+  private $adslider!: HTMLElement;
 
   private handlerShift!: number;
 
@@ -34,25 +32,6 @@ class View extends EventObserver {
     super();
     this.render(container);
     this.addObservers();
-  }
-
-  private render(container: HTMLElement): void {
-    this.$el = container;
-    this.$adslider = document.createElement('div');
-    this.$adslider.classList.add('adslider');
-    this.$el.append(this.$adslider);
-
-    this.trackView = new TrackView(this.$adslider);
-    this.barView = new BarView(this.$adslider);
-    this.scaleView = new ScaleView(this.$adslider);
-    this.handlerView = new HandlerView(this.trackView.$track);
-    this.valueNoteView = new ValueNoteView(this.$adslider);
-
-    this.handlerViewFrom = new HandlerView(this.trackView.$track);
-    this.handlerViewFrom.$handler.classList.add('adslider__handler_type_from');
-    this.valueNoteViewFrom = new ValueNoteView(this.$adslider);
-    this.valueNoteViewFrom.$note.classList.add('adslider__note_type_from');
-    this.valueNoteView.$note.classList.add('adslider__note_type_to');
   }
 
   public updateView(options: {
@@ -86,6 +65,62 @@ class View extends EventObserver {
     } else if (this.handlerViewFrom) {
       this.deleteHandlerFrom();
     }
+  }
+
+  public calcPos(options: {
+    value: number,
+    limits: { min: number; max: number },
+    isFrom: boolean,
+  }): void {
+    if (this.handlerViewFrom && this.valueNoteViewFrom) {
+      const data = { edge: this.getEdge(this.handlerViewFrom), value: options.value, limits: options.limits };
+      if (options.isFrom) {
+        this.handlerViewFrom.calcPos(data);
+        this.valueNoteViewFrom.setValue(options.value);
+      } else {
+        this.handlerView.calcPos(data);
+        this.valueNoteView.setValue(options.value);
+      }
+    } else {
+      const data = { edge: this.getEdge(this.handlerView), value: options.value, limits: options.limits };
+      this.handlerView.calcPos(data);
+      this.valueNoteView.setValue(options.value);
+    }
+  }
+
+  public setPos(options: {
+    isDouble: boolean,
+    isFrom: boolean
+  }): void {
+    if (this.handlerViewFrom) {
+      if (options.isFrom) {
+        this.handlerViewFrom.setPos(options.isDouble);
+      } else {
+        this.handlerView.setPos(options.isDouble);
+      }
+      this.setViewOfOneNote();
+    } else {
+      this.handlerView.setPos(options.isDouble);
+    }
+  }
+
+  private render(container: HTMLElement): void {
+    this.$el = container;
+    this.$adslider = document.createElement('div');
+    this.$adslider.classList.add('adslider');
+    this.$el.append(this.$adslider);
+
+    this.trackView = new TrackView(this.$adslider);
+    this.barView = new BarView(this.$adslider);
+    this.scaleView = new ScaleView(this.$adslider);
+    this.handlerView = new HandlerView(this.trackView.$track);
+    this.valueNoteView = new ValueNoteView(this.$adslider);
+
+    this.handlerViewFrom = new HandlerView(this.trackView.$track);
+    this.handlerViewFrom.$handler.classList.add('adslider__handler_type_from');
+    this.valueNoteViewFrom = new ValueNoteView(this.$adslider);
+    this.valueNoteViewFrom.$note.classList.add('adslider__note_type_from');
+    this.valueNoteView.$note.classList.add('adslider__note_type_to');
   }
 
   private deleteHandlerFrom(): void {
@@ -289,7 +324,7 @@ class View extends EventObserver {
       : e.clientX - shift - this.trackView.$track.getBoundingClientRect().left;
   }
 
-  public setViewOfOneNote(): void {
+  private setViewOfOneNote(): void {
     if (this.isSmallDistanceBetweenNotes()) {
       this.makeCommonNoteView();
     } else if (this.valueNoteViewCommon) {
@@ -395,43 +430,6 @@ class View extends EventObserver {
 
   private handleCalcValueNotePos = (handler: HTMLElement) => {
     this.valueNoteView.calcPos(handler);
-  }
-
-  public calcPos(options: {
-    value: number,
-    limits: { min: number; max: number },
-    isFrom: boolean,
-  }): void {
-    if (this.handlerViewFrom && this.valueNoteViewFrom) {
-      const data = { edge: this.getEdge(this.handlerViewFrom), value: options.value, limits: options.limits };
-      if (options.isFrom) {
-        this.handlerViewFrom.calcPos(data);
-        this.valueNoteViewFrom.setValue(options.value);
-      } else {
-        this.handlerView.calcPos(data);
-        this.valueNoteView.setValue(options.value);
-      }
-    } else {
-      const data = { edge: this.getEdge(this.handlerView), value: options.value, limits: options.limits };
-      this.handlerView.calcPos(data);
-      this.valueNoteView.setValue(options.value);
-    }
-  }
-
-  public setPos(options: {
-    isDouble: boolean,
-    isFrom: boolean
-  }): void {
-    if (this.handlerViewFrom) {
-      if (options.isFrom) {
-        this.handlerViewFrom.setPos(options.isDouble);
-      } else {
-        this.handlerView.setPos(options.isDouble);
-      }
-      this.setViewOfOneNote();
-    } else {
-      this.handlerView.setPos(options.isDouble);
-    }
   }
 }
 

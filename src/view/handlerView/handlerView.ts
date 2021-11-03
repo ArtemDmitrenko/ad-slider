@@ -1,7 +1,7 @@
 import EventObserver from '../../eventObserver/eventObserver';
 
 class HandlerView extends EventObserver {
-  public $handler!: HTMLElement;
+  private $handler!: HTMLElement;
 
   private $parent!: HTMLElement;
 
@@ -14,41 +14,6 @@ class HandlerView extends EventObserver {
   constructor($parent: HTMLElement) {
     super();
     this.render($parent);
-  }
-
-  private render($parent: HTMLElement): void {
-    this.$parent = $parent;
-    this.$handler = document.createElement('div');
-    this.$handler.classList.add('adslider__handler');
-    this.$parent.append(this.$handler);
-    this.$handler.addEventListener('mousedown', this.handleHandlerMouseDown);
-  }
-
-  private handleHandlerMouseDown = (event: MouseEvent): void => {
-    event.preventDefault();
-    event.stopPropagation();
-    const data = { event, handler: this.$handler };
-    this.broadcast('handlerMousedownEvent', data);
-    this.bindMousemove(event);
-  }
-
-  private bindMousemove(event: MouseEvent): void {
-    this.handleMouseMove = this.mouseMove.bind(this);
-    this.handleMouseUp = this.mouseUp.bind(this);
-    if (event.type === 'mousedown') {
-      document.addEventListener('mousemove', this.handleMouseMove);
-      document.addEventListener('mouseup', this.handleMouseUp);
-    }
-  }
-
-  private mouseMove(e: MouseEvent): void {
-    const data = { shift: null, e, handler: this };
-    this.broadcast('handlerMousemoveEvent', data);
-  }
-
-  private mouseUp(): void {
-    document.removeEventListener('mouseup', this.handleMouseUp);
-    document.removeEventListener('mousemove', this.handleMouseMove);
   }
 
   public getLength(): number {
@@ -99,6 +64,41 @@ class HandlerView extends EventObserver {
 
   private isVertical(): boolean {
     return this.$handler.classList.contains('adslider__handler_direction_vertical');
+  }
+
+  private render($parent: HTMLElement): void {
+    this.$parent = $parent;
+    this.$handler = document.createElement('div');
+    this.$handler.classList.add('adslider__handler');
+    this.$parent.append(this.$handler);
+    this.$handler.addEventListener('mousedown', this.handleHandlerMouseDown);
+  }
+
+  private handleHandlerMouseDown = (event: MouseEvent): void => {
+    event.preventDefault();
+    event.stopPropagation();
+    const data = { event, handler: this.$handler };
+    this.broadcast('handlerMousedownEvent', data);
+    this.bindMousemove(event);
+  }
+
+  private bindMousemove(event: MouseEvent): void {
+    this.handleMouseMove = this.mouseMove.bind(this);
+    this.handleMouseUp = this.mouseUp.bind(this);
+    if (event.type === 'mousedown') {
+      document.addEventListener('mousemove', this.handleMouseMove);
+      document.addEventListener('mouseup', this.handleMouseUp);
+    }
+  }
+
+  private mouseMove(e: MouseEvent): void {
+    const data = { shift: null, e, handler: this };
+    this.broadcast('handlerMousemoveEvent', data);
+  }
+
+  private mouseUp(): void {
+    document.removeEventListener('mouseup', this.handleMouseUp);
+    document.removeEventListener('mousemove', this.handleMouseMove);
   }
 }
 

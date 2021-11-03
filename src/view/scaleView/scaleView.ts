@@ -4,7 +4,7 @@ import EventObserver from '../../eventObserver/eventObserver';
 class ScaleView extends EventObserver {
   private $parent!: HTMLElement;
 
-  public $scale!: HTMLElement;
+  private $scale!: HTMLElement;
 
   private numberOfLines!: number;
 
@@ -12,6 +12,23 @@ class ScaleView extends EventObserver {
     super();
     this.render($parent);
     this.addListeners();
+  }
+
+  public drawScale(options: IConfig, $handler: HTMLElement): void {
+    if (options.vertical) {
+      this.$scale.classList.remove('adslider__scale_direction_horizontal');
+      this.$scale.classList.add('adslider__scale_direction_vertical');
+    } else {
+      this.$scale.classList.remove('adslider__scale_direction_vertical');
+      this.$scale.classList.add('adslider__scale_direction_horizontal');
+    }
+    const { step } = options;
+    const odd: number = options.limits.max - options.limits.min;
+    this.calcNumberOfLines(step, odd);
+    this.setScalePos($handler);
+    this.renderScaleLine();
+    this.createListOfScaleLines(options);
+    this.renderScaleSign(options);
   }
 
   private render($parent: HTMLElement): void {
@@ -38,23 +55,6 @@ class ScaleView extends EventObserver {
 
   private handleScaleMouseDown = (event: MouseEvent): void => {
     this.broadcast('handlerMousedownEvent', event);
-  }
-
-  public drawScale(options: IConfig, $handler: HTMLElement): void {
-    if (options.vertical) {
-      this.$scale.classList.remove('adslider__scale_direction_horizontal');
-      this.$scale.classList.add('adslider__scale_direction_vertical');
-    } else {
-      this.$scale.classList.remove('adslider__scale_direction_vertical');
-      this.$scale.classList.add('adslider__scale_direction_horizontal');
-    }
-    const { step } = options;
-    const odd: number = options.limits.max - options.limits.min;
-    this.calcNumberOfLines(step, odd);
-    this.setScalePos($handler);
-    this.renderScaleLine();
-    this.createListOfScaleLines(options);
-    this.renderScaleSign(options);
   }
 
   private calcNumberOfLines(step: number, odd: number): void {

@@ -1,24 +1,15 @@
 import EventObserver from '../../eventObserver/eventObserver';
 
 class ValueNoteView extends EventObserver {
-  public $note!: HTMLElement;
+  private $note!: HTMLElement;
 
-  public $value!: HTMLElement;
+  private $value!: HTMLElement;
 
-  public valueNotePos!: number;
+  private valueNotePos!: number;
 
   constructor(parent: HTMLElement) {
     super();
     this.render(parent);
-  }
-
-  private render(parent: HTMLElement): void {
-    this.$note = document.createElement('div');
-    this.$value = document.createElement('p');
-    this.$note.classList.add('adslider__note');
-    this.$value.classList.add('adslider__value');
-    this.$note.append(this.$value);
-    parent.append(this.$note);
   }
 
   public setValue(value: number): void {
@@ -83,6 +74,15 @@ class ValueNoteView extends EventObserver {
 
   public getPos(): number {
     return this.$note.classList.contains('adslider__note_direction_vertical') ? parseInt(getComputedStyle(this.$note).bottom, 10) : parseInt(getComputedStyle(this.$note).left, 10);
+  }
+
+  private render(parent: HTMLElement): void {
+    this.$note = document.createElement('div');
+    this.$value = document.createElement('p');
+    this.$note.classList.add('adslider__note');
+    this.$value.classList.add('adslider__value');
+    this.$note.append(this.$value);
+    parent.append(this.$note);
   }
 
   private isVertical(): boolean {

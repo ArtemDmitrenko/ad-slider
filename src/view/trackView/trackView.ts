@@ -1,26 +1,12 @@
 import EventObserver from '../../eventObserver/eventObserver';
 
 class TrackView extends EventObserver {
-  public $track!: HTMLElement;
+  private $track!: HTMLElement;
 
   constructor($parent: HTMLElement) {
     super();
     this.render($parent);
     this.addListeners();
-  }
-
-  private render($parent: HTMLElement): void {
-    this.$track = document.createElement('div');
-    this.$track.classList.add('adslider__track');
-    $parent.append(this.$track);
-  }
-
-  private addListeners(): void {
-    this.$track.addEventListener('mousedown', this.handleTrackMouseDown);
-  }
-
-  private handleTrackMouseDown = (event: MouseEvent): void => {
-    this.broadcast('handlerMousedownEvent', event);
   }
 
   public getLength(): number {
@@ -35,6 +21,20 @@ class TrackView extends EventObserver {
       this.$track.classList.remove('adslider__track_direction_vertical');
       this.$track.classList.add('adslider__track_direction_horizontal');
     }
+  }
+
+  private render($parent: HTMLElement): void {
+    this.$track = document.createElement('div');
+    this.$track.classList.add('adslider__track');
+    $parent.append(this.$track);
+  }
+
+  private addListeners(): void {
+    this.$track.addEventListener('mousedown', this.handleTrackMouseDown);
+  }
+
+  private handleTrackMouseDown = (event: MouseEvent): void => {
+    this.broadcast('handlerMousedownEvent', event);
   }
 }
 

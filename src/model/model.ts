@@ -41,6 +41,26 @@ class Model extends EventObserver {
     this.setDouble(options.double, options.from);
   }
 
+  public setValueFromHandlerPos(data: {
+    relPosition: number,
+    isFrom: boolean
+  }): void {
+    const value = this.calcValueFromHandlerPos(data.relPosition);
+    if (data.isFrom) {
+      if (this.isValFromMovesOverValTo(value)) {
+        return;
+      }
+    } else if (this.options.double && this.isValToMovesOverValFrom(value)) {
+      return;
+    }
+    this.setValAndBroadcast(value, data.isFrom);
+  }
+
+  public calcValueFromHandlerPos(relPos: number): number {
+    const odds: number = this.options.limits.max - this.options.limits.min;
+    return Math.round(this.options.limits.min + odds * relPos);
+  }
+
   private setDouble(double: boolean, from: number): void {
     if (double && !from) {
       this.options.from = this.options.limits.min;
@@ -152,32 +172,12 @@ class Model extends EventObserver {
     }
   }
 
-  public setValueFromHandlerPos(data: {
-    relPosition: number,
-    isFrom: boolean
-  }): void {
-    const value = this.calcValueFromHandlerPos(data.relPosition);
-    if (data.isFrom) {
-      if (this.isValFromMovesOverValTo(value)) {
-        return;
-      }
-    } else if (this.options.double && this.isValToMovesOverValFrom(value)) {
-      return;
-    }
-    this.setValAndBroadcast(value, data.isFrom);
-  }
-
   private isValFromMovesOverValTo(value: number): boolean {
     return value > this.options.curValue;
   }
 
   private isValToMovesOverValFrom(value: number): boolean {
     return value < this.options.from;
-  }
-
-  public calcValueFromHandlerPos(relPos: number): number {
-    const odds: number = this.options.limits.max - this.options.limits.min;
-    return Math.round(this.options.limits.min + odds * relPos);
   }
 
   private calcValueWithStep(value: number): number {
