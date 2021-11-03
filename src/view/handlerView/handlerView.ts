@@ -21,10 +21,10 @@ class HandlerView extends EventObserver {
     this.$handler = document.createElement('div');
     this.$handler.classList.add('adslider__handler');
     this.$parent.append(this.$handler);
-    this.$handler.addEventListener('mousedown', this.handleHandlerMouseDown.bind(this));
+    this.$handler.addEventListener('mousedown', this.handleHandlerMouseDown);
   }
 
-  private handleHandlerMouseDown(event: MouseEvent): void {
+  private handleHandlerMouseDown = (event: MouseEvent): void => {
     event.preventDefault();
     event.stopPropagation();
     const data = { event, handler: this.$handler };

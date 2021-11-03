@@ -18,10 +18,10 @@ class BarView extends EventObserver {
   }
 
   private addListeners(): void {
-    this.$bar.addEventListener('mousedown', this.handleBarMouseDown.bind(this));
+    this.$bar.addEventListener('mousedown', this.handleBarMouseDown);
   }
 
-  private handleBarMouseDown(event: MouseEvent): void {
+  private handleBarMouseDown = (event: MouseEvent): void => {
     this.broadcast('handlerMousedownEvent', event);
   }
 
