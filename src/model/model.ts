@@ -1,6 +1,6 @@
 import EventObserver from '../eventObserver/eventObserver';
 
-interface Config {
+interface IConfig {
   limits: {
     min: number;
     max: number;
@@ -15,9 +15,9 @@ interface Config {
 }
 
 class Model extends EventObserver {
-  public options: Config;
+  public options: IConfig;
 
-  constructor(options: Config) {
+  constructor(options: IConfig) {
     super();
     this.options = {
       limits: options.limits,
@@ -32,7 +32,7 @@ class Model extends EventObserver {
     this.init(this.options);
   }
 
-  public init(options: Config): void {
+  public init(options: IConfig): void {
     this.setLimits(options.limits);
     this.setStep(options.step);
     this.setValueTo(options.to);
@@ -206,4 +206,4 @@ class Model extends EventObserver {
   }
 }
 
-export { Model, Config };
+export { Model, IConfig };

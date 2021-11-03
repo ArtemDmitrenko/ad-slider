@@ -1,10 +1,10 @@
 import './main.scss';
-import { Config } from './model/model';
+import { IConfig } from './model/model';
 import Presenter from './presenter/presenter';
 
 (function ($) {
   const methods = {
-    init(container: HTMLElement, options: Config): void {
+    init(container: HTMLElement, options: IConfig): void {
       if ($(this).data('inited')) {
         $.error('Plugin has already been initialized on this selector!');
       } else {
@@ -14,7 +14,7 @@ import Presenter from './presenter/presenter';
         });
       }
     },
-    update(options: Config): void {
+    update(options: IConfig): void {
       const { model } = $(this).data('presenter');
       const presenter = $(this).data('presenter');
       model.options = options;
@@ -28,16 +28,16 @@ import Presenter from './presenter/presenter';
       model.init(model.options);
       presenter.updateView();
     },
-    getOptions(): Config {
+    getOptions(): IConfig {
       return $(this).data('presenter').model.options;
     },
   };
 
   type methods = {
-    init(container: HTMLElement, options: Config): void,
-    update(options: Config): void,
+    init(container: HTMLElement, options: IConfig): void,
+    update(options: IConfig): void,
     updateCurValue(curValue: number): void,
-    getOptions(): Config,
+    getOptions(): IConfig,
   };
 
   $.fn.adslider = function (methodOrOptions: keyof methods) {

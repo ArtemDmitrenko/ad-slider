@@ -1,7 +1,7 @@
-import { Model, Config } from './model';
+import { Model, IConfig } from './model';
 
 describe('model', () => {
-  let options: Config;
+  let options: IConfig;
   let model: Model;
   describe('init function', () => {
     beforeEach(() => {

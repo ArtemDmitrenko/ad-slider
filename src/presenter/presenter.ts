@@ -1,4 +1,4 @@
-import { Config, Model } from '../model/model';
+import { IConfig, Model } from '../model/model';
 import View from '../view/view';
 
 class Presenter {
@@ -6,7 +6,7 @@ class Presenter {
 
   private view: View;
 
-  constructor(container: HTMLElement, options: Config) {
+  constructor(container: HTMLElement, options: IConfig) {
     this.model = new Model(options);
     this.view = new View(container);
     this.updateView();

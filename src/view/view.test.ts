@@ -1,5 +1,5 @@
 import View from './view';
-import { Config } from '../model/model';
+import { IConfig } from '../model/model';
 
 describe('view', () => {
   describe('Function render', () => {
@@ -31,7 +31,7 @@ describe('view', () => {
   describe('Function updateView', () => {
     describe('For single slider with horizontal view', () => {
       let view: View;
-      let options: Config;
+      let options: IConfig;
       beforeEach(() => {
         const $container: HTMLElement = document.createElement('div');
         view = new View($container);
@@ -85,7 +85,7 @@ describe('view', () => {
 
     describe('For double slider with horizontal view', () => {
       let view: View;
-      let options: Config;
+      let options: IConfig;
       beforeEach(() => {
         const $container: HTMLElement = document.createElement('div');
         view = new View($container);
@@ -189,7 +189,7 @@ describe('view', () => {
   describe('Function addListeners', () => {
     describe('For single slider with horizontal view', () => {
       let view: View;
-      let options: Config;
+      let options: IConfig;
       let callback: () => void;
       let mousedown: MouseEvent;
       let mousemove: MouseEvent;
@@ -285,7 +285,7 @@ describe('view', () => {
     });
     describe('For double slider with vertical view', () => {
       let view: View;
-      let options: Config;
+      let options: IConfig;
       let callback: () => void;
       let mousedown: MouseEvent;
       let mousemove: MouseEvent;
@@ -365,7 +365,7 @@ describe('view', () => {
     });
     describe('For double slider with horizontal view', () => {
       let view: View;
-      let options: Config;
+      let options: IConfig;
       let callback: () => void;
       let mousedown: MouseEvent;
       beforeEach(() => {

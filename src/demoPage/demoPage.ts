@@ -1,4 +1,4 @@
-import { Config } from '../model/model';
+import { IConfig } from '../model/model';
 
 class DemoPage {
   private selector: string;
@@ -25,7 +25,7 @@ class DemoPage {
 
   private $curValueOnSlider!: HTMLElement;
 
-  private options!: Config;
+  private options!: IConfig;
 
   constructor(selector: string) {
     this.selector = selector;

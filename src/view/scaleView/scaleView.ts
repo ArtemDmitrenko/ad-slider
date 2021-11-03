@@ -1,4 +1,4 @@
-import { Config } from '../../model/model';
+import { IConfig } from '../../model/model';
 import EventObserver from '../../eventObserver/eventObserver';
 
 class ScaleView extends EventObserver {
@@ -40,7 +40,7 @@ class ScaleView extends EventObserver {
     this.broadcast('handlerMousedownEvent', event);
   }
 
-  public drawScale(options: Config, $handler: HTMLElement): void {
+  public drawScale(options: IConfig, $handler: HTMLElement): void {
     if (options.vertical) {
       this.$scale.classList.remove('adslider__scale_direction_horizontal');
       this.$scale.classList.add('adslider__scale_direction_vertical');
@@ -84,7 +84,7 @@ class ScaleView extends EventObserver {
     }
   }
 
-  private createListOfScaleLines(options: Config): void {
+  private createListOfScaleLines(options: IConfig): void {
     this.$scale.innerHTML = '';
     const stepPercentage = (options.step / (options.limits.max - options.limits.min)) * 100;
     for (let i = 0; i < this.numberOfLines; i += 1) {
@@ -99,7 +99,7 @@ class ScaleView extends EventObserver {
     }
   }
 
-  private renderScaleSign(options: Config): void {
+  private renderScaleSign(options: IConfig): void {
     const listOfLines = this.$scale.querySelectorAll('.adslider__scale-line');
     listOfLines.forEach((el, index) => {
       const value: number = this.calcSigns(index, options);
@@ -115,7 +115,7 @@ class ScaleView extends EventObserver {
     });
   }
 
-  private calcSigns(index: number, options: Config): number {
+  private calcSigns(index: number, options: IConfig): number {
     let value: number;
     if (index === 0) {
       value = options.limits.min;

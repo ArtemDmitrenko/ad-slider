@@ -1,3 +1,3 @@
 interface JQuery {
-  adslider(userOptions: Config): void;
+  adslider(userOptions: IConfig): void;
 }
