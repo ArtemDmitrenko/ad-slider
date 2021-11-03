@@ -44,7 +44,7 @@ class View extends EventObserver {
     to: number;
     step: number;
   }): void {
-    this.setVerticalViewForSingle(options.vertical);
+    this.setVerticalViewForSingle(options.vertical);    
     this.handlerView.calcPos({
       edge: this.getEdge(this.handlerView),
       value: options.curValue,
@@ -406,11 +406,6 @@ class View extends EventObserver {
     this.handlerView.addObserver('calcValueNotePos', this.handleCalcValueNotePos);
     this.handlerView.addObserver('setValueNotePos', this.handleSetValueNotePos);
     this.handlerView.addObserver('setBar', this.handleSetBar);
-    if (this.handlerViewFrom && this.valueNoteViewFrom) {
-      // this.handlerViewFrom.addObserver('calcValueNotePos', this.handleCalcValueNoteFromPos);
-      // this.handlerViewFrom.addObserver('setValueNotePos', this.handleSetValueNoteFromPos);
-      // this.handlerViewFrom.addObserver('setBar', this.handleSetBar);
-    }
   }
 
   private updateObservers(): void {
