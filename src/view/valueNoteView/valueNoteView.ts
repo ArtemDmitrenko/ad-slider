@@ -1,11 +1,11 @@
 import EventObserver from '../../eventObserver/eventObserver';
 
 class ValueNoteView extends EventObserver {
-  private $note!: HTMLElement;
+  public $note!: HTMLElement;
+
+  public valueNotePos!: number;
 
   private $value!: HTMLElement;
-
-  private valueNotePos!: number;
 
   constructor(parent: HTMLElement) {
     super();

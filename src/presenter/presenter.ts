@@ -13,7 +13,7 @@ class Presenter {
     this.addObservers();
   }
 
-  private updateView(): void {
+  public updateView(): void {
     this.view.updateView(this.model.options);
   }
 

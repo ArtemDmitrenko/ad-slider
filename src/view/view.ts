@@ -406,13 +406,20 @@ class View extends EventObserver {
     this.handlerView.addObserver('calcValueNotePos', this.handleCalcValueNotePos);
     this.handlerView.addObserver('setValueNotePos', this.handleSetValueNotePos);
     this.handlerView.addObserver('setBar', this.handleSetBar);
+    if (this.handlerViewFrom && this.valueNoteViewFrom) {
+      // this.handlerViewFrom.addObserver('calcValueNotePos', this.handleCalcValueNoteFromPos);
+      // this.handlerViewFrom.addObserver('setValueNotePos', this.handleSetValueNoteFromPos);
+      // this.handlerViewFrom.addObserver('setBar', this.handleSetBar);
+    }
   }
 
   private updateObservers(): void {
     if (this.handlerViewFrom && this.valueNoteViewFrom) {
-      this.handlerViewFrom.addObserver('calcValueNotePos', this.handleCalcValueNoteFromPos);
-      this.handlerViewFrom.addObserver('setValueNotePos', this.handleSetValueNoteFromPos);
-      this.handlerViewFrom.addObserver('setBar', this.handleSetBar);
+      if (!Object.prototype.hasOwnProperty.call(this.handlerViewFrom.observers, 'calcValueNotePos')) {
+        this.handlerViewFrom.addObserver('calcValueNotePos', this.handleCalcValueNoteFromPos);
+        this.handlerViewFrom.addObserver('setValueNotePos', this.handleSetValueNoteFromPos);
+        this.handlerViewFrom.addObserver('setBar', this.handleSetBar);
+      }
     }
   }
 

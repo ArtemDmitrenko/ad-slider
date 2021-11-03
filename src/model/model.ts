@@ -63,7 +63,9 @@ class Model extends EventObserver {
 
   private setDouble(double: boolean, from: number): void {
     if (double && !from) {
-      this.options.from = this.options.limits.min;
+      if (from !== 0) {
+        this.options.from = this.options.limits.min;
+      }
     }
     this.options.double = double;
   }
@@ -97,12 +99,14 @@ class Model extends EventObserver {
     max: number,
     min: number,
   ): number {
-    const odd: number = (min - value) % step;
+    const odd: number = Math.abs((min - value) % step);
+
     if (odd === 0) {
       return value;
     }
     const numberOfSteps: number = Math.round((min - value) / step);
     let newCurValue: number = step * Math.abs(numberOfSteps) + min;
+
     if (newCurValue > max) {
       newCurValue -= step;
     }

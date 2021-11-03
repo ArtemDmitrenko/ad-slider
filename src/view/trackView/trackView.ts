@@ -1,7 +1,7 @@
 import EventObserver from '../../eventObserver/eventObserver';
 
 class TrackView extends EventObserver {
-  private $track!: HTMLElement;
+  public $track!: HTMLElement;
 
   constructor($parent: HTMLElement) {
     super();

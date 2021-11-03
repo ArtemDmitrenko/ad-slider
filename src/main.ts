@@ -7,7 +7,7 @@ const options1 = {
   step: 30,
 };
 const options2 = {
-  limits: { min: 0, max: 100 },
+  limits: { min: -100, max: 100 },
   curValue: 85,
   showValueNote: true,
   step: 20,
