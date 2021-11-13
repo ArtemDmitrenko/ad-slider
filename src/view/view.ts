@@ -44,7 +44,7 @@ class View extends EventObserver {
     to: number;
     step: number;
   }): void {
-    this.setVerticalViewForSingle(options.vertical);    
+    this.setVerticalViewForSingle(options.vertical);
     this.handlerView.calcPos({
       edge: this.getEdge(this.handlerView),
       value: options.curValue,
@@ -73,7 +73,11 @@ class View extends EventObserver {
     isFrom: boolean,
   }): void {
     if (this.handlerViewFrom && this.valueNoteViewFrom) {
-      const data = { edge: this.getEdge(this.handlerViewFrom), value: options.value, limits: options.limits };
+      const data = {
+        edge: this.getEdge(this.handlerViewFrom),
+        value: options.value,
+        limits: options.limits,
+      };
       if (options.isFrom) {
         this.handlerViewFrom.calcPos(data);
         this.valueNoteViewFrom.setValue(options.value);
@@ -82,7 +86,11 @@ class View extends EventObserver {
         this.valueNoteView.setValue(options.value);
       }
     } else {
-      const data = { edge: this.getEdge(this.handlerView), value: options.value, limits: options.limits };
+      const data = {
+        edge: this.getEdge(this.handlerView),
+        value: options.value,
+        limits: options.limits,
+      };
       this.handlerView.calcPos(data);
       this.valueNoteView.setValue(options.value);
     }
@@ -380,7 +388,11 @@ class View extends EventObserver {
     }
   }
 
-  private handleSetBar = (data: { $handler: HTMLElement, vertical: boolean, double: boolean }): void => {
+  private handleSetBar = (data: {
+    $handler: HTMLElement,
+    vertical: boolean,
+    double: boolean
+  }): void => {
     if (!data.double) {
       this.barView.setLength(data);
     } else if (this.handlerViewFrom) {
