@@ -42,7 +42,7 @@ import Presenter from './presenter/presenter';
 
   $.fn.adslider = function (methodOrOptions: keyof methods) {
     if (methods[methodOrOptions]) {
-      return methods[methodOrOptions].apply(this, Array.prototype.slice.call(arguments, 2));
+      return methods[methodOrOptions].apply(this, Array.prototype.slice.call(arguments, 1));
     }
     if (typeof methodOrOptions === 'object' || !methodOrOptions) {
       return methods.init.call(this, this[0], methodOrOptions);
