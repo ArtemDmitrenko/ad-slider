@@ -123,21 +123,39 @@ class DemoPage {
 
   private updateInputFromTo(): void {
     if (this.$inputDouble.checked) {
-      const $noteFrom = this.$container.querySelector('.adslider__note_type_from') as HTMLElement;
-      const $valueFrom = $noteFrom.querySelector('.adslider__value') as HTMLElement;
-      const $noteTo = this.$container.querySelector('.adslider__note') as HTMLElement;
-      const $valueTo = $noteTo.querySelector('.adslider__value') as HTMLElement;
-      this.updateFromInput($valueFrom);
-      this.updateToInput($valueTo);
+      const $noteFrom = this.$container.querySelector('.adslider__note_type_from');
+      let $valueFrom: HTMLElement | null;
+      if ($noteFrom) {
+        $valueFrom = $noteFrom.querySelector('.adslider__value');
+        this.updateFromInputAndAddEventListener($valueFrom);
+      }
+      const $noteTo = this.$container.querySelector('.adslider__note');
+      let $valueTo: HTMLElement | null;
+      if ($noteTo) {
+        $valueTo = $noteTo.querySelector('.adslider__value');
+        this.updateToInputAndAddEventListener($valueTo);
+      }
       this.$inputCurValue.style.visibility = 'hidden';
       this.$inputFrom.style.visibility = 'visible';
       this.$inputTo.style.visibility = 'visible';
-      $valueFrom.addEventListener('DOMSubtreeModified', this.updateFromInput.bind(this, $valueFrom));
-      $valueTo.addEventListener('DOMSubtreeModified', this.updateToInput.bind(this, $valueTo));
     } else {
       this.$inputCurValue.style.visibility = 'visible';
       this.$inputFrom.style.visibility = 'hidden';
       this.$inputTo.style.visibility = 'hidden';
+    }
+  }
+
+  private updateFromInputAndAddEventListener(el: HTMLElement | null) {
+    if (el) {
+      this.updateFromInput(el);
+      el.addEventListener('DOMSubtreeModified', this.updateFromInput.bind(this, el));
+    }
+  }
+
+  private updateToInputAndAddEventListener(el: HTMLElement | null) {
+    if (el) {
+      this.updateToInput(el);
+      el.addEventListener('DOMSubtreeModified', this.updateToInput.bind(this, el));
     }
   }
 
