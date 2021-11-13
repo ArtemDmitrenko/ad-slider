@@ -1,23 +1,23 @@
 mixin panel(number)
   .panel
-    .panel__inputName Минимальное значение:
+    .panel__name Минимальное значение:
       input(type="text").panel__minValue
-    .panel__inputName Максимальное значение:
+    .panel__name Максимальное значение:
       input(type="text").panel__maxValue
-    .panel__inputName Тек. значение:
+    .panel__name Тек. значение:
       input(type="text").panel__curValue
-    .panel__inputName
+    .panel__name
       input(type="checkbox" name="showValueNote" id=`showValue+${number}`).panel__showNoteValue.panel__checkbox
       label(for=`showValue+${number}`) Показать значения
-    .panel__inputName Шаг:
+    .panel__name Шаг:
       input(type="text").panel__step
-    .panel__inputName
+    .panel__name
       input(type="checkbox" name="verticalView" id=`verticalView+${number}`).panel__verticalView.panel__checkbox
       label(for=`verticalView+${number}`) Вертикальный вид
-    .panel__inputName
+    .panel__name
       input(type="checkbox" name="double" id=`double+${number}`).panel__double.panel__checkbox
       label(for=`double+${number}`) Диапазон
-    .panel__inputName От:
+    .panel__name От:
       input(type="text").panel__from
-    .panel__inputName До:
+    .panel__name До:
       input(type="text").panel__to
