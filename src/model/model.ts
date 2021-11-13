@@ -46,13 +46,9 @@ class Model extends EventObserver {
     isFrom: boolean
   }): void {
     const value = this.calcValueFromHandlerPos(data.relPosition);
-    if (data.isFrom) {
-      if (this.isValFromMovesOverValTo(value)) {
-        return;
-      }
-    } else if (this.options.double && this.isValToMovesOverValFrom(value)) {
-      return;
-    }
+    const conditionForReturn = this.options.double && this.isValToMovesOverValFrom(value);
+    if (data.isFrom && this.isValFromMovesOverValTo(value)) return;
+    if (!data.isFrom && conditionForReturn) return;
     this.setValAndBroadcast(value, data.isFrom);
   }
 

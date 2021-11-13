@@ -25,7 +25,7 @@ import Presenter from './presenter/presenter';
       const { model } = $(this).data('presenter');
       const presenter = $(this).data('presenter');
       model.options.curValue = curValue;
-      model.init(model.options);      
+      model.init(model.options);
       presenter.updateView();
     },
     getOptions(): IConfig {
