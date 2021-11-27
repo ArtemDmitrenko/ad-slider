@@ -45,6 +45,7 @@ class Model extends EventObserver {
     relPosition: number,
     isFrom: boolean
   }): void {
+    console.log(data);
     const value = this.calcValueFromHandlerPos(data.relPosition);
     const conditionForReturn = this.options.double && this.isValToMovesOverValFrom(value);
     if (data.isFrom && this.isValFromMovesOverValTo(value)) return;
@@ -52,7 +53,7 @@ class Model extends EventObserver {
     this.setValAndBroadcast(value, data.isFrom);
   }
 
-  public calcValueFromHandlerPos(relPos: number): number {
+  private calcValueFromHandlerPos(relPos: number): number {
     const odds: number = this.options.limits.max - this.options.limits.min;
     return Math.round(this.options.limits.min + odds * relPos);
   }

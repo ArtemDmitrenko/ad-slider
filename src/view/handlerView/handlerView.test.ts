@@ -31,13 +31,19 @@ describe('handlerView', () => {
   });
 
   test('Function setPos: should calc and set pos of handler', () => {
+    const callback1 = jest.fn();
+    const callback2 = jest.fn();
+    const callback3 = jest.fn();
+    handlerView.addObserver('calcValueNotePos', callback1);
+    handlerView.addObserver('setValueNotePos', callback2);
+    handlerView.addObserver('setBar', callback3);
     const options = { edge: 370, value: 10, limits: { min: 0, max: 100 } };
     handlerView.calcPos(options);
-    handlerView.setPos();
+    handlerView.setPos(false);
     expect(window.getComputedStyle(handlerView.$handler).left).toBe('37px');
     expect(window.getComputedStyle(handlerView.$handler).bottom).toBe('');
     handlerView.setVerticalView(true);
-    handlerView.setPos();
+    handlerView.setPos(false);
     expect(window.getComputedStyle(handlerView.$handler).left).toBe('');
     expect(window.getComputedStyle(handlerView.$handler).bottom).toBe('37px');
   });

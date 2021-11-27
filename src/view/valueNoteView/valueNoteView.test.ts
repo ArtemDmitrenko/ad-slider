@@ -15,8 +15,10 @@ describe('valueNoteView', () => {
   });
 
   test('Function render: should create $value element', () => {
-    expect(valueNoteView.$value).not.toBeNull();
-    expect(valueNoteView.$value.tagName).toBe('P');
+    expect($parent.firstElementChild).not.toBeNull();
+    if ($parent.firstElementChild && $parent.firstElementChild.firstElementChild) {
+      expect($parent.firstElementChild.firstElementChild.tagName).toBe('P');
+    }
   });
 
   test('Function render: should add css-class to $note element', () => {
@@ -24,11 +26,15 @@ describe('valueNoteView', () => {
   });
 
   test('Function render: should add css-class to $value element', () => {
-    expect(valueNoteView.$value.classList.contains('adslider__value')).toBe(true);
+    if ($parent.firstElementChild && $parent.firstElementChild.firstElementChild) {
+      expect($parent.firstElementChild.firstElementChild.classList.contains('adslider__value')).toBe(true);
+    }
   });
 
   test('Function render: should append $value to $note', () => {
-    expect(valueNoteView.$value.parentElement).toBe(valueNoteView.$note);
+    if ($parent.firstElementChild && $parent.firstElementChild.firstElementChild) {
+      expect($parent.firstElementChild.firstElementChild.parentElement).toBe(valueNoteView.$note);
+    }
   });
 
   test('Function render: should append $note to parent-element', () => {
@@ -37,12 +43,16 @@ describe('valueNoteView', () => {
 
   test('Function setValue: should set value to note', () => {
     valueNoteView.setValue(50);
-    expect(valueNoteView.$value.innerHTML).toBe('50');
+    if ($parent.firstElementChild && $parent.firstElementChild.firstElementChild) {
+      expect($parent.firstElementChild.firstElementChild.innerHTML).toBe('50');
+    }
   });
 
   test('Function setValueForTwo: should set values when notes are close in range slider', () => {
     valueNoteView.setValueForTwo(50, 55);
-    expect(valueNoteView.$value.innerHTML).toBe('50 - 55');
+    if ($parent.firstElementChild && $parent.firstElementChild.firstElementChild) {
+      expect($parent.firstElementChild.firstElementChild.innerHTML).toBe('50 - 55');
+    }
   });
 
   test('Function setPos: should set position of valueNote', () => {
@@ -90,5 +100,12 @@ describe('valueNoteView', () => {
     valueNoteView.setVerticalView(true);
     valueNoteView.$note.style.height = '40px';
     expect(valueNoteView.getSize()).toBe(40);
+  });
+
+  test('Function getValue: return value of note', () => {
+    if ($parent.firstElementChild && $parent.firstElementChild.firstElementChild) {
+      $parent.firstElementChild.firstElementChild.textContent = '50';
+    }
+    expect(valueNoteView.getValue()).toBe(50);
   });
 });

@@ -88,6 +88,19 @@ describe('model', () => {
       };
       expect(() => { new Model(options); }).toThrowError(/^Value must be in range of min and max limits$/);
     });
+    test('should throw error if curValue is less than min limit', () => {
+      options = {
+        limits: { min: 0, max: 100 },
+        curValue: 80,
+        showValueNote: true,
+        step: 1,
+        double: false,
+        from: -40,
+        to: 80,
+        vertical: false,
+      };
+      expect(() => { model.init(options); }).toThrowError(/^Value must be in range of min and max limits$/);
+    });
     test('should throw error if curValue is more than max limit', () => {
       options = {
         limits: { min: 0, max: 100 },
@@ -184,16 +197,6 @@ describe('model', () => {
   describe('function setValueFromHandlerPos', () => {
     let callback1: Function;
     let callback2: Function;
-    let callback3: Function;
-    let callback4: Function;
-    let callback5: Function;
-    let callback6: Function;
-    let callback7: Function;
-    let callback8: Function;
-    let callback9: Function;
-    let callback10: Function;
-    let callback11: Function;
-    let callback12: Function;
     const $handler: HTMLElement = document.createElement('div');
 
     describe('for single slider', () => {
@@ -211,50 +214,26 @@ describe('model', () => {
         model = new Model(options);
         callback1 = jest.fn();
         callback2 = jest.fn();
-        callback3 = jest.fn();
-        callback4 = jest.fn();
-        callback5 = jest.fn();
-        callback6 = jest.fn();
         model.addObserver('calcPos', callback1);
         model.addObserver('setPos', callback2);
-        model.addObserver('calcValueNotePos', callback3);
-        model.addObserver('setValueNotePos', callback4);
-        model.addObserver('setValue', callback5);
-        model.addObserver('setBarWidth', callback6);
       });
 
       test('should set curValue', () => {
-        const data = {
-          newPos: 220, edge: 370, handler: $handler, isHandlerFrom: false,
-        };
+        const data = { relPosition: 0.5948040674603174, isFrom: false };
         model.setValueFromHandlerPos(data);
         expect(model.options.curValue).toBe(59);
       });
       test('should broadcast events', () => {
-        const data = {
-          newPos: 220, edge: 370, handler: $handler, isHandlerFrom: false,
-        };
+        const data = { relPosition: 0.5948040674603174, isFrom: false };
         model.setValueFromHandlerPos(data);
         expect(callback1).toBeCalled();
         expect(callback2).toBeCalled();
-        expect(callback3).toBeCalled();
-        expect(callback4).toBeCalled();
-        expect(callback5).toBeCalled();
-        expect(callback6).toBeCalled();
       });
+
       test('check that function calcValueWithStep is working properly (val less limits.min)', () => {
-        const data = {
-          newPos: -20, edge: 370, handler: $handler, isHandlerFrom: false,
-        };
+        const data = { relPosition: -0.5, isFrom: false };
         model.setValueFromHandlerPos(data);
-        expect(model.options.curValue).toBe(-4);
-      });
-      test('check that function calcValueWithStep is working properly (val more limits.max)', () => {
-        const data = {
-          newPos: 400, edge: 370, handler: $handler, isHandlerFrom: false,
-        };
-        model.setValueFromHandlerPos(data);
-        expect(model.options.curValue).toBe(100);
+        expect(model.options.curValue).toBe(-49);
       });
     });
 
@@ -273,69 +252,38 @@ describe('model', () => {
         model = new Model(options);
         callback1 = jest.fn();
         callback2 = jest.fn();
-        callback3 = jest.fn();
-        callback4 = jest.fn();
-        callback5 = jest.fn();
-        callback6 = jest.fn();
-        callback7 = jest.fn();
-        callback8 = jest.fn();
-        callback9 = jest.fn();
-        callback10 = jest.fn();
-        callback11 = jest.fn();
-        callback12 = jest.fn();
 
-        model.addObserver('calcValueNotePosForDouble', callback3);
-        model.addObserver('setValueNotePosForDouble', callback4);
-        model.addObserver('setBarWidthForDouble', callback6);
-        model.addObserver('setOneNote', callback7);
-
-        model.addObserver('calcPos', callback8);
-        model.addObserver('setPos', callback9);
-        model.addObserver('calcValueNotePos', callback10);
-        model.addObserver('setValueNotePos', callback11);
-        model.addObserver('setValue', callback12);
+        model.addObserver('calcPos', callback1);
+        model.addObserver('setPos', callback2);
       });
 
       test('should set curValue and check function isValFromMovesOverValTo is return true', () => {
         $handler.classList.add('adslider__handler_type_from');
-        const data = {
-          newPos: 100, edge: 370, handler: $handler, isHandlerFrom: true,
-        };
+        const data = { relPosition: 0.5948040674603174, isFrom: false };
         model.setValueFromHandlerPos(data);
         expect(model.options.from).toBe(0);
       });
 
       test('should set curValue and check function isValFromMovesOverValTo is return false', () => {
         $handler.classList.add('adslider__handler_type_from');
-        const data = {
-          newPos: 10, edge: 370, handler: $handler, isHandlerFrom: true,
-        };
+        const data = { relPosition: 0.5948040674603174, isFrom: false };
         model.setValueFromHandlerPos(data);
         expect(model.options.from).toBe(0);
       });
 
       test('should broadcast events', () => {
         $handler.classList.add('adslider__handler_type_from');
-        const data = {
-          newPos: 10, edge: 370, handler: $handler, isHandlerFrom: true,
-        };
+        const data = { relPosition: 0.5948040674603174, isFrom: false };
         model.setValueFromHandlerPos(data);
         expect(callback1).toBeCalled();
         expect(callback2).toBeCalled();
-        expect(callback3).toBeCalled();
-        expect(callback4).toBeCalled();
-        expect(callback5).toBeCalled();
-        expect(callback6).toBeCalled();
-        expect(callback7).toBeCalled();
       });
 
       test('check that function isValFromMovesOverValTo() is working', () => {
         $handler.classList.remove('adslider__handler_type_from');
-        const data = {
-          newPos: -10, edge: 370, handler: $handler, isHandlerFrom: true,
-        };
+        const data = { relPosition: 0.5948040674603174, isFrom: false };
         model.setValueFromHandlerPos(data);
-        expect(model.options.curValue).toBe(10);
+        expect(model.options.curValue).toBe(60);
       });
     });
 
@@ -354,34 +302,14 @@ describe('model', () => {
         model = new Model(options);
         callback1 = jest.fn();
         callback2 = jest.fn();
-        callback3 = jest.fn();
-        callback4 = jest.fn();
-        callback5 = jest.fn();
-        callback6 = jest.fn();
-        callback7 = jest.fn();
-        callback8 = jest.fn();
-        callback9 = jest.fn();
-        callback10 = jest.fn();
-        callback11 = jest.fn();
-        callback12 = jest.fn();
-
-        model.addObserver('calcValueNotePosForDouble', callback3);
-        model.addObserver('setValueNotePosForDouble', callback4);
-        model.addObserver('setBarWidthForDouble', callback6);
-        model.addObserver('setOneNote', callback7);
-        model.addObserver('calcPos', callback8);
-        model.addObserver('setPos', callback9);
-        model.addObserver('calcValueNotePos', callback10);
-        model.addObserver('setValueNotePos', callback11);
-        model.addObserver('setValue', callback12);
+        model.addObserver('calcPos', callback1);
+        model.addObserver('setPos', callback2);
       });
       test('check that function calcValueWithStep() is working', () => {
         $handler.classList.remove('adslider__handler_type_from');
-        const data = {
-          newPos: 481, edge: 504, handler: $handler, isHandlerFrom: true,
-        };
+        const data = { relPosition: 0.5948040674603174, isFrom: false };
         model.setValueFromHandlerPos(data);
-        expect(model.options.curValue).toBe(90);
+        expect(model.options.curValue).toBe(60);
       });
     });
   });
