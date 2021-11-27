@@ -394,7 +394,7 @@ class View extends EventObserver {
     double: boolean
   }): void => {
     if (!data.double) {
-      this.barView.setLength(data);
+      this.barView.setLength(data.$handler);
     } else if (this.handlerViewFrom) {
       const options = {
         valueFrom: this.handlerViewFrom.getPos(),

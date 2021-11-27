@@ -21,21 +21,21 @@ class BarView extends EventObserver {
     }
   }
 
-  public setLength(data: { $handler: HTMLElement, vertical: boolean, double: boolean }): void {
+  public setLength($handler: HTMLElement): void {
     let handlerPos: number;
     let handlerLength: number;
     this.$bar.style.bottom = '';
     this.$bar.style.left = '';
     if (this.$bar.classList.contains('adslider__bar_direction_horizontal')) {
       this.$bar.style.height = '';
-      handlerPos = parseInt(getComputedStyle(data.$handler).left, 10);
-      handlerLength = parseInt(getComputedStyle(data.$handler).width, 10);
+      handlerPos = parseInt(getComputedStyle($handler).left, 10);
+      handlerLength = parseInt(getComputedStyle($handler).width, 10);
       this.calcBarPosForSingle(handlerPos, handlerLength);
       this.$bar.style.width = `${this.barPos}px`;
     } else {
       this.$bar.style.width = '';
-      handlerPos = parseInt(getComputedStyle(data.$handler).bottom, 10);
-      handlerLength = parseInt(getComputedStyle(data.$handler).height, 10);
+      handlerPos = parseInt(getComputedStyle($handler).bottom, 10);
+      handlerLength = parseInt(getComputedStyle($handler).height, 10);
       this.calcBarPosForSingle(handlerPos, handlerLength);
       this.$bar.style.height = `${this.barPos}px`;
     }
