@@ -58,7 +58,6 @@ class View extends EventObserver {
       this.updateViewForDouble(
         options.vertical,
         options.from,
-        options.to,
         options.limits,
         options.showValueNote,
       );
@@ -143,7 +142,6 @@ class View extends EventObserver {
   private updateViewForDouble(
     vertical: boolean,
     from: number,
-    to: number,
     limits: { max: number; min: number },
     showValueNote: boolean,
   ): void {

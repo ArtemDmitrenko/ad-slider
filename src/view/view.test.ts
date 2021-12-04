@@ -2,41 +2,55 @@ import View from './view';
 import { IConfig } from '../model/model';
 
 describe('view', () => {
+  let view: View;
+  let $container: HTMLElement;
+  let adslider: HTMLElement;
+  let track: HTMLElement;
+  let bar: HTMLElement;
+  let scale: HTMLElement;
+  let handler: HTMLElement;
+  let handlerFrom: HTMLElement;
+  let note: HTMLElement;
+  let value: HTMLElement;
+  let noteFrom: HTMLElement;
+  let valueFrom: HTMLElement;
+
   describe('Function render', () => {
-    const $container: HTMLElement = document.createElement('div');
-    const view: View = new View($container);
-    view.trackView.$track.style.width = '400px';
-    view.handlerView.$handler.style.width = '30px';
+    $container = document.createElement('div');
+    document.body.innerHTML = '';
+    document.body.appendChild($container);
+    view = new View($container);
+    adslider = $container.querySelector('.adslider') as HTMLElement;
+    track = $container.querySelector('.adslider__track') as HTMLElement;
+    bar = $container.querySelector('.adslider__bar') as HTMLElement;
+    scale = $container.querySelector('.adslider__scale') as HTMLElement;
+    handler = $container.querySelector('.adslider__handler') as HTMLElement;
+    handlerFrom = $container.querySelector('.adslider__handler_type_from') as HTMLElement;
+    note = $container.querySelector('.adslider__note_type_to') as HTMLElement;
+    noteFrom = $container.querySelector('.adslider__note_type_from') as HTMLElement;
 
     test('Function render: creating instance of View', () => {
-      expect(view.$el).not.toBeNull();
-      expect(view.$adslider).not.toBeNull();
-      expect(view.trackView.$track).not.toBeNull();
-      expect(view.barView.$bar).not.toBeNull();
-      expect(view.scaleView.$scale).not.toBeNull();
-      expect(view.handlerView.$handler).not.toBeNull();
-      expect(view.handlerViewFrom?.$handler).not.toBeNull();
-      expect(view.valueNoteView.$note).not.toBeNull();
-      expect(view.valueNoteViewFrom?.$note).not.toBeNull();
-    });
-
-    test('Function render: should add classes adslider elements', () => {
-      expect(view.$adslider.classList.contains('adslider')).toBe(true);
-      expect(view.handlerViewFrom?.$handler.classList.contains('adslider__handler_type_from')).toBe(true);
-      expect(view.valueNoteViewFrom?.$note.classList.contains('adslider__note_type_from')).toBe(true);
-      expect(view.valueNoteView.$note.classList.contains('adslider__note_type_to')).toBe(true);
+      expect($container).not.toBeNull();
+      expect(adslider).not.toBeNull();
+      expect(track).toBeTruthy();
+      expect(bar).not.toBeNull();
+      expect(scale).not.toBeNull();
+      expect(handler).not.toBeNull();
+      expect(handlerFrom).not.toBeNull();
+      expect(note).not.toBeNull();
+      expect(noteFrom).not.toBeNull();
     });
   });
 
   describe('Function updateView', () => {
     describe('For single slider with horizontal view', () => {
-      let view: View;
       let options: IConfig;
       beforeEach(() => {
-        const $container: HTMLElement = document.createElement('div');
+        $container = document.createElement('div');
+        document.body.innerHTML = '';
+        document.body.appendChild($container);
         view = new View($container);
-        view.trackView.$track.style.width = '400px';
-        view.handlerView.$handler.style.width = '30px';
+
         options = {
           limits: { min: 0, max: 100 },
           curValue: 50,
@@ -47,25 +61,38 @@ describe('view', () => {
           to: 0,
           step: 1,
         };
+        adslider = $container.querySelector('.adslider') as HTMLElement;
+        track = $container.querySelector('.adslider__track') as HTMLElement;
+        bar = $container.querySelector('.adslider__bar') as HTMLElement;
+        scale = $container.querySelector('.adslider__scale') as HTMLElement;
+        handler = $container.querySelector('.adslider__handler') as HTMLElement;
+        handlerFrom = $container.querySelector('.adslider__handler_type_from') as HTMLElement;
+        note = $container.querySelector('.adslider__note_type_to') as HTMLElement;
+        value = note.querySelector('.adslider__value') as HTMLElement;
+        noteFrom = $container.querySelector('.adslider__note_type_from') as HTMLElement;
+        valueFrom = noteFrom.querySelector('.adslider__value') as HTMLElement;
+
+        track.style.width = '400px';
+        handler.style.width = '30px';
         view.updateView(options);
       });
 
       test('Should add classes to the elements of slider', () => {
-        expect(view.$adslider.classList.contains('adslider_direction_horizontal')).toBe(true);
-        expect(view.trackView.$track.classList.contains('adslider__track_direction_horizontal')).toBe(true);
-        expect(view.handlerView.$handler.classList.contains('adslider__handler_direction_horizontal')).toBe(true);
-        expect(view.barView.$bar.classList.contains('adslider__bar_direction_horizontal')).toBe(true);
-        expect(view.valueNoteView.$note.classList.contains('adslider__note_show')).toBe(true);
-        expect(view.scaleView.$scale.classList.contains('adslider__scale_direction_horizontal')).toBe(true);
+        expect(adslider.classList.contains('adslider_direction_horizontal')).toBe(true);
+        expect(track.classList.contains('adslider__track_direction_horizontal')).toBe(true);
+        expect(handler.classList.contains('adslider__handler_direction_horizontal')).toBe(true);
+        expect(bar.classList.contains('adslider__bar_direction_horizontal')).toBe(true);
+        expect(note.classList.contains('adslider__note_show')).toBe(true);
+        expect(scale.classList.contains('adslider__scale_direction_horizontal')).toBe(true);
       });
       test('Should set handler position depending on the curValue', () => {
-        expect(getComputedStyle(view.handlerView.$handler).left).toBe('185px');
+        expect(getComputedStyle(handler).left).toBe('185px');
       });
       test('Should set valueNote position depending on the handler position', () => {
-        expect(getComputedStyle(view.valueNoteView.$note).left).toBe('200px');
+        expect(getComputedStyle(note).left).toBe('200px');
       });
       test('Should set note value depending on the curValue', () => {
-        expect(view.valueNoteView.$value.textContent).toBe('50');
+        expect(value.textContent).toBe('50');
       });
       test('Should add handlerFrom when slider becomes double after being single', () => {
         options = {
@@ -79,22 +106,32 @@ describe('view', () => {
           vertical: true,
         };
         view.updateView(options);
-        expect(view.handlerViewFrom?.$handler).not.toBeNull();
+        expect(handlerFrom).not.toBeNull();
       });
     });
 
     describe('For double slider with horizontal view', () => {
-      let view: View;
       let options: IConfig;
       beforeEach(() => {
-        const $container: HTMLElement = document.createElement('div');
+        $container = document.createElement('div');
+        document.body.innerHTML = '';
+        document.body.appendChild($container);
         view = new View($container);
-        view.trackView.$track.style.width = '400px';
-        view.handlerView.$handler.style.width = '30px';
-        if (view.handlerViewFrom) {
-          view.handlerViewFrom.$handler.style.width = '30px';
-        }
-        view.valueNoteView.$note.style.width = '2rem';
+        adslider = $container.querySelector('.adslider') as HTMLElement;
+        track = $container.querySelector('.adslider__track') as HTMLElement;
+        bar = $container.querySelector('.adslider__bar') as HTMLElement;
+        scale = $container.querySelector('.adslider__scale') as HTMLElement;
+        handler = $container.querySelector('.adslider__handler') as HTMLElement;
+        handlerFrom = $container.querySelector('.adslider__handler_type_from') as HTMLElement;
+        note = $container.querySelector('.adslider__note_type_to') as HTMLElement;
+        value = note.querySelector('.adslider__value') as HTMLElement;
+        noteFrom = $container.querySelector('.adslider__note_type_from') as HTMLElement;
+        valueFrom = noteFrom.querySelector('.adslider__value') as HTMLElement;
+
+        track.style.width = '400px';
+        handler.style.width = '30px';
+        handlerFrom.style.width = '30px';
+        note.style.width = '2rem';
         options = {
           limits: { min: 0, max: 100 },
           curValue: 41,
@@ -109,35 +146,29 @@ describe('view', () => {
       });
 
       test('Should add classes to the elements of slider', () => {
-        expect(view.$adslider.classList.contains('adslider_direction_horizontal')).toBe(true);
-        expect(view.trackView.$track.classList.contains('adslider__track_direction_horizontal')).toBe(true);
-        expect(view.handlerView.$handler.classList.contains('adslider__handler_direction_horizontal')).toBe(true);
-        expect(view.barView.$bar.classList.contains('adslider__bar_direction_horizontal')).toBe(true);
-        expect(view.scaleView.$scale.classList.contains('adslider__scale_direction_horizontal')).toBe(true);
+        expect(adslider.classList.contains('adslider_direction_horizontal')).toBe(true);
+        expect(track.classList.contains('adslider__track_direction_horizontal')).toBe(true);
+        expect(handler.classList.contains('adslider__handler_direction_horizontal')).toBe(true);
+        expect(bar.classList.contains('adslider__bar_direction_horizontal')).toBe(true);
+        expect(scale.classList.contains('adslider__scale_direction_horizontal')).toBe(true);
       });
       test('Should set handler position depending on the curValue', () => {
-        expect(getComputedStyle(view.handlerView.$handler).left).toBe('151.7px');
+        expect(getComputedStyle(handler).left).toBe('151.7px');
       });
       test('Should set handlerFrom position depending on the valueFrom', () => {
-        if (view.handlerViewFrom) {
-          expect(getComputedStyle(view.handlerViewFrom.$handler).left).toBe('148px');
-        }
+        expect(getComputedStyle(handlerFrom).left).toBe('148px');
       });
       test('Should set valueNote position depending on the handler position', () => {
-        expect(getComputedStyle(view.valueNoteView.$note).left).toBe('166px');
+        expect(getComputedStyle(note).left).toBe('166px');
       });
       test('Should set valueNoteFrom position depending on the handler position', () => {
-        if (view.valueNoteViewFrom) {
-          expect(getComputedStyle(view.valueNoteViewFrom.$note).left).toBe('163px');
-        }
+        expect(getComputedStyle(noteFrom).left).toBe('163px');
       });
       test('Should set note value depending on the curValue', () => {
-        expect(view.valueNoteView.$value.textContent).toBe('41');
+        expect(value.textContent).toBe('41');
       });
       test('Should set noteFrom value depending on the valFrom', () => {
-        if (view.valueNoteViewFrom) {
-          expect(view.valueNoteViewFrom.$value.textContent).toBe('40');
-        }
+        expect(valueFrom.textContent).toBe('40');
       });
       test('Should removeValueNotesFromAndTo if we have valueNoteViewCommon', () => {
         options = {
@@ -151,9 +182,7 @@ describe('view', () => {
           vertical: false,
         };
         view.updateView(options);
-        if (view.handlerViewFrom) {
-          expect(view.handlerViewFrom.$handler).not.toBeNull();
-        }
+        expect(handlerFrom).not.toBeNull();
       });
       test('Should remove values From and To if we already have common valueNote', () => {
         options = {
@@ -167,38 +196,37 @@ describe('view', () => {
           vertical: false,
         };
         view.updateView(options);
-        expect(view.valueNoteViewCommon).toBeUndefined();
-      });
-      test('Should delete values From if we choose single slider', () => {
-        options = {
-          limits: { min: 0, max: 100 },
-          curValue: 41,
-          showValueNote: true,
-          step: 15,
-          vertical: true,
-          double: false,
-          from: 0,
-          to: 0,
-        };
-        view.updateView(options);
-        expect(view.valueNoteViewFrom).toBeUndefined();
+        const valueNoteViewCommon = $container.querySelector('.adslider__note_common') as HTMLElement;
+        expect(valueNoteViewCommon).toBeNull();
       });
     });
   });
 
   describe('Function addListeners', () => {
     describe('For single slider with horizontal view', () => {
-      let view: View;
       let options: IConfig;
       let callback: () => void;
       let mousedown: MouseEvent;
       let mousemove: MouseEvent;
       let mouseup: MouseEvent;
       beforeEach(() => {
-        const $container: HTMLElement = document.createElement('div');
+        $container = document.createElement('div');
+        document.body.innerHTML = '';
+        document.body.appendChild($container);
         view = new View($container);
-        view.trackView.$track.style.width = '400px';
-        view.handlerView.$handler.style.width = '30px';
+        adslider = $container.querySelector('.adslider') as HTMLElement;
+        track = $container.querySelector('.adslider__track') as HTMLElement;
+        bar = $container.querySelector('.adslider__bar') as HTMLElement;
+        scale = $container.querySelector('.adslider__scale') as HTMLElement;
+        handler = $container.querySelector('.adslider__handler') as HTMLElement;
+        handlerFrom = $container.querySelector('.adslider__handler_type_from') as HTMLElement;
+        note = $container.querySelector('.adslider__note_type_to') as HTMLElement;
+        value = note.querySelector('.adslider__value') as HTMLElement;
+        noteFrom = $container.querySelector('.adslider__note_type_from') as HTMLElement;
+        valueFrom = noteFrom.querySelector('.adslider__value') as HTMLElement;
+
+        track.style.width = '400px';
+        handler.style.width = '30px';
         options = {
           limits: { min: 0, max: 100 },
           curValue: 50,
@@ -211,7 +239,7 @@ describe('view', () => {
         };
         view.updateView(options);
 
-        view.handlerView.$handler.getBoundingClientRect = jest.fn(() => ({
+        handler.getBoundingClientRect = jest.fn(() => ({
           bottom: 0,
           height: 0,
           left: 170,
@@ -222,7 +250,7 @@ describe('view', () => {
           y: 0,
           toJSON: jest.fn,
         }));
-        view.trackView.$track.getBoundingClientRect = jest.fn(() => ({
+        track.getBoundingClientRect = jest.fn(() => ({
           bottom: 0,
           height: 0,
           left: 74,
@@ -243,13 +271,13 @@ describe('view', () => {
       });
 
       test('Should call function mouseMove when event mousemove happens on handler', () => {
-        view.handlerView.$handler.dispatchEvent(mousedown);
+        handler.dispatchEvent(mousedown);
         document.dispatchEvent(mousemove);
         expect(callback).toBeCalled();
       });
 
       test('Check that listeners of mousemove of handler are removed after mouseup', () => {
-        view.handlerView.$handler.dispatchEvent(mousedown);
+        handler.dispatchEvent(mousedown);
         document.dispatchEvent(mousemove);
         document.dispatchEvent(mouseup);
         const nextmousemove = new MouseEvent('mousemove');
@@ -259,41 +287,53 @@ describe('view', () => {
       test('Should set newPosCopy = 0 if newPos < 0 in function checkNewPos', () => {
         mousedown = new MouseEvent('mousedown', { clientX: 12 });
         mousemove = new MouseEvent('mousemove', { clientX: 10 });
-        view.handlerView.$handler.dispatchEvent(mousedown);
+        handler.dispatchEvent(mousedown);
         document.dispatchEvent(mousemove);
         expect(callback).toBeCalled();
       });
       test('Should set newPosCopy = edge if newPos > edge in function checkNewPos', () => {
         mousedown = new MouseEvent('mousedown', { clientX: 185 });
         mousemove = new MouseEvent('mousemove', { clientX: 500 });
-        view.handlerView.$handler.dispatchEvent(mousedown);
+        handler.dispatchEvent(mousedown);
         document.dispatchEvent(mousemove);
         expect(callback).toBeCalled();
       });
       test('Should call function mouseMove when event mousemove happens on track', () => {
-        view.trackView.$track.dispatchEvent(mousedown);
+        track.dispatchEvent(mousedown);
         expect(callback).toBeCalled();
       });
       test('Should call function mouseMove when event mousemove happens on bar', () => {
-        view.barView.$bar.dispatchEvent(mousedown);
+        bar.dispatchEvent(mousedown);
         expect(callback).toBeCalled();
       });
       test('Should call function mouseMove when event mousemove happens on scale', () => {
-        view.scaleView.$scale.dispatchEvent(mousedown);
+        scale.dispatchEvent(mousedown);
         expect(callback).toBeCalled();
       });
     });
     describe('For double slider with vertical view', () => {
-      let view: View;
       let options: IConfig;
       let callback: () => void;
       let mousedown: MouseEvent;
       let mousemove: MouseEvent;
       beforeEach(() => {
-        const $container: HTMLElement = document.createElement('div');
+        $container = document.createElement('div');
+        document.body.innerHTML = '';
+        document.body.appendChild($container);
         view = new View($container);
-        view.trackView.$track.style.height = '400px';
-        view.handlerView.$handler.style.height = '30px';
+        adslider = $container.querySelector('.adslider') as HTMLElement;
+        track = $container.querySelector('.adslider__track') as HTMLElement;
+        bar = $container.querySelector('.adslider__bar') as HTMLElement;
+        scale = $container.querySelector('.adslider__scale') as HTMLElement;
+        handler = $container.querySelector('.adslider__handler') as HTMLElement;
+        handlerFrom = $container.querySelector('.adslider__handler_type_from') as HTMLElement;
+        note = $container.querySelector('.adslider__note_type_to') as HTMLElement;
+        value = note.querySelector('.adslider__value') as HTMLElement;
+        noteFrom = $container.querySelector('.adslider__note_type_from') as HTMLElement;
+        valueFrom = noteFrom.querySelector('.adslider__value') as HTMLElement;
+
+        track.style.height = '400px';
+        handler.style.height = '30px';
         options = {
           limits: { min: 0, max: 100 },
           curValue: 41,
@@ -306,7 +346,7 @@ describe('view', () => {
         };
         view.updateView(options);
 
-        view.handlerView.$handler.getBoundingClientRect = jest.fn(() => ({
+        handler.getBoundingClientRect = jest.fn(() => ({
           bottom: 170,
           height: 30,
           left: 0,
@@ -317,20 +357,18 @@ describe('view', () => {
           y: 0,
           toJSON: jest.fn,
         }));
-        if (view.handlerViewFrom) {
-          view.handlerViewFrom.$handler.getBoundingClientRect = jest.fn(() => ({
-            bottom: 100,
-            height: 30,
-            left: 0,
-            right: 0,
-            top: 50,
-            width: 30,
-            x: 0,
-            y: 0,
-            toJSON: jest.fn,
-          }));
-        }
-        view.trackView.$track.getBoundingClientRect = jest.fn(() => ({
+        handlerFrom.getBoundingClientRect = jest.fn(() => ({
+          bottom: 100,
+          height: 30,
+          left: 0,
+          right: 0,
+          top: 50,
+          width: 30,
+          x: 0,
+          y: 0,
+          toJSON: jest.fn,
+        }));
+        track.getBoundingClientRect = jest.fn(() => ({
           bottom: 74,
           height: 400,
           left: 0,
@@ -348,31 +386,43 @@ describe('view', () => {
       });
 
       test('Should call function mouseMove when event mousemove happens on handler', () => {
-        view.handlerView.$handler.dispatchEvent(mousedown);
+        handler.dispatchEvent(mousedown);
         document.dispatchEvent(mousemove);
         expect(callback).toBeCalled();
       });
 
       test('Should call function mouseMove when event mousemove happens on track', () => {
-        view.trackView.$track.dispatchEvent(mousedown);
+        track.dispatchEvent(mousedown);
         expect(callback).toBeCalled();
       });
       test('Should call function mouseMove when event mousemove happens on track', () => {
         mousedown = new MouseEvent('mousedown', { clientY: 60 });
-        view.trackView.$track.dispatchEvent(mousedown);
+        track.dispatchEvent(mousedown);
         expect(callback).toBeCalled();
       });
     });
     describe('For double slider with horizontal view', () => {
-      let view: View;
       let options: IConfig;
       let callback: () => void;
       let mousedown: MouseEvent;
       beforeEach(() => {
-        const $container: HTMLElement = document.createElement('div');
+        $container = document.createElement('div');
+        document.body.innerHTML = '';
+        document.body.appendChild($container);
         view = new View($container);
-        view.trackView.$track.style.width = '400px';
-        view.handlerView.$handler.style.width = '30px';
+        adslider = $container.querySelector('.adslider') as HTMLElement;
+        track = $container.querySelector('.adslider__track') as HTMLElement;
+        bar = $container.querySelector('.adslider__bar') as HTMLElement;
+        scale = $container.querySelector('.adslider__scale') as HTMLElement;
+        handler = $container.querySelector('.adslider__handler') as HTMLElement;
+        handlerFrom = $container.querySelector('.adslider__handler_type_from') as HTMLElement;
+        note = $container.querySelector('.adslider__note_type_to') as HTMLElement;
+        value = note.querySelector('.adslider__value') as HTMLElement;
+        noteFrom = $container.querySelector('.adslider__note_type_from') as HTMLElement;
+        valueFrom = noteFrom.querySelector('.adslider__value') as HTMLElement;
+
+        track.style.width = '400px';
+        handler.style.width = '30px';
         options = {
           limits: { min: 0, max: 100 },
           curValue: 41,
@@ -384,7 +434,7 @@ describe('view', () => {
           vertical: false,
         };
         view.updateView(options);
-        view.handlerView.$handler.getBoundingClientRect = jest.fn(() => ({
+        handler.getBoundingClientRect = jest.fn(() => ({
           bottom: 0,
           height: 0,
           left: 370,
@@ -395,20 +445,18 @@ describe('view', () => {
           y: 0,
           toJSON: jest.fn,
         }));
-        if (view.handlerViewFrom) {
-          view.handlerViewFrom.$handler.getBoundingClientRect = jest.fn(() => ({
-            bottom: 0,
-            height: 0,
-            left: 100,
-            right: 0,
-            top: 0,
-            width: 30,
-            x: 0,
-            y: 0,
-            toJSON: jest.fn,
-          }));
-        }
-        view.trackView.$track.getBoundingClientRect = jest.fn(() => ({
+        handlerFrom.getBoundingClientRect = jest.fn(() => ({
+          bottom: 0,
+          height: 0,
+          left: 100,
+          right: 0,
+          top: 0,
+          width: 30,
+          x: 0,
+          y: 0,
+          toJSON: jest.fn,
+        }));
+        track.getBoundingClientRect = jest.fn(() => ({
           bottom: 0,
           height: 0,
           left: 74,
@@ -424,17 +472,17 @@ describe('view', () => {
         mousedown = new MouseEvent('mousedown', { clientX: 30 });
       });
       test('Should call function mouseMove when event mousemove happens on track', () => {
-        view.trackView.$track.dispatchEvent(mousedown);
+        track.dispatchEvent(mousedown);
         expect(callback).toBeCalled();
       });
       test('Should call function mouseMove when event mousemove happens on track if e.clientX <= middlePos', () => {
         mousedown = new MouseEvent('mousedown', { clientX: 20 });
-        view.trackView.$track.dispatchEvent(mousedown);
+        track.dispatchEvent(mousedown);
         expect(callback).toBeCalled();
       });
       test('Should call function mouseMove when event mousemove happens on track if e.clientX > middlePos', () => {
         mousedown = new MouseEvent('mousedown', { clientX: 500 });
-        view.trackView.$track.dispatchEvent(mousedown);
+        track.dispatchEvent(mousedown);
         expect(callback).toBeCalled();
       });
     });

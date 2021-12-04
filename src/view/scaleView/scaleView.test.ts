@@ -5,16 +5,16 @@ describe('scaleView', () => {
   const scaleView = new ScaleView($parent);
 
   test('Function render: should create element', () => {
-    expect(scaleView.$scale).not.toBeNull();
-    expect(scaleView.$scale.tagName).toBe('DIV');
+    expect($parent.firstElementChild).not.toBeNull();
+    expect(($parent.firstElementChild as HTMLElement).tagName).toBe('DIV');
   });
 
   test('Function render: should add css-class', () => {
-    expect(scaleView.$scale.classList.contains('adslider__scale')).toBe(true);
+    expect(($parent.firstElementChild as HTMLElement).classList.contains('adslider__scale')).toBe(true);
   });
 
   test('Function render: should append scale to parent-element', () => {
-    expect(scaleView.$scale.parentElement).toBe($parent);
+    expect(($parent.firstElementChild as HTMLElement).parentElement).toBe($parent);
   });
 
   test('Function drawScale: should draw scale depending on input data', () => {
@@ -32,11 +32,11 @@ describe('scaleView', () => {
       vertical: true,
     };
     scaleView.drawScale(options, $handler);
-    expect(scaleView.$scale.classList.contains('adslider__scale_direction_vertical')).toBe(true);
-    expect(window.getComputedStyle(scaleView.$scale).width).toBe('');
-    expect(window.getComputedStyle(scaleView.$scale).left).toBe('');
-    expect(window.getComputedStyle(scaleView.$scale).height).toBe('370px');
-    expect(window.getComputedStyle(scaleView.$scale).top).toBe('15px');
-    expect(scaleView.$scale.children.length).toBe(9);
+    expect(($parent.firstElementChild as HTMLElement).classList.contains('adslider__scale_direction_vertical')).toBe(true);
+    expect(window.getComputedStyle(($parent.firstElementChild as HTMLElement)).width).toBe('');
+    expect(window.getComputedStyle(($parent.firstElementChild as HTMLElement)).left).toBe('');
+    expect(window.getComputedStyle(($parent.firstElementChild as HTMLElement)).height).toBe('370px');
+    expect(window.getComputedStyle(($parent.firstElementChild as HTMLElement)).top).toBe('15px');
+    expect(($parent.firstElementChild as HTMLElement).children.length).toBe(9);
   });
 });
