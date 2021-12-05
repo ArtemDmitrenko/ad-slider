@@ -40,9 +40,12 @@ import Presenter from './presenter/presenter';
     getOptions(): IConfig,
   };
 
-  $.fn.adslider = function (methodOrOptions: keyof methods) {
-    if (methods[methodOrOptions]) {
-      return methods[methodOrOptions].apply(this, Array.prototype.slice.call(arguments, 1));
+  $.fn.adslider = function (methodOrOptions: keyof methods): void | IConfig {
+    if (methodOrOptions === 'update') {
+      return methods.update.call(this, arguments[1]);
+    }
+    if (methodOrOptions === 'getOptions') {
+      return methods.getOptions.call(this);
     }
     if (typeof methodOrOptions === 'object' || !methodOrOptions) {
       return methods.init.call(this, this[0], methodOrOptions);
