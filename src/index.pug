@@ -2,21 +2,21 @@ include demoPage/panel.pug
 
 <!DOCTYPE html>
 html(lang="en")
-    head
-        meta(charset="UTF-8")
-        meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        link(rel="stylesheet", href="demoPage/panel.scss")
-        title Document
-    body
-        .js-container1.container1
-            +panel(1)
-        .js-container2.container2
-            +panel(2)
-        .js-container3.container3
-            +panel(3)
-        .js-container4.container4
-            +panel(4)
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet", href="demoPage/panel.scss")
+    title Document
+  body
+    .js-container1.container1
+      +panel(1)
+    .js-container2.container2
+      +panel(2)
+    .js-container3.container3
+      +panel(3)
+    .js-container4.container4
+      +panel(4)
 
-        script(src="../node_modules/jquery/dist/jquery.min.js")
-        script(type="module" src="jq.adslider.ts")
-        script(type="module" src="main.ts")
+    script(src="../node_modules/jquery/dist/jquery.min.js")
+    script(type="module" src="jq.adslider.ts")
+    script(type="module" src="main.ts")
