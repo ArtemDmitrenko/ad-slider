@@ -1,4 +1,4 @@
-import DemoPage from "./demoPage/demoPage";
+import DemoPage from './demo-page';
 
 const options1 = {
   limits: { min: -100, max: 100 },
@@ -33,12 +33,12 @@ const options4 = {
   vertical: true,
 };
 
-$(".js-container1").adslider(options1);
-$(".js-container2").adslider(options2);
-$(".js-container3").adslider(options3);
-$(".js-container4").adslider(options4);
+$('.js-demo-page__container1').adslider(options1);
+$('.js-demo-page__container2').adslider(options2);
+$('.js-demo-page__container3').adslider(options3);
+$('.js-demo-page__container4').adslider(options4);
 
-new DemoPage(".js-container1");
-new DemoPage(".js-container2");
-new DemoPage(".js-container3");
-new DemoPage(".js-container4");
+new DemoPage('.js-demo-page__container1');
+new DemoPage('.js-demo-page__container2');
+new DemoPage('.js-demo-page__container3');
+new DemoPage('.js-demo-page__container4');

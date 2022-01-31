@@ -1,0 +1,23 @@
+include ../../components/panel/panel.pug
+
+<!DOCTYPE html>
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet", href="demo-page.scss")
+    title Document
+  body
+    .demo-page
+      .demo-page__container1.js-demo-page__container1
+        +panel()
+      .demo-page__container2.js-demo-page__container2
+        +panel()
+      .demo-page__container3.js-demo-page__container3
+        +panel()
+      .demo-page__container4.js-demo-page__container4
+        +panel()
+
+    script(src="../../../../node_modules/jquery/dist/jquery.min.js")
+    script(type="module" src="../../../jq.adslider.ts")
+    script(type="module" src="./main.ts")

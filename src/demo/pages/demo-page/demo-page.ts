@@ -1,4 +1,4 @@
-import { IConfig } from '../model/model';
+import { IConfig } from '../../../model/model';
 
 class DemoPage {
   private selector: string;
@@ -39,16 +39,36 @@ class DemoPage {
   private findInputs(): void {
     this.$container = document.querySelector(this.selector) as HTMLElement;
     if (this.$container) {
-      this.$inputCurValue = this.$container.querySelector('.panel__curValue') as HTMLInputElement;
-      this.$inputMinValue = this.$container.querySelector('.panel__minValue') as HTMLInputElement;
-      this.$inputMaxValue = this.$container.querySelector('.panel__maxValue') as HTMLInputElement;
-      this.$inputShowValue = this.$container.querySelector('.panel__showNoteValue') as HTMLInputElement;
-      this.$inputStep = this.$container.querySelector('.panel__step') as HTMLInputElement;
-      this.$inputVertical = this.$container.querySelector('.panel__verticalView') as HTMLInputElement;
-      this.$inputDouble = this.$container.querySelector('.panel__double') as HTMLInputElement;
-      this.$inputFrom = this.$container.querySelector('.panel__from') as HTMLInputElement;
-      this.$inputTo = this.$container.querySelector('.panel__to') as HTMLInputElement;
-      this.$curValueOnSlider = this.$container.querySelector('.adslider__value') as HTMLElement;
+      this.$inputCurValue = this.$container.querySelector(
+        '.panel__current-value',
+      ) as HTMLInputElement;
+      this.$inputMinValue = this.$container.querySelector(
+        '.panel__minimum-value',
+      ) as HTMLInputElement;
+      this.$inputMaxValue = this.$container.querySelector(
+        '.panel__maximum-value',
+      ) as HTMLInputElement;
+      this.$inputShowValue = this.$container.querySelector(
+        '.panel__note-value',
+      ) as HTMLInputElement;
+      this.$inputStep = this.$container.querySelector(
+        '.panel__step',
+      ) as HTMLInputElement;
+      this.$inputVertical = this.$container.querySelector(
+        '.panel__vertical-view',
+      ) as HTMLInputElement;
+      this.$inputDouble = this.$container.querySelector(
+        '.panel__double',
+      ) as HTMLInputElement;
+      this.$inputFrom = this.$container.querySelector(
+        '.panel__from',
+      ) as HTMLInputElement;
+      this.$inputTo = this.$container.querySelector(
+        '.panel__to',
+      ) as HTMLInputElement;
+      this.$curValueOnSlider = this.$container.querySelector(
+        '.adslider__value',
+      ) as HTMLElement;
     }
   }
 
@@ -104,17 +124,47 @@ class DemoPage {
   }
 
   private addListeners(): void {
-    this.$inputCurValue.addEventListener('change', this.handleInputChange.bind(this));
-    this.$inputMinValue.addEventListener('change', this.handleInputChange.bind(this));
-    this.$inputMaxValue.addEventListener('change', this.handleInputChange.bind(this));
-    this.$inputShowValue.addEventListener('change', this.handleInputChange.bind(this));
-    this.$inputStep.addEventListener('change', this.handleInputChange.bind(this));
-    this.$inputVertical.addEventListener('change', this.handleInputChange.bind(this));
-    this.$inputDouble.addEventListener('change', this.handleInputChange.bind(this));
-    this.$inputFrom.addEventListener('change', this.handleInputChange.bind(this));
+    this.$inputCurValue.addEventListener(
+      'change',
+      this.handleInputChange.bind(this),
+    );
+    this.$inputMinValue.addEventListener(
+      'change',
+      this.handleInputChange.bind(this),
+    );
+    this.$inputMaxValue.addEventListener(
+      'change',
+      this.handleInputChange.bind(this),
+    );
+    this.$inputShowValue.addEventListener(
+      'change',
+      this.handleInputChange.bind(this),
+    );
+    this.$inputStep.addEventListener(
+      'change',
+      this.handleInputChange.bind(this),
+    );
+    this.$inputVertical.addEventListener(
+      'change',
+      this.handleInputChange.bind(this),
+    );
+    this.$inputDouble.addEventListener(
+      'change',
+      this.handleInputChange.bind(this),
+    );
+    this.$inputFrom.addEventListener(
+      'change',
+      this.handleInputChange.bind(this),
+    );
     this.$inputTo.addEventListener('change', this.handleInputChange.bind(this));
-    this.$curValueOnSlider.addEventListener('DOMSubtreeModified', this.updateCurInput.bind(this));
-    this.$inputDouble.addEventListener('change', this.updateInputFromTo.bind(this));
+    this.$curValueOnSlider.addEventListener(
+      'DOMSubtreeModified',
+      this.updateCurInput.bind(this),
+    );
+    this.$inputDouble.addEventListener(
+      'change',
+      this.updateInputFromTo.bind(this),
+    );
   }
 
   private updateCurInput(): void {
@@ -123,7 +173,9 @@ class DemoPage {
 
   private updateInputFromTo(): void {
     if (this.$inputDouble.checked) {
-      const $noteFrom = this.$container.querySelector('.adslider__note_type_from');
+      const $noteFrom = this.$container.querySelector(
+        '.adslider__note_type_from',
+      );
       let $valueFrom: HTMLElement | null;
       if ($noteFrom) {
         $valueFrom = $noteFrom.querySelector('.adslider__value');
@@ -148,14 +200,20 @@ class DemoPage {
   private updateFromInputAndAddEventListener(el: HTMLElement | null) {
     if (el) {
       this.updateFromInput(el);
-      el.addEventListener('DOMSubtreeModified', this.updateFromInput.bind(this, el));
+      el.addEventListener(
+        'DOMSubtreeModified',
+        this.updateFromInput.bind(this, el),
+      );
     }
   }
 
   private updateToInputAndAddEventListener(el: HTMLElement | null) {
     if (el) {
       this.updateToInput(el);
-      el.addEventListener('DOMSubtreeModified', this.updateToInput.bind(this, el));
+      el.addEventListener(
+        'DOMSubtreeModified',
+        this.updateToInput.bind(this, el),
+      );
     }
   }
 

@@ -4,9 +4,9 @@
   "description": "",
   "scripts": {
     "test": "jest",
-    "dev": "parcel src/index.pug --dist-dir dist --open",
+    "dev": "parcel src/demo/pages/demo-page/demo-page.pug --dist-dir dist --open",
     "eslint": "eslint --ext js,jsx,ts,tsx src",
-    "build": "parcel build src/index.pug --public-url ./ --no-content-hash --dist-dir docs"
+    "build": "parcel build src/demo/pages/demo-page/demo-page.pug --public-url ./ --no-content-hash --dist-dir docs"
   },
   "jest": {
     "collectCoverage": true,
