@@ -1,6 +1,22 @@
-.panel {
-  width: 30rem;
-  margin-right: 5rem;
+.demo-slider {
+  max-width: 900px;
+  height: 340px;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 auto;
+  border: 3px solid black;
+  margin-top: 50px;
+  border-radius: 20px;
+
+  &__adslider {
+    width: 32rem;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   &__label {
     position: relative;
     display: flex;
@@ -21,10 +37,10 @@
     position: absolute;
     opacity: 0;
     &:checked {
-      & + .panel__indicator {
+      & + .demo-slider__indicator {
         border: 1px solid black;
       }
-      & + .panel__indicator::before {
+      & + .demo-slider__indicator::before {
         position: absolute;
         top: 45%;
         left: 50%;
