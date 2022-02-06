@@ -1,4 +1,16 @@
-import { IConfig } from '../../../model/model';
+type Config = {
+  limits: {
+    min: number;
+    max: number;
+  };
+  curValue: number;
+  showValueNote: boolean;
+  step: number;
+  vertical?: boolean;
+  double?: boolean;
+  from?: number;
+  to?: number;
+}
 
 class DemoSlider {
   private $parent: HTMLElement;
@@ -21,13 +33,13 @@ class DemoSlider {
 
   private $inputTo!: HTMLInputElement;
 
-  private initOptions!: IConfig;
+  private initOptions!: Config;
 
-  private options!: IConfig;
+  private options!: Config;
 
   private $adslider!: HTMLElement | null;
 
-  constructor(parent: HTMLElement, initOptions: IConfig) {
+  constructor(parent: HTMLElement, initOptions: Config) {
     this.$parent = parent;
     this.initOptions = initOptions;
     this.initPlugin();
