@@ -8,15 +8,12 @@ html(lang="en")
     link(rel="stylesheet", href="demo-page.scss")
     title Document
   body
+    
     .demo-page
-      .demo-page__container
-        +demo-slider()
-      .demo-page__container
-        +demo-slider()
-      .demo-page__container
-        +demo-slider()
-      .demo-page__container
-        +demo-slider()
+      - const { defaultOptions } = JSON.parse(readFileSync("./src/demo/pages/demo-page/default-options.json", "UTF-8"))
+      each item in defaultOptions
+        .demo-page__container
+          +demo-slider()
     script(src="../../../../node_modules/jquery/dist/jquery.min.js")
     script(type="module" src="../../../jq.adslider.ts")
     script(type="module" src="./demo-page.ts")
