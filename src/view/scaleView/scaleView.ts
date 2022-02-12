@@ -22,8 +22,8 @@ class ScaleView extends EventObserver {
       this.$scale.classList.remove('adslider__scale_direction_vertical');
       this.$scale.classList.add('adslider__scale_direction_horizontal');
     }
-    const { step } = options;
-    const odd: number = options.limits.max - options.limits.min;
+    const { step, limits: { min, max } } = options;
+    const odd: number = max - min;
     this.calcNumberOfLines(step, odd);
     this.setScalePos($handler);
     this.renderScaleLine();
@@ -85,8 +85,9 @@ class ScaleView extends EventObserver {
   }
 
   private createListOfScaleLines(options: IConfig): void {
+    const { step, limits: { min, max } } = options;
     this.$scale.innerHTML = '';
-    const stepPercentage = (options.step / (options.limits.max - options.limits.min)) * 100;
+    const stepPercentage = (step / (max - min)) * 100;
     for (let i = 0; i < this.numberOfLines; i += 1) {
       const line = this.renderScaleLine();
       this.$scale.append(line);
@@ -116,13 +117,14 @@ class ScaleView extends EventObserver {
   }
 
   private calcSigns(index: number, options: IConfig): number {
+    const { step, limits: { min, max } } = options;
     let value: number;
     if (index === 0) {
-      value = options.limits.min;
+      value = min;
     } else if (index === this.numberOfLines - 1) {
-      value = options.limits.max;
+      value = max;
     } else {
-      value = index * options.step + options.limits.min;
+      value = index * step + min;
     }
     return Math.round(value);
   }

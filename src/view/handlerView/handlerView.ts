@@ -33,9 +33,10 @@ class HandlerView extends EventObserver {
     value: number,
     limits: { min: number; max: number },
   }): void {
-    const oddValMin: number = options.value - options.limits.min;
-    const oddMaxMin: number = options.limits.max - options.limits.min;
-    this.handlerPos = options.edge * (oddValMin / oddMaxMin);
+    const { edge, value, limits: { min, max } } = options;
+    const oddValMin: number = value - min;
+    const oddMaxMin: number = max - min;
+    this.handlerPos = edge * (oddValMin / oddMaxMin);
   }
 
   public setPos(isDouble: boolean): void {

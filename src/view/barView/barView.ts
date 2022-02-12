@@ -46,24 +46,25 @@ class BarView extends EventObserver {
     valueTo: number;
     handler: HTMLElement;
   }): void {
+    const { valueFrom, valueTo, handler } = options;
     const handlerLength: number = parseInt(
-      getComputedStyle(options.handler).width,
+      getComputedStyle(handler).width,
       10,
     );
-    const barRightEdge: number = options.valueTo + handlerLength / 2;
-    const barLeftEdge: number = options.valueFrom + handlerLength / 2;
+    const barRightEdge: number = valueTo + handlerLength / 2;
+    const barLeftEdge: number = valueFrom + handlerLength / 2;
     const barLength: number = Math.abs(barRightEdge - barLeftEdge);
     if (this.$bar.classList.contains('adslider__bar_direction_horizontal')) {
       this.$bar.style.height = '';
       this.$bar.style.bottom = '';
       this.$bar.style.width = `${barLength}px`;
-      this.calcBarPosForDouble(options.valueFrom, options.valueTo, handlerLength);
+      this.calcBarPosForDouble(valueFrom, valueTo, handlerLength);
       this.$bar.style.left = `${this.barPos}px`;
     } else {
       this.$bar.style.width = '';
       this.$bar.style.left = '';
       this.$bar.style.height = `${barLength}px`;
-      this.calcBarPosForDouble(options.valueFrom, options.valueTo, handlerLength);
+      this.calcBarPosForDouble(valueFrom, valueTo, handlerLength);
       this.$bar.style.bottom = `${this.barPos}px`;
     }
   }
