@@ -44,22 +44,25 @@ class View extends EventObserver {
     to: number;
     step: number;
   }): void {
-    this.setVerticalViewForSingle(options.vertical);
+    const {
+      vertical, curValue, limits, showValueNote, double, from,
+    } = options;
+    this.setVerticalViewForSingle(vertical);
     this.handlerView.calcPos({
       edge: this.getEdge(this.handlerView),
-      value: options.curValue,
-      limits: options.limits,
+      value: curValue,
+      limits,
     });
-    this.handlerView.setPos(options.double);
-    this.valueNoteView.setValue(options.curValue);
-    this.valueNoteView.showValueNote(options.showValueNote);
+    this.handlerView.setPos(double);
+    this.valueNoteView.setValue(curValue);
+    this.valueNoteView.showValueNote(showValueNote);
     this.scaleView.drawScale(options, this.handlerView.$handler);
-    if (options.double) {
+    if (double) {
       this.updateViewForDouble(
-        options.vertical,
-        options.from,
-        options.limits,
-        options.showValueNote,
+        vertical,
+        from,
+        limits,
+        showValueNote,
       );
     } else if (this.handlerViewFrom) {
       this.deleteHandlerFrom();
@@ -71,27 +74,28 @@ class View extends EventObserver {
     limits: { min: number; max: number },
     isFrom: boolean,
   }): void {
+    const { value, limits, isFrom } = options;
     if (this.handlerViewFrom && this.valueNoteViewFrom) {
       const data = {
         edge: this.getEdge(this.handlerViewFrom),
-        value: options.value,
-        limits: options.limits,
+        value,
+        limits,
       };
-      if (options.isFrom) {
+      if (isFrom) {
         this.handlerViewFrom.calcPos(data);
-        this.valueNoteViewFrom.setValue(options.value);
+        this.valueNoteViewFrom.setValue(value);
       } else {
         this.handlerView.calcPos(data);
-        this.valueNoteView.setValue(options.value);
+        this.valueNoteView.setValue(value);
       }
     } else {
       const data = {
         edge: this.getEdge(this.handlerView),
-        value: options.value,
-        limits: options.limits,
+        value,
+        limits,
       };
       this.handlerView.calcPos(data);
-      this.valueNoteView.setValue(options.value);
+      this.valueNoteView.setValue(value);
     }
   }
 
@@ -99,15 +103,16 @@ class View extends EventObserver {
     isDouble: boolean,
     isFrom: boolean
   }): void {
+    const { isDouble, isFrom } = options;
     if (this.handlerViewFrom) {
-      if (options.isFrom) {
-        this.handlerViewFrom.setPos(options.isDouble);
+      if (isFrom) {
+        this.handlerViewFrom.setPos(isDouble);
       } else {
-        this.handlerView.setPos(options.isDouble);
+        this.handlerView.setPos(isDouble);
       }
       this.setViewOfOneNote();
     } else {
-      this.handlerView.setPos(options.isDouble);
+      this.handlerView.setPos(isDouble);
     }
   }
 
