@@ -1,4 +1,4 @@
-import DemoSlider from './demo-slider';
+import DemoSlider from './DemoSlider';
 import { defaultOptions } from '../../pages/demo-page/default-options.json';
 
 export default function demoSlidersInit(): void {
