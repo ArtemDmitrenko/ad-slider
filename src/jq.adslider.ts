@@ -1,6 +1,6 @@
 import './main.scss';
-import { IConfig } from './model/model';
-import Presenter from './presenter/presenter';
+import { IConfig } from './model/Model';
+import Presenter from './presenter/Presenter';
 
 (function ($) {
   const methods = {
@@ -33,14 +33,14 @@ import Presenter from './presenter/presenter';
     },
   };
 
-  type methods = {
+  type SliderMethods = {
     init(container: HTMLElement, options: IConfig): void,
     update(options: IConfig): void,
     updateCurValue(curValue: number): void,
     getOptions(): IConfig,
   };
 
-  $.fn.adslider = function (methodOrOptions: keyof methods): void | IConfig {
+  $.fn.adslider = function (methodOrOptions: keyof SliderMethods): void | IConfig {
     if (methodOrOptions === 'update') {
       return methods.update.call(this, arguments[1]);
     }
