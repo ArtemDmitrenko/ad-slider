@@ -1,4 +1,4 @@
-import EventObserver from './eventObserver';
+import EventObserver from './EventObserver';
 
 describe('EventObserver', () => {
   let eventObserver: EventObserver;

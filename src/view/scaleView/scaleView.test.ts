@@ -1,4 +1,4 @@
-import ScaleView from './scaleView';
+import ScaleView from './ScaleView';
 
 describe('scaleView', () => {
   const $parent: HTMLElement = document.createElement('div');

@@ -1,4 +1,4 @@
-import EventObserver from '../../eventObserver/eventObserver';
+import EventObserver from '../../eventObserver/EventObserver';
 
 class TrackView extends EventObserver {
   public $track!: HTMLElement;

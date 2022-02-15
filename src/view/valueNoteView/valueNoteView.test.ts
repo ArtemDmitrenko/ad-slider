@@ -1,4 +1,4 @@
-import ValueNoteView from './valueNoteView';
+import ValueNoteView from './ValueNoteView';
 
 describe('valueNoteView', () => {
   let $parent: HTMLElement;

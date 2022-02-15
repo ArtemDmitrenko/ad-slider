@@ -1,4 +1,4 @@
-import EventObserver from '../../eventObserver/eventObserver';
+import EventObserver from '../../eventObserver/EventObserver';
 
 class ValueNoteView extends EventObserver {
   public $note!: HTMLElement;

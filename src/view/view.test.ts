@@ -1,5 +1,5 @@
-import View from './view';
-import { IConfig } from '../model/model';
+import View from './View';
+import { IConfig } from '../model/Model';
 
 describe('view', () => {
   let view: View;

@@ -1,4 +1,4 @@
-import { Model, IConfig } from './model';
+import { Model, IConfig } from './Model';
 
 describe('model', () => {
   let options: IConfig;

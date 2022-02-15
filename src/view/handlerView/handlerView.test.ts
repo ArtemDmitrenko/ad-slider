@@ -1,4 +1,4 @@
-import HandlerView from './handlerView';
+import HandlerView from './HandlerView';
 
 describe('handlerView', () => {
   let $parent: HTMLElement;

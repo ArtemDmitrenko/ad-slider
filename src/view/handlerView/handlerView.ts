@@ -1,4 +1,4 @@
-import EventObserver from '../../eventObserver/eventObserver';
+import EventObserver from '../../eventObserver/EventObserver';
 
 class HandlerView extends EventObserver {
   public $handler!: HTMLElement;

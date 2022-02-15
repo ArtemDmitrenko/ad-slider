@@ -1,5 +1,5 @@
-import { IConfig } from '../../model/model';
-import EventObserver from '../../eventObserver/eventObserver';
+import { IConfig } from '../../model/Model';
+import EventObserver from '../../eventObserver/EventObserver';
 
 class ScaleView extends EventObserver {
   private $parent!: HTMLElement;

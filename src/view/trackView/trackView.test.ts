@@ -1,4 +1,4 @@
-import TrackView from './trackView';
+import TrackView from './TrackView';
 
 describe('trackView', () => {
   const $parent: HTMLElement = document.createElement('div');

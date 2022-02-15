@@ -1,5 +1,5 @@
-import { IConfig, Model } from '../model/model';
-import View from '../view/view';
+import { IConfig, Model } from '../model/Model';
+import View from '../view/View';
 
 class Presenter {
   private model: Model;

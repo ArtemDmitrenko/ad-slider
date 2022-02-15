@@ -1,4 +1,4 @@
-import BarView from './barView';
+import BarView from './BarView';
 
 describe('barView', () => {
   describe('addClass', () => {
