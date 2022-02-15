@@ -1,4 +1,4 @@
-import EventObserver from '../eventObserver/eventObserver';
+import EventObserver from '../eventObserver/EventObserver';
 
 interface IConfig {
   limits: {
@@ -50,8 +50,12 @@ class Model extends EventObserver {
   }): void {
     const value = this.calcValueFromHandlerPos(data.relPosition);
     const conditionForReturn = this.options.double && this.isValToMovesOverValFrom(value);
-    if (data.isFrom && this.isValFromMovesOverValTo(value)) return;
-    if (!data.isFrom && conditionForReturn) return;
+    if (data.isFrom && this.isValFromMovesOverValTo(value)) {
+      return;
+    }
+    if (!data.isFrom && conditionForReturn) {
+      return;
+    }
     this.setValAndBroadcast(value, data.isFrom);
   }
 
@@ -194,8 +198,8 @@ class Model extends EventObserver {
 
   private calcValueWithStep(value: number): number {
     const { limits: { min, max }, step } = this.options;
-    const AllNumberOfSteps: number = Math.floor(Math.abs(max - min) / step);
-    const maxStepValue: number = min + AllNumberOfSteps * step;
+    const allNumberOfSteps: number = Math.floor(Math.abs(max - min) / step);
+    const maxStepValue: number = min + allNumberOfSteps * step;
     const numberOfSteps: number = Math.round((value - min) / step);
     let newValue: number = min + step * numberOfSteps;
     if (newValue < min) {

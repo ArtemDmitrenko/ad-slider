@@ -1,9 +1,9 @@
-import HandlerView from './handlerView/handlerView';
-import TrackView from './trackView/trackView';
-import ValueNoteView from './valueNoteView/valueNoteView';
-import BarView from './barView/barView';
-import ScaleView from './scaleView/scaleView';
-import EventObserver from '../eventObserver/eventObserver';
+import HandlerView from './handlerView/HandlerView';
+import TrackView from './trackView/TrackView';
+import ValueNoteView from './valueNoteView/ValueNoteView';
+import BarView from './barView/BarView';
+import ScaleView from './scaleView/ScaleView';
+import EventObserver from '../eventObserver/EventObserver';
 
 class View extends EventObserver {
   private $el!: HTMLElement | null;
@@ -434,11 +434,15 @@ class View extends EventObserver {
   }
 
   private handleSetValueNoteFromPos = () => {
-    if (this.valueNoteViewFrom) this.valueNoteViewFrom.setPos();
+    if (this.valueNoteViewFrom) {
+      this.valueNoteViewFrom.setPos();
+    }
   }
 
   private handleCalcValueNoteFromPos = (handler: HTMLElement) => {
-    if (this.valueNoteViewFrom) this.valueNoteViewFrom.calcPos(handler);
+    if (this.valueNoteViewFrom) {
+      this.valueNoteViewFrom.calcPos(handler);
+    }
   }
 
   private handleSetValueNotePos = () => {
