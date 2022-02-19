@@ -13,7 +13,7 @@ html(lang="en")
       - const { defaultOptions } = JSON.parse(readFileSync("./src/demo/pages/demo-page/default-options.json", "UTF-8"))
       each item in defaultOptions
         .demo-page__container
-          +demo-slider()
+          +demo-slider(item)
     script(src="../../../../node_modules/jquery/dist/jquery.min.js")
     script(type="module" src="../../../jq.adslider.ts")
     script(type="module" src="./demo-page.ts")

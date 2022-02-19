@@ -1,3 +1,6 @@
+@import "../input/input.scss";
+@import "../checkbox/checkbox.scss";
+
 .demo-slider {
   max-width: 900px;
   height: 340px;
@@ -16,57 +19,16 @@
     align-items: center;
     justify-content: center;
   }
-  &__label {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-  &__indicator {
-    position: absolute;
-    left: 1px;
-    width: 18px;
-    height: 18px;
-    border: 1px solid rgba(31, 32, 65, 0.25);
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  &__note-value,
-  &__vertical-view,
-  &__double {
-    position: absolute;
-    opacity: 0;
-    &:checked {
-      & + .demo-slider__indicator {
-        border: 1px solid black;
-      }
-      & + .demo-slider__indicator::before {
-        position: absolute;
-        top: 45%;
-        left: 50%;
-        width: 6px;
-        height: 4px;
-        border-top: 2px solid;
-        border-right: 2px solid;
-        border-color: black;
-        transform: translate(-50%, -50%) rotate(135deg);
-        content: "";
-      }
-    }
-  }
-  &__text {
-    padding-left: 30px;
-    cursor: pointer;
-  }
   &__minimum-value,
   &__maximum-value,
   &__current-value,
+  &__note-value,
+  &__vertical-view,
+  &__double,
   &__step,
   &__from,
   &__to {
-    width: 4rem;
-    margin-left: 0.5rem;
-  }
-  &__name {
     margin-bottom: 1rem;
   }
+
 }

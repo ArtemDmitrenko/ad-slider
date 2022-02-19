@@ -1,32 +1,39 @@
-mixin demo-slider()
+include ../input/input.pug
+include ../checkbox/checkbox.pug
+
+mixin demo-slider(options = {})
+  -
+    const defaultLimits = { min: -100, max: 100 } 
+    const { 
+      limits = defaultLimits, 
+      curValue = 50,
+      showValueNote = true,
+      step = 1,
+      vertical = false,
+      double = false,
+      from = null,
+      to = null
+    } = options;
+    const { min, max } = limits;
+
   .demo-slider.js-demo-slider
     .demo-slider__panel
-      .demo-slider__name Минимальное значение:
-        input(type="text").demo-slider__minimum-value.js-demo-slider__minimum-value
-      .demo-slider__name Максимальное значение:
-        input(type="text").demo-slider__maximum-value.js-demo-slider__maximum-value
-      .demo-slider__name Тек. значение:
-        input(type="text").demo-slider__current-value.js-demo-slider__current-value
-      .demo-slider__name
-        label.demo-slider__label
-          input(type="checkbox").demo-slider__note-value.js-demo-slider__note-value
-          span.demo-slider__indicator
-          span.demo-slider__text Показать значения
-      .demo-slider__name Шаг:
-        input(type="text").demo-slider__step.js-demo-slider__step
-      .demo-slider__name
-        label.demo-slider__label 
-          input(type="checkbox").demo-slider__vertical-view.js-demo-slider__vertical-view
-          span.demo-slider__indicator
-          span.demo-slider__text Вертикальный вид
-      .demo-slider__name
-        label.demo-slider__label 
-          input(type="checkbox").demo-slider__double.js-demo-slider__double
-          span.demo-slider__indicator
-          span.demo-slider__text Диапазон
-      .demo-slider__name От:
-        input(type="text").demo-slider__from.js-demo-slider__from
-      .demo-slider__name До:
-        input(type="text").demo-slider__to.js-demo-slider__to
+      .demo-slider__minimum-value.js-demo-slider__minimum-value
+        +input({ title: 'Минимальное значение:', defaultValue: min })
+      .demo-slider__maximum-value.js-demo-slider__maximum-value
+        +input({ title: 'Максимальное значение:', defaultValue: max })
+      .demo-slider__minimum-value.js-demo-slider__current-value
+        +input({ title: 'Текущее значение:', defaultValue: curValue })
+      .demo-slider__note-value.js-demo-slider__note-value
+        +checkbox({ title: 'Показать значение', defaultValue: showValueNote })
+      .demo-slider__step.js-demo-slider__step
+        +input({ title: 'Шаг:', defaultValue: step })
+      .demo-slider__vertical-view.js-demo-slider__vertical-view
+        +checkbox({ title: 'Вертикальный вид', defaultValue: vertical })
+      .demo-slider__double.js-demo-slider__double
+        +checkbox({ title: 'Диапазон', defaultValue: double })
+      .demo-slider__from.js-demo-slider__from
+        +input({ title: 'От:', defaultValue: from })
+      .demo-slider__to.js-demo-slider__to
+        +input({ title: 'До:', defaultValue: to })
     .demo-slider__adslider.js-demo-slider__adslider
-

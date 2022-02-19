@@ -1,0 +1,9 @@
+.input {
+  &__value {
+    width: 4rem;
+    margin-left: 0.5rem;
+    &_hidden {
+      display: none;
+    }
+  }
+}

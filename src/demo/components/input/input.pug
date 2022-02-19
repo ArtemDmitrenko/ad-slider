@@ -1,0 +1,6 @@
+mixin input(options = {})
+  - const { title = 'Минимальное значение:', defaultValue = 0 } = options
+  
+  .input.js-input
+    .input__name= title
+      input(type="text" value=defaultValue).input__value.js-input__value
