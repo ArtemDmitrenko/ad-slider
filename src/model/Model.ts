@@ -68,9 +68,7 @@ class Model extends EventObserver {
   private setDouble(double: boolean, from: number): void {
     const { limits: { min } } = this.options;
     if (double && !from) {
-      if (from !== 0) {
-        this.options.from = min;
-      }
+      this.options.from = min;
     }
     this.options.double = double;
   }
