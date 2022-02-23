@@ -197,7 +197,7 @@ describe('model', () => {
   describe('function setValueFromHandlerPos', () => {
     let callback1: Function;
     let callback2: Function;
-    const $handler: HTMLElement = document.createElement('div');
+    const handler: HTMLElement = document.createElement('div');
 
     describe('for single slider', () => {
       beforeEach(() => {
@@ -258,21 +258,21 @@ describe('model', () => {
       });
 
       test('should set curValue and check function isValFromMovesOverValTo is return true', () => {
-        $handler.classList.add('adslider__handler_type_from');
+        handler.classList.add('adslider__handler_type_from');
         const data = { relPosition: 0.5948040674603174, isFrom: false };
         model.setValueFromHandlerPos(data);
         expect(model.options.from).toBe(0);
       });
 
       test('should set curValue and check function isValFromMovesOverValTo is return false', () => {
-        $handler.classList.add('adslider__handler_type_from');
+        handler.classList.add('adslider__handler_type_from');
         const data = { relPosition: 0.5948040674603174, isFrom: false };
         model.setValueFromHandlerPos(data);
         expect(model.options.from).toBe(0);
       });
 
       test('should broadcast events', () => {
-        $handler.classList.add('adslider__handler_type_from');
+        handler.classList.add('adslider__handler_type_from');
         const data = { relPosition: 0.5948040674603174, isFrom: false };
         model.setValueFromHandlerPos(data);
         expect(callback1).toBeCalled();
@@ -280,7 +280,7 @@ describe('model', () => {
       });
 
       test('check that function isValFromMovesOverValTo() is working', () => {
-        $handler.classList.remove('adslider__handler_type_from');
+        handler.classList.remove('adslider__handler_type_from');
         const data = { relPosition: 0.5948040674603174, isFrom: false };
         model.setValueFromHandlerPos(data);
         expect(model.options.curValue).toBe(60);
@@ -306,7 +306,7 @@ describe('model', () => {
         model.addObserver('setPos', callback2);
       });
       test('check that function calcValueWithStep() is working', () => {
-        $handler.classList.remove('adslider__handler_type_from');
+        handler.classList.remove('adslider__handler_type_from');
         const data = { relPosition: 0.5948040674603174, isFrom: false };
         model.setValueFromHandlerPos(data);
         expect(model.options.curValue).toBe(60);

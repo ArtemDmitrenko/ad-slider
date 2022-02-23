@@ -1,43 +1,43 @@
 import EventObserver from '../../eventObserver/EventObserver';
 
 class BarView extends EventObserver {
-  private $bar!: HTMLElement;
+  private bar!: HTMLElement;
 
   private barPos!: number;
 
-  constructor($parent: HTMLElement) {
+  constructor(parent: HTMLElement) {
     super();
-    this.render($parent);
+    this.render(parent);
     this.addListeners();
   }
 
   public setVerticalView(verticalView: boolean): void {
     if (verticalView) {
-      this.$bar.classList.remove('adslider__bar_direction_horizontal');
-      this.$bar.classList.add('adslider__bar_direction_vertical');
+      this.bar.classList.remove('adslider__bar_direction_horizontal');
+      this.bar.classList.add('adslider__bar_direction_vertical');
     } else {
-      this.$bar.classList.remove('adslider__bar_direction_vertical');
-      this.$bar.classList.add('adslider__bar_direction_horizontal');
+      this.bar.classList.remove('adslider__bar_direction_vertical');
+      this.bar.classList.add('adslider__bar_direction_horizontal');
     }
   }
 
-  public setLength($handler: HTMLElement): void {
+  public setLength(handler: HTMLElement): void {
     let handlerPos: number;
     let handlerLength: number;
-    this.$bar.style.bottom = '';
-    this.$bar.style.left = '';
-    if (this.$bar.classList.contains('adslider__bar_direction_horizontal')) {
-      this.$bar.style.height = '';
-      handlerPos = parseInt(getComputedStyle($handler).left, 10);
-      handlerLength = parseInt(getComputedStyle($handler).width, 10);
+    this.bar.style.bottom = '';
+    this.bar.style.left = '';
+    if (this.bar.classList.contains('adslider__bar_direction_horizontal')) {
+      this.bar.style.height = '';
+      handlerPos = parseInt(getComputedStyle(handler).left, 10);
+      handlerLength = parseInt(getComputedStyle(handler).width, 10);
       this.calcBarPosForSingle(handlerPos, handlerLength);
-      this.$bar.style.width = `${this.barPos}px`;
+      this.bar.style.width = `${this.barPos}px`;
     } else {
-      this.$bar.style.width = '';
-      handlerPos = parseInt(getComputedStyle($handler).bottom, 10);
-      handlerLength = parseInt(getComputedStyle($handler).height, 10);
+      this.bar.style.width = '';
+      handlerPos = parseInt(getComputedStyle(handler).bottom, 10);
+      handlerLength = parseInt(getComputedStyle(handler).height, 10);
       this.calcBarPosForSingle(handlerPos, handlerLength);
-      this.$bar.style.height = `${this.barPos}px`;
+      this.bar.style.height = `${this.barPos}px`;
     }
   }
 
@@ -54,29 +54,29 @@ class BarView extends EventObserver {
     const barRightEdge: number = valueTo + handlerLength / 2;
     const barLeftEdge: number = valueFrom + handlerLength / 2;
     const barLength: number = Math.abs(barRightEdge - barLeftEdge);
-    if (this.$bar.classList.contains('adslider__bar_direction_horizontal')) {
-      this.$bar.style.height = '';
-      this.$bar.style.bottom = '';
-      this.$bar.style.width = `${barLength}px`;
+    if (this.bar.classList.contains('adslider__bar_direction_horizontal')) {
+      this.bar.style.height = '';
+      this.bar.style.bottom = '';
+      this.bar.style.width = `${barLength}px`;
       this.calcBarPosForDouble(valueFrom, valueTo, handlerLength);
-      this.$bar.style.left = `${this.barPos}px`;
+      this.bar.style.left = `${this.barPos}px`;
     } else {
-      this.$bar.style.width = '';
-      this.$bar.style.left = '';
-      this.$bar.style.height = `${barLength}px`;
+      this.bar.style.width = '';
+      this.bar.style.left = '';
+      this.bar.style.height = `${barLength}px`;
       this.calcBarPosForDouble(valueFrom, valueTo, handlerLength);
-      this.$bar.style.bottom = `${this.barPos}px`;
+      this.bar.style.bottom = `${this.barPos}px`;
     }
   }
 
-  private render($parent: HTMLElement): void {
-    this.$bar = document.createElement('div');
-    this.$bar.classList.add('adslider__bar');
-    $parent.append(this.$bar);
+  private render(parent: HTMLElement): void {
+    this.bar = document.createElement('div');
+    this.bar.classList.add('adslider__bar');
+    parent.append(this.bar);
   }
 
   private addListeners(): void {
-    this.$bar.addEventListener('mousedown', this.handleBarMouseDown);
+    this.bar.addEventListener('mousedown', this.handleBarMouseDown);
   }
 
   private handleBarMouseDown = (event: MouseEvent): void => {

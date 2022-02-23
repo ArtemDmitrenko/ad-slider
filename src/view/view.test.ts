@@ -3,7 +3,7 @@ import { IConfig } from '../model/Model';
 
 describe('view', () => {
   let view: View;
-  let $container: HTMLElement;
+  let container: HTMLElement;
   let adslider: HTMLElement;
   let track: HTMLElement;
   let bar: HTMLElement;
@@ -16,21 +16,21 @@ describe('view', () => {
   let valueFrom: HTMLElement;
 
   describe('Function render', () => {
-    $container = document.createElement('div');
+    container = document.createElement('div');
     document.body.innerHTML = '';
-    document.body.appendChild($container);
-    view = new View($container);
-    adslider = $container.querySelector('.adslider') as HTMLElement;
-    track = $container.querySelector('.adslider__track') as HTMLElement;
-    bar = $container.querySelector('.adslider__bar') as HTMLElement;
-    scale = $container.querySelector('.adslider__scale') as HTMLElement;
-    handler = $container.querySelector('.adslider__handler') as HTMLElement;
-    handlerFrom = $container.querySelector('.adslider__handler_type_from') as HTMLElement;
-    note = $container.querySelector('.adslider__note_type_to') as HTMLElement;
-    noteFrom = $container.querySelector('.adslider__note_type_from') as HTMLElement;
+    document.body.appendChild(container);
+    view = new View(container);
+    adslider = container.querySelector('.adslider') as HTMLElement;
+    track = container.querySelector('.adslider__track') as HTMLElement;
+    bar = container.querySelector('.adslider__bar') as HTMLElement;
+    scale = container.querySelector('.adslider__scale') as HTMLElement;
+    handler = container.querySelector('.adslider__handler') as HTMLElement;
+    handlerFrom = container.querySelector('.adslider__handler_type_from') as HTMLElement;
+    note = container.querySelector('.adslider__note_type_to') as HTMLElement;
+    noteFrom = container.querySelector('.adslider__note_type_from') as HTMLElement;
 
     test('Function render: creating instance of View', () => {
-      expect($container).not.toBeNull();
+      expect(container).not.toBeNull();
       expect(adslider).not.toBeNull();
       expect(track).toBeTruthy();
       expect(bar).not.toBeNull();
@@ -46,10 +46,10 @@ describe('view', () => {
     describe('For single slider with horizontal view', () => {
       let options: IConfig;
       beforeEach(() => {
-        $container = document.createElement('div');
+        container = document.createElement('div');
         document.body.innerHTML = '';
-        document.body.appendChild($container);
-        view = new View($container);
+        document.body.appendChild(container);
+        view = new View(container);
 
         options = {
           limits: { min: 0, max: 100 },
@@ -61,15 +61,15 @@ describe('view', () => {
           to: 0,
           step: 1,
         };
-        adslider = $container.querySelector('.adslider') as HTMLElement;
-        track = $container.querySelector('.adslider__track') as HTMLElement;
-        bar = $container.querySelector('.adslider__bar') as HTMLElement;
-        scale = $container.querySelector('.adslider__scale') as HTMLElement;
-        handler = $container.querySelector('.adslider__handler') as HTMLElement;
-        handlerFrom = $container.querySelector('.adslider__handler_type_from') as HTMLElement;
-        note = $container.querySelector('.adslider__note_type_to') as HTMLElement;
+        adslider = container.querySelector('.adslider') as HTMLElement;
+        track = container.querySelector('.adslider__track') as HTMLElement;
+        bar = container.querySelector('.adslider__bar') as HTMLElement;
+        scale = container.querySelector('.adslider__scale') as HTMLElement;
+        handler = container.querySelector('.adslider__handler') as HTMLElement;
+        handlerFrom = container.querySelector('.adslider__handler_type_from') as HTMLElement;
+        note = container.querySelector('.adslider__note_type_to') as HTMLElement;
         value = note.querySelector('.adslider__value') as HTMLElement;
-        noteFrom = $container.querySelector('.adslider__note_type_from') as HTMLElement;
+        noteFrom = container.querySelector('.adslider__note_type_from') as HTMLElement;
         valueFrom = noteFrom.querySelector('.adslider__value') as HTMLElement;
 
         track.style.width = '400px';
@@ -113,19 +113,19 @@ describe('view', () => {
     describe('For double slider with horizontal view', () => {
       let options: IConfig;
       beforeEach(() => {
-        $container = document.createElement('div');
+        container = document.createElement('div');
         document.body.innerHTML = '';
-        document.body.appendChild($container);
-        view = new View($container);
-        adslider = $container.querySelector('.adslider') as HTMLElement;
-        track = $container.querySelector('.adslider__track') as HTMLElement;
-        bar = $container.querySelector('.adslider__bar') as HTMLElement;
-        scale = $container.querySelector('.adslider__scale') as HTMLElement;
-        handler = $container.querySelector('.adslider__handler') as HTMLElement;
-        handlerFrom = $container.querySelector('.adslider__handler_type_from') as HTMLElement;
-        note = $container.querySelector('.adslider__note_type_to') as HTMLElement;
+        document.body.appendChild(container);
+        view = new View(container);
+        adslider = container.querySelector('.adslider') as HTMLElement;
+        track = container.querySelector('.adslider__track') as HTMLElement;
+        bar = container.querySelector('.adslider__bar') as HTMLElement;
+        scale = container.querySelector('.adslider__scale') as HTMLElement;
+        handler = container.querySelector('.adslider__handler') as HTMLElement;
+        handlerFrom = container.querySelector('.adslider__handler_type_from') as HTMLElement;
+        note = container.querySelector('.adslider__note_type_to') as HTMLElement;
         value = note.querySelector('.adslider__value') as HTMLElement;
-        noteFrom = $container.querySelector('.adslider__note_type_from') as HTMLElement;
+        noteFrom = container.querySelector('.adslider__note_type_from') as HTMLElement;
         valueFrom = noteFrom.querySelector('.adslider__value') as HTMLElement;
 
         track.style.width = '400px';
@@ -196,7 +196,7 @@ describe('view', () => {
           vertical: false,
         };
         view.updateView(options);
-        const valueNoteViewCommon = $container.querySelector('.adslider__note_common') as HTMLElement;
+        const valueNoteViewCommon = container.querySelector('.adslider__note_common') as HTMLElement;
         expect(valueNoteViewCommon).toBeNull();
       });
     });
@@ -210,19 +210,19 @@ describe('view', () => {
       let mousemove: MouseEvent;
       let mouseup: MouseEvent;
       beforeEach(() => {
-        $container = document.createElement('div');
+        container = document.createElement('div');
         document.body.innerHTML = '';
-        document.body.appendChild($container);
-        view = new View($container);
-        adslider = $container.querySelector('.adslider') as HTMLElement;
-        track = $container.querySelector('.adslider__track') as HTMLElement;
-        bar = $container.querySelector('.adslider__bar') as HTMLElement;
-        scale = $container.querySelector('.adslider__scale') as HTMLElement;
-        handler = $container.querySelector('.adslider__handler') as HTMLElement;
-        handlerFrom = $container.querySelector('.adslider__handler_type_from') as HTMLElement;
-        note = $container.querySelector('.adslider__note_type_to') as HTMLElement;
+        document.body.appendChild(container);
+        view = new View(container);
+        adslider = container.querySelector('.adslider') as HTMLElement;
+        track = container.querySelector('.adslider__track') as HTMLElement;
+        bar = container.querySelector('.adslider__bar') as HTMLElement;
+        scale = container.querySelector('.adslider__scale') as HTMLElement;
+        handler = container.querySelector('.adslider__handler') as HTMLElement;
+        handlerFrom = container.querySelector('.adslider__handler_type_from') as HTMLElement;
+        note = container.querySelector('.adslider__note_type_to') as HTMLElement;
         value = note.querySelector('.adslider__value') as HTMLElement;
-        noteFrom = $container.querySelector('.adslider__note_type_from') as HTMLElement;
+        noteFrom = container.querySelector('.adslider__note_type_from') as HTMLElement;
         valueFrom = noteFrom.querySelector('.adslider__value') as HTMLElement;
 
         track.style.width = '400px';
@@ -317,19 +317,19 @@ describe('view', () => {
       let mousedown: MouseEvent;
       let mousemove: MouseEvent;
       beforeEach(() => {
-        $container = document.createElement('div');
+        container = document.createElement('div');
         document.body.innerHTML = '';
-        document.body.appendChild($container);
-        view = new View($container);
-        adslider = $container.querySelector('.adslider') as HTMLElement;
-        track = $container.querySelector('.adslider__track') as HTMLElement;
-        bar = $container.querySelector('.adslider__bar') as HTMLElement;
-        scale = $container.querySelector('.adslider__scale') as HTMLElement;
-        handler = $container.querySelector('.adslider__handler') as HTMLElement;
-        handlerFrom = $container.querySelector('.adslider__handler_type_from') as HTMLElement;
-        note = $container.querySelector('.adslider__note_type_to') as HTMLElement;
+        document.body.appendChild(container);
+        view = new View(container);
+        adslider = container.querySelector('.adslider') as HTMLElement;
+        track = container.querySelector('.adslider__track') as HTMLElement;
+        bar = container.querySelector('.adslider__bar') as HTMLElement;
+        scale = container.querySelector('.adslider__scale') as HTMLElement;
+        handler = container.querySelector('.adslider__handler') as HTMLElement;
+        handlerFrom = container.querySelector('.adslider__handler_type_from') as HTMLElement;
+        note = container.querySelector('.adslider__note_type_to') as HTMLElement;
         value = note.querySelector('.adslider__value') as HTMLElement;
-        noteFrom = $container.querySelector('.adslider__note_type_from') as HTMLElement;
+        noteFrom = container.querySelector('.adslider__note_type_from') as HTMLElement;
         valueFrom = noteFrom.querySelector('.adslider__value') as HTMLElement;
 
         track.style.height = '400px';
@@ -406,19 +406,19 @@ describe('view', () => {
       let callback: () => void;
       let mousedown: MouseEvent;
       beforeEach(() => {
-        $container = document.createElement('div');
+        container = document.createElement('div');
         document.body.innerHTML = '';
-        document.body.appendChild($container);
-        view = new View($container);
-        adslider = $container.querySelector('.adslider') as HTMLElement;
-        track = $container.querySelector('.adslider__track') as HTMLElement;
-        bar = $container.querySelector('.adslider__bar') as HTMLElement;
-        scale = $container.querySelector('.adslider__scale') as HTMLElement;
-        handler = $container.querySelector('.adslider__handler') as HTMLElement;
-        handlerFrom = $container.querySelector('.adslider__handler_type_from') as HTMLElement;
-        note = $container.querySelector('.adslider__note_type_to') as HTMLElement;
+        document.body.appendChild(container);
+        view = new View(container);
+        adslider = container.querySelector('.adslider') as HTMLElement;
+        track = container.querySelector('.adslider__track') as HTMLElement;
+        bar = container.querySelector('.adslider__bar') as HTMLElement;
+        scale = container.querySelector('.adslider__scale') as HTMLElement;
+        handler = container.querySelector('.adslider__handler') as HTMLElement;
+        handlerFrom = container.querySelector('.adslider__handler_type_from') as HTMLElement;
+        note = container.querySelector('.adslider__note_type_to') as HTMLElement;
         value = note.querySelector('.adslider__value') as HTMLElement;
-        noteFrom = $container.querySelector('.adslider__note_type_from') as HTMLElement;
+        noteFrom = container.querySelector('.adslider__note_type_from') as HTMLElement;
         valueFrom = noteFrom.querySelector('.adslider__value') as HTMLElement;
 
         track.style.width = '400px';

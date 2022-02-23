@@ -16,70 +16,70 @@ type Config = {
 }
 
 class DemoSlider {
-  private $parent: HTMLElement;
+  private parent: HTMLElement;
 
   private currentValueInstance!: Input;
 
-  private $inputCurValueContainer!: HTMLElement;
+  private inputCurValueContainer!: HTMLElement;
 
-  private $inputCurValue!: HTMLInputElement;
+  private inputCurValue!: HTMLInputElement;
 
   private minValueInstance!: Input;
 
-  private $inputMinValueContainer!: HTMLElement;
+  private inputMinValueContainer!: HTMLElement;
 
-  private $inputMinValue!: HTMLInputElement;
+  private inputMinValue!: HTMLInputElement;
 
   private maxValueInstance!: Input;
 
-  private $inputMaxValueContainer!: HTMLElement;
+  private inputMaxValueContainer!: HTMLElement;
 
-  private $inputMaxValue!: HTMLInputElement;
+  private inputMaxValue!: HTMLInputElement;
 
   private noteValueInstance!: Checkbox;
 
-  private $inputShowValueContainer!: HTMLElement;
+  private inputShowValueContainer!: HTMLElement;
 
-  private $inputShowValue!: HTMLInputElement;
+  private inputShowValue!: HTMLInputElement;
 
   private stepInstance!: Input;
 
-  private $inputStepContainer!: HTMLElement;
+  private inputStepContainer!: HTMLElement;
 
-  private $inputStep!: HTMLInputElement;
+  private inputStep!: HTMLInputElement;
 
   private verticalInstance!: Checkbox;
 
-  private $inputVerticalContainer!: HTMLElement;
+  private inputVerticalContainer!: HTMLElement;
 
-  private $inputVertical!: HTMLInputElement;
+  private inputVertical!: HTMLInputElement;
 
   private doubleInstance!: Checkbox;
 
-  private $inputDoubleContainer!: HTMLElement;
+  private inputDoubleContainer!: HTMLElement;
 
-  private $inputDouble!: HTMLInputElement;
+  private inputDouble!: HTMLInputElement;
 
   private fromInstance!: Input;
 
-  private $inputFromContainer!: HTMLElement;
+  private inputFromContainer!: HTMLElement;
 
-  private $inputFrom!: HTMLInputElement;
+  private inputFrom!: HTMLInputElement;
 
   private toInstance!: Input;
 
-  private $inputToContainer!: HTMLElement;
+  private inputToContainer!: HTMLElement;
 
-  private $inputTo!: HTMLInputElement;
+  private inputTo!: HTMLInputElement;
 
   private initOptions!: Config;
 
   private options!: Config;
 
-  private $adslider!: HTMLElement | null;
+  private adslider!: HTMLElement | null;
 
   constructor(parent: HTMLElement) {
-    this.$parent = parent;
+    this.parent = parent;
     this.findContainers();
     this.initElements();
     this.findInputs();
@@ -91,58 +91,58 @@ class DemoSlider {
   }
 
   private findContainers(): void {
-    this.$adslider = this.$parent.querySelector('.js-demo-slider__adslider');
-    this.$inputCurValueContainer = this.$parent.querySelector(
+    this.adslider = this.parent.querySelector('.js-demo-slider__adslider');
+    this.inputCurValueContainer = this.parent.querySelector(
       '.js-demo-slider__current-value',
     ) as HTMLElement;
-    this.$inputMinValueContainer = this.$parent.querySelector(
+    this.inputMinValueContainer = this.parent.querySelector(
       '.js-demo-slider__minimum-value',
     ) as HTMLElement;
-    this.$inputMaxValueContainer = this.$parent.querySelector(
+    this.inputMaxValueContainer = this.parent.querySelector(
       '.js-demo-slider__maximum-value',
     ) as HTMLElement;
-    this.$inputShowValueContainer = this.$parent.querySelector(
+    this.inputShowValueContainer = this.parent.querySelector(
       '.js-demo-slider__note-value',
     ) as HTMLElement;
-    this.$inputStepContainer = this.$parent.querySelector(
+    this.inputStepContainer = this.parent.querySelector(
       '.js-demo-slider__step',
     ) as HTMLElement;
-    this.$inputVerticalContainer = this.$parent.querySelector(
+    this.inputVerticalContainer = this.parent.querySelector(
       '.js-demo-slider__vertical-view',
     ) as HTMLElement;
-    this.$inputDoubleContainer = this.$parent.querySelector(
+    this.inputDoubleContainer = this.parent.querySelector(
       '.js-demo-slider__double',
     ) as HTMLElement;
-    this.$inputFromContainer = this.$parent.querySelector(
+    this.inputFromContainer = this.parent.querySelector(
       '.js-demo-slider__from',
     ) as HTMLElement;
-    this.$inputToContainer = this.$parent.querySelector(
+    this.inputToContainer = this.parent.querySelector(
       '.js-demo-slider__to',
     ) as HTMLElement;
   }
 
   private initElements(): void {
-    this.currentValueInstance = new Input(this.$inputCurValueContainer);
-    this.minValueInstance = new Input(this.$inputMinValueContainer);
-    this.maxValueInstance = new Input(this.$inputMaxValueContainer);
-    this.noteValueInstance = new Checkbox(this.$inputShowValueContainer);
-    this.stepInstance = new Input(this.$inputStepContainer);
-    this.verticalInstance = new Checkbox(this.$inputVerticalContainer);
-    this.doubleInstance = new Checkbox(this.$inputDoubleContainer);
-    this.fromInstance = new Input(this.$inputFromContainer);
-    this.toInstance = new Input(this.$inputToContainer);
+    this.currentValueInstance = new Input(this.inputCurValueContainer);
+    this.minValueInstance = new Input(this.inputMinValueContainer);
+    this.maxValueInstance = new Input(this.inputMaxValueContainer);
+    this.noteValueInstance = new Checkbox(this.inputShowValueContainer);
+    this.stepInstance = new Input(this.inputStepContainer);
+    this.verticalInstance = new Checkbox(this.inputVerticalContainer);
+    this.doubleInstance = new Checkbox(this.inputDoubleContainer);
+    this.fromInstance = new Input(this.inputFromContainer);
+    this.toInstance = new Input(this.inputToContainer);
   }
 
   private findInputs(): void {
-    this.$inputCurValue = this.currentValueInstance.getInputElement();
-    this.$inputMinValue = this.minValueInstance.getInputElement();
-    this.$inputMaxValue = this.maxValueInstance.getInputElement();
-    this.$inputShowValue = this.noteValueInstance.getCheckboxElement();
-    this.$inputStep = this.stepInstance.getInputElement();
-    this.$inputVertical = this.verticalInstance.getCheckboxElement();
-    this.$inputDouble = this.doubleInstance.getCheckboxElement();
-    this.$inputFrom = this.fromInstance.getInputElement();
-    this.$inputTo = this.toInstance.getInputElement();
+    this.inputCurValue = this.currentValueInstance.getInputElement();
+    this.inputMinValue = this.minValueInstance.getInputElement();
+    this.inputMaxValue = this.maxValueInstance.getInputElement();
+    this.inputShowValue = this.noteValueInstance.getCheckboxElement();
+    this.inputStep = this.stepInstance.getInputElement();
+    this.inputVertical = this.verticalInstance.getCheckboxElement();
+    this.inputDouble = this.doubleInstance.getCheckboxElement();
+    this.inputFrom = this.fromInstance.getInputElement();
+    this.inputTo = this.toInstance.getInputElement();
   }
 
   private setInitOptionsForSlider(): void {
@@ -162,11 +162,11 @@ class DemoSlider {
   }
 
   private initPlugin(): void {
-    $('.js-demo-slider__adslider', this.$parent).adslider(this.initOptions);
+    $('.js-demo-slider__adslider', this.parent).adslider(this.initOptions);
   }
 
   private getSliderOptions(): void {
-    this.options = $('.js-demo-slider__adslider', this.$parent).adslider(
+    this.options = $('.js-demo-slider__adslider', this.parent).adslider(
       'getOptions',
     );
   }
@@ -202,49 +202,49 @@ class DemoSlider {
   }
 
   private addListeners(): void {
-    this.$inputCurValue.addEventListener(
+    this.inputCurValue.addEventListener(
       'change',
       this.handleInputChange.bind(this),
     );
-    this.$inputMinValue.addEventListener(
+    this.inputMinValue.addEventListener(
       'change',
       this.handleInputChange.bind(this),
     );
-    this.$inputMaxValue.addEventListener(
+    this.inputMaxValue.addEventListener(
       'change',
       this.handleInputChange.bind(this),
     );
-    this.$inputShowValue.addEventListener(
+    this.inputShowValue.addEventListener(
       'change',
       this.handleInputChange.bind(this),
     );
-    this.$inputStep.addEventListener(
+    this.inputStep.addEventListener(
       'change',
       this.handleInputChange.bind(this),
     );
-    this.$inputVertical.addEventListener(
+    this.inputVertical.addEventListener(
       'change',
       this.handleInputChange.bind(this),
     );
-    this.$inputDouble.addEventListener(
+    this.inputDouble.addEventListener(
       'change',
       this.handleInputChange.bind(this),
     );
-    this.$inputDouble.addEventListener(
+    this.inputDouble.addEventListener(
       'change',
       this.updatePanel.bind(this),
     );
-    this.$inputFrom.addEventListener(
+    this.inputFrom.addEventListener(
       'change',
       this.handleInputChange.bind(this),
     );
-    this.$inputTo.addEventListener('change', this.handleInputChange.bind(this));
-    if (this.$adslider) {
-      this.$adslider.addEventListener(
+    this.inputTo.addEventListener('change', this.handleInputChange.bind(this));
+    if (this.adslider) {
+      this.adslider.addEventListener(
         'mousemove',
         this.updatePanel.bind(this),
       );
-      this.$adslider.addEventListener(
+      this.adslider.addEventListener(
         'click',
         this.updatePanel.bind(this),
       );
@@ -265,7 +265,7 @@ class DemoSlider {
       from: this.fromInstance.getValue(),
       to: this.toInstance.getValue(),
     };
-    $('.js-demo-slider__adslider', this.$parent).adslider(
+    $('.js-demo-slider__adslider', this.parent).adslider(
       'update',
       this.options,
     );

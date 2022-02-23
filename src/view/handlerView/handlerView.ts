@@ -1,9 +1,9 @@
 import EventObserver from '../../eventObserver/EventObserver';
 
 class HandlerView extends EventObserver {
-  public $handler!: HTMLElement;
+  public handler!: HTMLElement;
 
-  private $parent!: HTMLElement;
+  private parent!: HTMLElement;
 
   private handlerPos!: number;
 
@@ -11,21 +11,21 @@ class HandlerView extends EventObserver {
 
   private handleMouseUp!: (e: MouseEvent) => void;
 
-  constructor($parent: HTMLElement) {
+  constructor(parent: HTMLElement) {
     super();
-    this.render($parent);
+    this.render(parent);
   }
 
   public getLength(): number {
     return this.isVertical()
-      ? parseInt(getComputedStyle(this.$handler).height, 10)
-      : parseInt(getComputedStyle(this.$handler).width, 10);
+      ? parseInt(getComputedStyle(this.handler).height, 10)
+      : parseInt(getComputedStyle(this.handler).width, 10);
   }
 
   public getPos(): number {
     return this.isVertical()
-      ? parseInt(getComputedStyle(this.$handler).bottom, 10)
-      : parseInt(getComputedStyle(this.$handler).left, 10);
+      ? parseInt(getComputedStyle(this.handler).bottom, 10)
+      : parseInt(getComputedStyle(this.handler).left, 10);
   }
 
   public calcPos(options: {
@@ -41,44 +41,44 @@ class HandlerView extends EventObserver {
 
   public setPos(isDouble: boolean): void {
     if (this.isVertical()) {
-      this.$handler.style.left = '';
-      this.$handler.style.bottom = `${this.handlerPos}px`;
+      this.handler.style.left = '';
+      this.handler.style.bottom = `${this.handlerPos}px`;
     } else {
-      this.$handler.style.bottom = '';
-      this.$handler.style.left = `${this.handlerPos}px`;
+      this.handler.style.bottom = '';
+      this.handler.style.left = `${this.handlerPos}px`;
     }
-    this.broadcast('calcValueNotePos', this.$handler);
+    this.broadcast('calcValueNotePos', this.handler);
     this.broadcast('setValueNotePos');
-    const data = { $handler: this.$handler, vertical: this.isVertical(), double: isDouble };
+    const data = { handler: this.handler, vertical: this.isVertical(), double: isDouble };
     this.broadcast('setBar', data);
   }
 
   public setVerticalView(verticalView: boolean): void {
     if (verticalView) {
-      this.$handler.classList.remove('adslider__handler_direction_horizontal');
-      this.$handler.classList.add('adslider__handler_direction_vertical');
+      this.handler.classList.remove('adslider__handler_direction_horizontal');
+      this.handler.classList.add('adslider__handler_direction_vertical');
     } else {
-      this.$handler.classList.remove('adslider__handler_direction_vertical');
-      this.$handler.classList.add('adslider__handler_direction_horizontal');
+      this.handler.classList.remove('adslider__handler_direction_vertical');
+      this.handler.classList.add('adslider__handler_direction_horizontal');
     }
   }
 
   private isVertical(): boolean {
-    return this.$handler.classList.contains('adslider__handler_direction_vertical');
+    return this.handler.classList.contains('adslider__handler_direction_vertical');
   }
 
-  private render($parent: HTMLElement): void {
-    this.$parent = $parent;
-    this.$handler = document.createElement('div');
-    this.$handler.classList.add('adslider__handler');
-    this.$parent.append(this.$handler);
-    this.$handler.addEventListener('mousedown', this.handleHandlerMouseDown);
+  private render(parent: HTMLElement): void {
+    this.parent = parent;
+    this.handler = document.createElement('div');
+    this.handler.classList.add('adslider__handler');
+    this.parent.append(this.handler);
+    this.handler.addEventListener('mousedown', this.handleHandlerMouseDown);
   }
 
   private handleHandlerMouseDown = (event: MouseEvent): void => {
     event.preventDefault();
     event.stopPropagation();
-    const data = { event, handler: this.$handler };
+    const data = { event, handler: this.handler };
     this.broadcast('handlerMousedownEvent', data);
     this.bindMousemove(event);
   }
