@@ -16,61 +16,27 @@ type Config = {
 }
 
 class DemoSlider {
+  private inputsArray: HTMLInputElement[] = [];
+
   private parent: HTMLElement;
 
   private currentValueInstance!: Input;
 
-  private inputCurValueContainer!: HTMLElement;
-
-  private inputCurValue!: HTMLInputElement;
-
   private minValueInstance!: Input;
-
-  private inputMinValueContainer!: HTMLElement;
-
-  private inputMinValue!: HTMLInputElement;
 
   private maxValueInstance!: Input;
 
-  private inputMaxValueContainer!: HTMLElement;
-
-  private inputMaxValue!: HTMLInputElement;
-
   private noteValueInstance!: Checkbox;
-
-  private inputShowValueContainer!: HTMLElement;
-
-  private inputShowValue!: HTMLInputElement;
 
   private stepInstance!: Input;
 
-  private inputStepContainer!: HTMLElement;
-
-  private inputStep!: HTMLInputElement;
-
   private verticalInstance!: Checkbox;
-
-  private inputVerticalContainer!: HTMLElement;
-
-  private inputVertical!: HTMLInputElement;
 
   private doubleInstance!: Checkbox;
 
-  private inputDoubleContainer!: HTMLElement;
-
-  private inputDouble!: HTMLInputElement;
-
   private fromInstance!: Input;
 
-  private inputFromContainer!: HTMLElement;
-
-  private inputFrom!: HTMLInputElement;
-
   private toInstance!: Input;
-
-  private inputToContainer!: HTMLElement;
-
-  private inputTo!: HTMLInputElement;
 
   private initOptions!: Config;
 
@@ -80,9 +46,7 @@ class DemoSlider {
 
   constructor(parent: HTMLElement) {
     this.parent = parent;
-    this.findContainers();
-    this.initElements();
-    this.findInputs();
+    this.init();
     this.setInitOptionsForSlider();
     this.initPlugin();
     this.getSliderOptions();
@@ -90,59 +54,38 @@ class DemoSlider {
     this.addListeners();
   }
 
-  private findContainers(): void {
+  private init(): void {
     this.adslider = this.parent.querySelector('.js-demo-slider__adslider');
-    this.inputCurValueContainer = this.parent.querySelector(
-      '.js-demo-slider__current-value',
-    ) as HTMLElement;
-    this.inputMinValueContainer = this.parent.querySelector(
-      '.js-demo-slider__minimum-value',
-    ) as HTMLElement;
-    this.inputMaxValueContainer = this.parent.querySelector(
-      '.js-demo-slider__maximum-value',
-    ) as HTMLElement;
-    this.inputShowValueContainer = this.parent.querySelector(
-      '.js-demo-slider__note-value',
-    ) as HTMLElement;
-    this.inputStepContainer = this.parent.querySelector(
-      '.js-demo-slider__step',
-    ) as HTMLElement;
-    this.inputVerticalContainer = this.parent.querySelector(
-      '.js-demo-slider__vertical-view',
-    ) as HTMLElement;
-    this.inputDoubleContainer = this.parent.querySelector(
-      '.js-demo-slider__double',
-    ) as HTMLElement;
-    this.inputFromContainer = this.parent.querySelector(
-      '.js-demo-slider__from',
-    ) as HTMLElement;
-    this.inputToContainer = this.parent.querySelector(
-      '.js-demo-slider__to',
-    ) as HTMLElement;
-  }
-
-  private initElements(): void {
-    this.currentValueInstance = new Input(this.inputCurValueContainer);
-    this.minValueInstance = new Input(this.inputMinValueContainer);
-    this.maxValueInstance = new Input(this.inputMaxValueContainer);
-    this.noteValueInstance = new Checkbox(this.inputShowValueContainer);
-    this.stepInstance = new Input(this.inputStepContainer);
-    this.verticalInstance = new Checkbox(this.inputVerticalContainer);
-    this.doubleInstance = new Checkbox(this.inputDoubleContainer);
-    this.fromInstance = new Input(this.inputFromContainer);
-    this.toInstance = new Input(this.inputToContainer);
-  }
-
-  private findInputs(): void {
-    this.inputCurValue = this.currentValueInstance.getInputElement();
-    this.inputMinValue = this.minValueInstance.getInputElement();
-    this.inputMaxValue = this.maxValueInstance.getInputElement();
-    this.inputShowValue = this.noteValueInstance.getCheckboxElement();
-    this.inputStep = this.stepInstance.getInputElement();
-    this.inputVertical = this.verticalInstance.getCheckboxElement();
-    this.inputDouble = this.doubleInstance.getCheckboxElement();
-    this.inputFrom = this.fromInstance.getInputElement();
-    this.inputTo = this.toInstance.getInputElement();
+    this.parent.querySelectorAll('.js-demo-page__container').forEach((item) => {
+      if (item.classList.contains('js-demo-slider__minimum-value')) {
+        this.minValueInstance = new Input(item);
+        this.inputsArray.push(this.minValueInstance.getInputElement());
+      } else if (item.classList.contains('js-demo-slider__maximum-value')) {
+        this.maxValueInstance = new Input(item);
+        this.inputsArray.push(this.maxValueInstance.getInputElement());
+      } else if (item.classList.contains('js-demo-slider__current-value')) {
+        this.currentValueInstance = new Input(item);
+        this.inputsArray.push(this.currentValueInstance.getInputElement());
+      } else if (item.classList.contains('js-demo-slider__step')) {
+        this.stepInstance = new Input(item);
+        this.inputsArray.push(this.stepInstance.getInputElement());
+      } else if (item.classList.contains('js-demo-slider__from')) {
+        this.fromInstance = new Input(item);
+        this.inputsArray.push(this.fromInstance.getInputElement());
+      } else if (item.classList.contains('js-demo-slider__to')) {
+        this.toInstance = new Input(item);
+        this.inputsArray.push(this.toInstance.getInputElement());
+      } else if (item.classList.contains('js-demo-slider__note-value')) {
+        this.noteValueInstance = new Checkbox(item);
+        this.inputsArray.push(this.noteValueInstance.getCheckboxElement());
+      } else if (item.classList.contains('js-demo-slider__vertical-view')) {
+        this.verticalInstance = new Checkbox(item);
+        this.inputsArray.push(this.verticalInstance.getCheckboxElement());
+      } else if (item.classList.contains('js-demo-slider__double')) {
+        this.doubleInstance = new Checkbox(item);
+        this.inputsArray.push(this.doubleInstance.getCheckboxElement());
+      }
+    });
   }
 
   private setInitOptionsForSlider(): void {
@@ -202,43 +145,12 @@ class DemoSlider {
   }
 
   private addListeners(): void {
-    this.inputCurValue.addEventListener(
-      'change',
-      this.handleInputChange.bind(this),
-    );
-    this.inputMinValue.addEventListener(
-      'change',
-      this.handleInputChange.bind(this),
-    );
-    this.inputMaxValue.addEventListener(
-      'change',
-      this.handleInputChange.bind(this),
-    );
-    this.inputShowValue.addEventListener(
-      'change',
-      this.handleInputChange.bind(this),
-    );
-    this.inputStep.addEventListener(
-      'change',
-      this.handleInputChange.bind(this),
-    );
-    this.inputVertical.addEventListener(
-      'change',
-      this.handleInputChange.bind(this),
-    );
-    this.inputDouble.addEventListener(
-      'change',
-      this.handleInputChange.bind(this),
-    );
-    this.inputDouble.addEventListener(
-      'change',
-      this.updatePanel.bind(this),
-    );
-    this.inputFrom.addEventListener(
-      'change',
-      this.handleInputChange.bind(this),
-    );
-    this.inputTo.addEventListener('change', this.handleInputChange.bind(this));
+    this.inputsArray.forEach((item) => {
+      item.addEventListener(
+        'change',
+        this.handleInputChange.bind(this),
+      );
+    });
     if (this.adslider) {
       this.adslider.addEventListener(
         'mousemove',
@@ -269,6 +181,7 @@ class DemoSlider {
       'update',
       this.options,
     );
+    this.updatePanel();
   }
 
   private setInputsForDouble(): void {

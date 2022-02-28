@@ -18,22 +18,22 @@ mixin demo-slider(options = {})
 
   .demo-slider.js-demo-slider
     .demo-slider__panel
-      .demo-slider__minimum-value.js-demo-slider__minimum-value
+      .demo-slider__minimum-value.js-demo-slider__minimum-value.js-demo-page__container
         +input({ title: 'Минимальное значение:', defaultValue: min })
-      .demo-slider__maximum-value.js-demo-slider__maximum-value
+      .demo-slider__maximum-value.js-demo-slider__maximum-value.js-demo-page__container
         +input({ title: 'Максимальное значение:', defaultValue: max })
-      .demo-slider__minimum-value.js-demo-slider__current-value
+      .demo-slider__minimum-value.js-demo-slider__current-value.js-demo-page__container
         +input({ title: 'Текущее значение:', defaultValue: curValue })
-      .demo-slider__note-value.js-demo-slider__note-value
+      .demo-slider__note-value.js-demo-slider__note-value.js-demo-page__container
         +checkbox({ title: 'Показать значение', defaultValue: showValueNote })
-      .demo-slider__step.js-demo-slider__step
+      .demo-slider__step.js-demo-slider__step.js-demo-page__container
         +input({ title: 'Шаг:', defaultValue: step })
-      .demo-slider__vertical-view.js-demo-slider__vertical-view
+      .demo-slider__vertical-view.js-demo-slider__vertical-view.js-demo-page__container
         +checkbox({ title: 'Вертикальный вид', defaultValue: vertical })
-      .demo-slider__double.js-demo-slider__double
+      .demo-slider__double.js-demo-slider__double.js-demo-page__container
         +checkbox({ title: 'Диапазон', defaultValue: double })
-      .demo-slider__from.js-demo-slider__from
+      .demo-slider__from.js-demo-slider__from.js-demo-page__container
         +input({ title: 'От:', defaultValue: from })
-      .demo-slider__to.js-demo-slider__to
+      .demo-slider__to.js-demo-slider__to.js-demo-page__container
         +input({ title: 'До:', defaultValue: to })
     .demo-slider__adslider.js-demo-slider__adslider

@@ -1,9 +1,9 @@
 class Checkbox {
-  private parent: HTMLElement;
+  private parent: Element;
 
   private checkboxElement!: HTMLInputElement;
 
-  constructor(parent: HTMLElement) {
+  constructor(parent: Element) {
     this.parent = parent;
     this.init();
   }
