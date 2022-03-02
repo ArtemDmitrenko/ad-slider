@@ -8,6 +8,10 @@ class ScaleView extends EventObserver {
 
   private numberOfLines!: number;
 
+  private lineArray: Array<Element> = [];
+
+  private signArray: Array<HTMLDivElement> = [];
+
   constructor(parent: HTMLElement) {
     super();
     this.render(parent);
@@ -22,11 +26,13 @@ class ScaleView extends EventObserver {
       this.scale.classList.remove('adslider__scale_direction_vertical');
       this.scale.classList.add('adslider__scale_direction_horizontal');
     }
-    const { step, limits: { min, max } } = options;
+    const {
+      step,
+      limits: { min, max },
+    } = options;
     const odd: number = max - min;
     this.calcNumberOfLines(step, odd);
     this.setScalePos(handler);
-    this.renderScaleLine();
     this.createListOfScaleLines(options);
     this.renderScaleSign(options);
   }
@@ -55,7 +61,7 @@ class ScaleView extends EventObserver {
 
   private handleScaleMouseDown = (event: MouseEvent): void => {
     this.broadcast('handlerMousedownEvent', event);
-  }
+  };
 
   private calcNumberOfLines(step: number, odd: number): void {
     this.numberOfLines = odd % step === 0 ? odd / step + 1 : Math.floor(odd / step + 2);
@@ -85,7 +91,10 @@ class ScaleView extends EventObserver {
   }
 
   private createListOfScaleLines(options: IConfig): void {
-    const { step, limits: { min, max } } = options;
+    const {
+      step,
+      limits: { min, max },
+    } = options;
     this.scale.innerHTML = '';
     const stepPercentage = (step / (max - min)) * 100;
     for (let i = 0; i < this.numberOfLines; i += 1) {
@@ -102,7 +111,7 @@ class ScaleView extends EventObserver {
 
   private renderScaleSign(options: IConfig): void {
     const listOfLines = this.scale.querySelectorAll('.adslider__scale-line');
-    listOfLines.forEach((el, index) => {
+    listOfLines.forEach((line, index) => {
       const value: number = this.calcSigns(index, options);
       const text = document.createElement('div');
       text.classList.add('adslider__scale-text');
@@ -112,12 +121,66 @@ class ScaleView extends EventObserver {
         text.classList.add('adslider__scale-text_direction_horizontal');
       }
       text.innerText = `${value}`;
-      el.append(text);
+      line.append(text);
+      this.lineArray.push(line);
+      this.signArray.push(text);
     });
+    this.capacityCheckForSign();
+  }
+
+  private capacityCheckForSign(): void {
+    const isSmallDistanceBetweenSigns = this.signArray.some(
+      (item, i, array) => {
+        if (i > 0) {
+          return (
+            item.getBoundingClientRect().left
+              - array[i - 1].getBoundingClientRect().right
+            < 0
+          );
+        }
+        return false;
+      },
+    );
+    if (isSmallDistanceBetweenSigns) {
+      this.hideSigns();
+    }
+    this.lineArray = [];
+    this.signArray = [];
+  }
+
+  private hideSigns(): void {
+    this.lineArray.forEach((line, index, array) => {
+      if (index % 2 !== 0 && index !== array.length - 1) {
+        line.classList.add('adslider__scale-line_hidden');
+      }
+    });
+    this.setPenultimateSignView();
+    this.capacityCheckForSign();
+  }
+
+  private setPenultimateSignView() {
+    const lastSignPos = this.signArray[this.signArray.length - 1].getBoundingClientRect().left;
+    const preLastSignPos = this.signArray[this.signArray.length - 2].getBoundingClientRect().right;
+    const distanceBetweenLastSigns = lastSignPos - preLastSignPos;
+    if (distanceBetweenLastSigns < 0) {
+      this.lineArray[this.lineArray.length - 2].classList.add('adslider__scale-line_hidden');
+      this.lineArray = this.lineArray.filter(
+        (_el, i, array) => (!(i % 2) && i !== array.length - 2) || i === array.length - 1,
+      );
+      this.signArray = this.signArray.filter(
+        (_el, i, array) => (!(i % 2) && i !== array.length - 2) || i === array.length - 1,
+      );
+    } else {
+      this.lineArray = this.lineArray.filter((_el, i) => !(i % 2));
+      this.signArray = this.signArray.filter((_el, i) => !(i % 2));
+    }
   }
 
   private calcSigns(index: number, options: IConfig): number {
-    const { step, limits: { min, max } } = options;
+    const {
+      step,
+      limits: { min, max },
+    } = options;
     let value: number;
     if (index === 0) {
       value = min;

@@ -143,6 +143,9 @@
         width: 12px;
       }
     }
+    &_hidden {
+      display: none;
+    }
   }
   &__scale-text {
     position: absolute;
