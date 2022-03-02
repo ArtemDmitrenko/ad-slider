@@ -129,23 +129,43 @@ class ScaleView extends EventObserver {
   }
 
   private capacityCheckForSign(): void {
-    const isSmallDistanceBetweenSigns = this.signArray.some(
-      (item, i, array) => {
-        if (i > 0) {
-          return (
-            item.getBoundingClientRect().left
-              - array[i - 1].getBoundingClientRect().right
-            < 0
-          );
-        }
-        return false;
-      },
-    );
+    let isSmallDistanceBetweenSigns: boolean;
+    if (this.isVertical()) {
+      isSmallDistanceBetweenSigns = this.isSmallDistanceBetweenVerticalSigns();
+    } else {
+      isSmallDistanceBetweenSigns = this.isSmallDistanceBetweenHorizontalSigns();
+    }
     if (isSmallDistanceBetweenSigns) {
       this.hideSigns();
     }
     this.lineArray = [];
     this.signArray = [];
+  }
+
+  private isSmallDistanceBetweenVerticalSigns(): boolean {
+    return this.signArray.some((item, i, array) => {
+      if (i > 0) {
+        return (
+          array[i - 1].getBoundingClientRect().top
+            - item.getBoundingClientRect().bottom
+          < 0
+        );
+      }
+      return false;
+    });
+  }
+
+  private isSmallDistanceBetweenHorizontalSigns(): boolean {
+    return this.signArray.some((item, i, array) => {
+      if (i > 0) {
+        return (
+          item.getBoundingClientRect().left
+            - array[i - 1].getBoundingClientRect().right
+          < 0
+        );
+      }
+      return false;
+    });
   }
 
   private hideSigns(): void {
@@ -159,11 +179,16 @@ class ScaleView extends EventObserver {
   }
 
   private setPenultimateSignView() {
-    const lastSignPos = this.signArray[this.signArray.length - 1].getBoundingClientRect().left;
-    const preLastSignPos = this.signArray[this.signArray.length - 2].getBoundingClientRect().right;
-    const distanceBetweenLastSigns = lastSignPos - preLastSignPos;
+    let distanceBetweenLastSigns: number;
+    if (this.isVertical()) {
+      distanceBetweenLastSigns = this.calcDistanceBetweenLastVerticalSigns();
+    } else {
+      distanceBetweenLastSigns = this.calcDistanceBetweenLastHorizontalSigns();
+    }
     if (distanceBetweenLastSigns < 0) {
-      this.lineArray[this.lineArray.length - 2].classList.add('adslider__scale-line_hidden');
+      this.lineArray[this.lineArray.length - 2].classList.add(
+        'adslider__scale-line_hidden',
+      );
       this.lineArray = this.lineArray.filter(
         (_el, i, array) => (!(i % 2) && i !== array.length - 2) || i === array.length - 1,
       );
@@ -174,6 +199,18 @@ class ScaleView extends EventObserver {
       this.lineArray = this.lineArray.filter((_el, i) => !(i % 2));
       this.signArray = this.signArray.filter((_el, i) => !(i % 2));
     }
+  }
+
+  private calcDistanceBetweenLastVerticalSigns(): number {
+    const lastSignPos = this.signArray[this.signArray.length - 1].getBoundingClientRect().top;
+    const preLastSignPos = this.signArray[this.signArray.length - 2].getBoundingClientRect().bottom;
+    return lastSignPos - preLastSignPos;
+  }
+
+  private calcDistanceBetweenLastHorizontalSigns(): number {
+    const lastSignPos = this.signArray[this.signArray.length - 1].getBoundingClientRect().left;
+    const preLastSignPos = this.signArray[this.signArray.length - 2].getBoundingClientRect().right;
+    return preLastSignPos - lastSignPos;
   }
 
   private calcSigns(index: number, options: IConfig): number {
