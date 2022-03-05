@@ -12,8 +12,7 @@ class EventObserver {
       }
       this.observers[event].push(newObserver);
     } else {
-      this.observers[event] = [];
-      this.observers[event].push(newObserver);
+      this.observers[event] = [newObserver];
     }
   }
 
@@ -21,8 +20,7 @@ class EventObserver {
     if (this.observers[event] === undefined) {
       throw new Error('There is no such observer in the list!');
     }
-    const observersClone = this.observers[event].slice(0);
-    observersClone.forEach((subscriber) => {
+    this.observers[event].forEach((subscriber) => {
       subscriber(data);
     });
   }
