@@ -56,36 +56,51 @@ class DemoSlider {
 
   private init(): void {
     this.adslider = this.parent.querySelector('.js-demo-slider__adslider');
-    this.parent.querySelectorAll('.js-demo-page__container').forEach((item) => {
-      if (item.classList.contains('js-demo-slider__minimum-value')) {
-        this.minValueInstance = new Input(item);
-        this.inputsArray.push(this.minValueInstance.getInputElement());
-      } else if (item.classList.contains('js-demo-slider__maximum-value')) {
-        this.maxValueInstance = new Input(item);
-        this.inputsArray.push(this.maxValueInstance.getInputElement());
-      } else if (item.classList.contains('js-demo-slider__current-value')) {
-        this.currentValueInstance = new Input(item);
-        this.inputsArray.push(this.currentValueInstance.getInputElement());
-      } else if (item.classList.contains('js-demo-slider__step')) {
-        this.stepInstance = new Input(item);
-        this.inputsArray.push(this.stepInstance.getInputElement());
-      } else if (item.classList.contains('js-demo-slider__from')) {
-        this.fromInstance = new Input(item);
-        this.inputsArray.push(this.fromInstance.getInputElement());
-      } else if (item.classList.contains('js-demo-slider__to')) {
-        this.toInstance = new Input(item);
-        this.inputsArray.push(this.toInstance.getInputElement());
-      } else if (item.classList.contains('js-demo-slider__note-value')) {
-        this.noteValueInstance = new Checkbox(item);
-        this.inputsArray.push(this.noteValueInstance.getCheckboxElement());
-      } else if (item.classList.contains('js-demo-slider__vertical-view')) {
-        this.verticalInstance = new Checkbox(item);
-        this.inputsArray.push(this.verticalInstance.getCheckboxElement());
-      } else if (item.classList.contains('js-demo-slider__double')) {
-        this.doubleInstance = new Checkbox(item);
-        this.inputsArray.push(this.doubleInstance.getCheckboxElement());
-      }
-    });
+    const minValueElement = this.parent.querySelector('.js-demo-slider__minimum-value');
+    const maxValueElement = this.parent.querySelector('.js-demo-slider__maximum-value');
+    const currentValueElement = this.parent.querySelector('.js-demo-slider__current-value');
+    const stepElement = this.parent.querySelector('.js-demo-slider__step');
+    const fromElement = this.parent.querySelector('.js-demo-slider__from');
+    const toElement = this.parent.querySelector('.js-demo-slider__to');
+    const noteValueElement = this.parent.querySelector('.js-demo-slider__note-value');
+    const verticalElement = this.parent.querySelector('.js-demo-slider__vertical-view');
+    const doubleElement = this.parent.querySelector('.js-demo-slider__double');
+    if (minValueElement) {
+      this.minValueInstance = new Input(minValueElement);
+      this.inputsArray.push(this.minValueInstance.getInputElement());
+    }
+    if (maxValueElement) {
+      this.maxValueInstance = new Input(maxValueElement);
+      this.inputsArray.push(this.maxValueInstance.getInputElement());
+    }
+    if (currentValueElement) {
+      this.currentValueInstance = new Input(currentValueElement);
+      this.inputsArray.push(this.currentValueInstance.getInputElement());
+    }
+    if (stepElement) {
+      this.stepInstance = new Input(stepElement);
+      this.inputsArray.push(this.stepInstance.getInputElement());
+    }
+    if (fromElement) {
+      this.fromInstance = new Input(fromElement);
+      this.inputsArray.push(this.fromInstance.getInputElement());
+    }
+    if (toElement) {
+      this.toInstance = new Input(toElement);
+      this.inputsArray.push(this.toInstance.getInputElement());
+    }
+    if (noteValueElement) {
+      this.noteValueInstance = new Checkbox(noteValueElement);
+      this.inputsArray.push(this.noteValueInstance.getCheckboxElement());
+    }
+    if (verticalElement) {
+      this.verticalInstance = new Checkbox(verticalElement);
+      this.inputsArray.push(this.verticalInstance.getCheckboxElement());
+    }
+    if (doubleElement) {
+      this.doubleInstance = new Checkbox(doubleElement);
+      this.inputsArray.push(this.doubleInstance.getCheckboxElement());
+    }
   }
 
   private setInitOptionsForSlider(): void {
