@@ -36,11 +36,11 @@ class Model extends EventObserver {
     const {
       limits, step, from, to, curValue, double,
     } = options;
-    this.setLimits(limits);
+    this.setLimitsAndValues(limits, curValue, to, from);
     this.setStep(step);
-    this.setValueTo(to);
-    this.setValueFrom(from);
-    this.setCurValue(curValue);
+    // this.setValueTo(to);
+    // this.setValueFrom(from);
+    // this.setCurValue(curValue);
     this.setDouble(double, from);
   }
 
@@ -73,19 +73,38 @@ class Model extends EventObserver {
     this.options.double = double;
   }
 
-  private setLimits(limits: { min: number; max: number }): void {
+  private setLimitsAndValues(
+    limits: { min: number; max: number },
+    curValue: number,
+    to: number,
+    from: number,
+  ): void {
     const { min, max } = limits;
     if (min >= max) {
       throw new Error('Min can not be the same or more than Max');
     }
     this.options.limits = { min, max };
+    if (!this.options.double) {
+      if (max < this.options.curValue) {
+        this.options.curValue = max;
+      } else if (min > this.options.curValue) {
+        this.options.curValue = min;
+      } else {
+        this.setCurValue(curValue);
+      }
+    } else if (max < this.options.to) {
+      this.options.to = max;
+      this.options.curValue = max;
+    } else if (min > this.options.from) {
+      this.options.from = min;
+    } else {
+      this.setValueTo(to);
+      this.setValueFrom(from);
+    }
   }
 
   private setCurValue(value: number): void {
     const { limits: { min, max }, step, to } = this.options;
-    if (value < min || value > max) {
-      throw new Error('Value must be in range of min and max limits');
-    }
     if (step) {
       const newVal: number = this.setRoundedCurVal(
         value,

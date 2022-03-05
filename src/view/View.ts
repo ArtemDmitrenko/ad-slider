@@ -66,6 +66,7 @@ class View extends EventObserver {
       );
     } else if (this.handlerViewFrom) {
       this.deleteHandlerFrom();
+      this.deleteValueNoteViewCommon();
     }
   }
 
@@ -141,6 +142,13 @@ class View extends EventObserver {
       this.valueNoteViewFrom.note.remove();
       delete this.handlerViewFrom;
       delete this.valueNoteViewFrom;
+    }
+  }
+
+  private deleteValueNoteViewCommon(): void {
+    if (this.valueNoteViewCommon) {
+      this.valueNoteViewCommon.note.remove();
+      delete this.valueNoteViewCommon;
     }
   }
 
