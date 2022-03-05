@@ -1,4 +1,4 @@
-import EventObserver from '../../eventObserver/EventObserver';
+import EventObserver from '../../EventObserver/EventObserver';
 
 class ValueNoteView extends EventObserver {
   public note!: HTMLElement;

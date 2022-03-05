@@ -1,4 +1,4 @@
-import EventObserver from '../eventObserver/EventObserver';
+import EventObserver from '../EventObserver/EventObserver';
 
 interface IConfig {
   limits: {

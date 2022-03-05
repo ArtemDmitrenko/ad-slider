@@ -1,9 +1,9 @@
-import HandlerView from './handlerView/HandlerView';
-import TrackView from './trackView/TrackView';
-import ValueNoteView from './valueNoteView/ValueNoteView';
-import BarView from './barView/BarView';
-import ScaleView from './scaleView/ScaleView';
-import EventObserver from '../eventObserver/EventObserver';
+import HandlerView from './HandlerView/HandlerView';
+import TrackView from './TrackView/TrackView';
+import ValueNoteView from './ValueNoteView/ValueNoteView';
+import BarView from './BarView/BarView';
+import ScaleView from './ScaleView/ScaleView';
+import EventObserver from '../EventObserver/EventObserver';
 
 class View extends EventObserver {
   private el!: HTMLElement | null;

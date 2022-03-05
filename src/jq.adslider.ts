@@ -1,6 +1,6 @@
 import './main.scss';
-import { IConfig } from './model/Model';
-import Presenter from './presenter/Presenter';
+import { IConfig } from './Model/Model';
+import Presenter from './Presenter/Presenter';
 
 (function ($) {
   const methods = {
