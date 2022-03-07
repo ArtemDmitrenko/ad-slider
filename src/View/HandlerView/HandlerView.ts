@@ -1,5 +1,5 @@
 import EventObserver from '../../EventObserver/EventObserver';
-import EventTypes from '../../EventObserver/EventTypes';
+import EventTypes from '../../EventObserver/eventTypes';
 
 class HandlerView extends EventObserver {
   public handler!: HTMLElement;

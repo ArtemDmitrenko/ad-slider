@@ -1,6 +1,6 @@
 import { IConfig } from '../../Model/Model';
 import EventObserver from '../../EventObserver/EventObserver';
-import EventTypes from '../../EventObserver/EventTypes';
+import EventTypes from '../../EventObserver/eventTypes';
 
 class ScaleView extends EventObserver {
   private parent!: HTMLElement;

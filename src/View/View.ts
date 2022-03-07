@@ -4,7 +4,7 @@ import ValueNoteView from './ValueNoteView/ValueNoteView';
 import BarView from './BarView/BarView';
 import ScaleView from './ScaleView/ScaleView';
 import EventObserver from '../EventObserver/EventObserver';
-import EventTypes from '../EventObserver/EventTypes';
+import EventTypes from '../EventObserver/eventTypes';
 
 class View extends EventObserver {
   private el!: HTMLElement | null;

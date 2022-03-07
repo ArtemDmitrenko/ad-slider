@@ -1,6 +1,6 @@
 import View from './View';
 import { IConfig } from '../Model/Model';
-import EventTypes from '../EventObserver/EventTypes';
+import EventTypes from '../EventObserver/eventTypes';
 
 describe('view', () => {
   let view: View;

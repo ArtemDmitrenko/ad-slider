@@ -1,6 +1,6 @@
 import { IConfig, Model } from '../Model/Model';
 import View from '../View/View';
-import EventTypes from '../EventObserver/EventTypes';
+import EventTypes from '../EventObserver/eventTypes';
 
 class Presenter {
   private model: Model;

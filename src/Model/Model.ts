@@ -1,5 +1,5 @@
 import EventObserver from '../EventObserver/EventObserver';
-import EventTypes from '../EventObserver/EventTypes';
+import EventTypes from '../EventObserver/eventTypes';
 
 interface IConfig {
   limits: {
@@ -138,9 +138,6 @@ class Model extends EventObserver {
 
   private setValueTo(value: number): void {
     const { limits: { min, max }, step } = this.options;
-    if (value < min || value > max) {
-      throw new Error('Value must be in range of min and max limits');
-    }
     if (step && value) {
       const newVal: number = this.setRoundedCurVal(
         value,
@@ -154,9 +151,6 @@ class Model extends EventObserver {
 
   private setValueFrom(value: number): void {
     const { limits: { min, max }, step, to } = this.options;
-    if (value < min || value > max) {
-      throw new Error('Value must be in range of min and max limits');
-    }
     if (value > to && to) {
       throw new Error('Value From must be less than To');
     }

@@ -1,5 +1,5 @@
 import HandlerView from './HandlerView';
-import EventTypes from '../../EventObserver/EventTypes';
+import EventTypes from '../../EventObserver/eventTypes';
 
 describe('handlerView', () => {
   let parent: HTMLElement;
