@@ -1,4 +1,5 @@
 import EventObserver from '../../EventObserver/EventObserver';
+import EventTypes from '../../EventObserver/EventTypes';
 
 class HandlerView extends EventObserver {
   public handler!: HTMLElement;
@@ -47,10 +48,10 @@ class HandlerView extends EventObserver {
       this.handler.style.bottom = '';
       this.handler.style.left = `${this.handlerPos}px`;
     }
-    this.broadcast('calcValueNotePos', this.handler);
-    this.broadcast('setValueNotePos');
+    this.broadcast(EventTypes.CALC_VALUE_NOTE_POSITION, this.handler);
+    this.broadcast(EventTypes.SET_VALUE_NOTE_POS);
     const data = { handler: this.handler, vertical: this.isVertical(), double: isDouble };
-    this.broadcast('setBar', data);
+    this.broadcast(EventTypes.SET_BAR, data);
   }
 
   public setVerticalView(verticalView: boolean): void {
@@ -79,7 +80,7 @@ class HandlerView extends EventObserver {
     event.preventDefault();
     event.stopPropagation();
     const data = { event, handler: this.handler };
-    this.broadcast('handlerMousedownEvent', data);
+    this.broadcast(EventTypes.HANDLER_MOUSEDOWN_EVENT, data);
     this.bindMousemove(event);
   }
 
@@ -94,7 +95,7 @@ class HandlerView extends EventObserver {
 
   private mouseMove(e: MouseEvent): void {
     const data = { shift: null, e, handler: this };
-    this.broadcast('handlerMousemoveEvent', data);
+    this.broadcast(EventTypes.HANDLER_MOUSEMOVE_EVENT, data);
   }
 
   private mouseUp(): void {

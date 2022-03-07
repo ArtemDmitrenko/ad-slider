@@ -1,5 +1,6 @@
 import { IConfig, Model } from '../Model/Model';
 import View from '../View/View';
+import EventTypes from '../EventObserver/EventTypes';
 
 class Presenter {
   private model: Model;
@@ -18,9 +19,9 @@ class Presenter {
   }
 
   private addObservers(): void {
-    this.view.addObserver('changePos', this.handleCalcValue);
-    this.model.addObserver('calcPos', this.handleCalcPos);
-    this.model.addObserver('setPos', this.handleSetPos);
+    this.view.addObserver(EventTypes.CHANGE_POSITION, this.handleCalcValue);
+    this.model.addObserver(EventTypes.CALC_POSITION, this.handleCalcPos);
+    this.model.addObserver(EventTypes.SET_POSITION, this.handleSetPos);
   }
 
   private handleCalcValue = (data: {

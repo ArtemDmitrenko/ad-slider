@@ -4,6 +4,7 @@ import ValueNoteView from './ValueNoteView/ValueNoteView';
 import BarView from './BarView/BarView';
 import ScaleView from './ScaleView/ScaleView';
 import EventObserver from '../EventObserver/EventObserver';
+import EventTypes from '../EventObserver/EventTypes';
 
 class View extends EventObserver {
   private el!: HTMLElement | null;
@@ -188,8 +189,8 @@ class View extends EventObserver {
     this.handlerViewFrom.handler.classList.add('adslider__handler_type_from');
     this.valueNoteViewFrom = new ValueNoteView(this.adslider);
     this.valueNoteViewFrom.note.classList.add('adslider__note_type_from');
-    this.handlerViewFrom.addObserver('handlerMousedownEvent', this.handleMouseDown);
-    this.handlerViewFrom.addObserver('handlerMousemoveEvent', this.mouseMove);
+    this.handlerViewFrom.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleMouseDown);
+    this.handlerViewFrom.addObserver(EventTypes.HANDLER_MOUSEMOVE_EVENT, this.mouseMove);
   }
 
   private handleChangePos = (e: MouseEvent): void => {
@@ -304,7 +305,7 @@ class View extends EventObserver {
     const options = {
       relPosition, isFrom,
     };
-    this.broadcast('changePos', options);
+    this.broadcast(EventTypes.CHANGE_POSITION, options);
   }
 
   private getEdge(handler: HandlerView): number {
@@ -417,26 +418,26 @@ class View extends EventObserver {
   }
 
   private addObservers(): void {
-    this.handlerView.addObserver('handlerMousedownEvent', this.handleMouseDown);
-    this.handlerView.addObserver('handlerMousemoveEvent', this.mouseMove);
+    this.handlerView.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleMouseDown);
+    this.handlerView.addObserver(EventTypes.HANDLER_MOUSEMOVE_EVENT, this.mouseMove);
     if (this.handlerViewFrom) {
-      this.handlerViewFrom.addObserver('handlerMousedownEvent', this.handleMouseDown);
-      this.handlerViewFrom.addObserver('handlerMousemoveEvent', this.mouseMove);
+      this.handlerViewFrom.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleMouseDown);
+      this.handlerViewFrom.addObserver(EventTypes.HANDLER_MOUSEMOVE_EVENT, this.mouseMove);
     }
-    this.trackView.addObserver('handlerMousedownEvent', this.handleChangePos);
-    this.barView.addObserver('handlerMousedownEvent', this.handleChangePos);
-    this.scaleView.addObserver('handlerMousedownEvent', this.handleChangePos);
-    this.handlerView.addObserver('calcValueNotePos', this.handleCalcValueNotePos);
-    this.handlerView.addObserver('setValueNotePos', this.handleSetValueNotePos);
-    this.handlerView.addObserver('setBar', this.handleSetBar);
+    this.trackView.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleChangePos);
+    this.barView.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleChangePos);
+    this.scaleView.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleChangePos);
+    this.handlerView.addObserver(EventTypes.CALC_VALUE_NOTE_POSITION, this.handleCalcValueNotePos);
+    this.handlerView.addObserver(EventTypes.SET_VALUE_NOTE_POS, this.handleSetValueNotePos);
+    this.handlerView.addObserver(EventTypes.SET_BAR, this.handleSetBar);
   }
 
   private updateObservers(): void {
     if (this.handlerViewFrom && this.valueNoteViewFrom) {
-      if (!Object.prototype.hasOwnProperty.call(this.handlerViewFrom.observers, 'calcValueNotePos')) {
-        this.handlerViewFrom.addObserver('calcValueNotePos', this.handleCalcValueNoteFromPos);
-        this.handlerViewFrom.addObserver('setValueNotePos', this.handleSetValueNoteFromPos);
-        this.handlerViewFrom.addObserver('setBar', this.handleSetBar);
+      if (!Object.prototype.hasOwnProperty.call(this.handlerViewFrom.observers, EventTypes.CALC_VALUE_NOTE_POSITION)) {
+        this.handlerViewFrom.addObserver(EventTypes.CALC_VALUE_NOTE_POSITION, this.handleCalcValueNoteFromPos);
+        this.handlerViewFrom.addObserver(EventTypes.SET_VALUE_NOTE_POS, this.handleSetValueNoteFromPos);
+        this.handlerViewFrom.addObserver(EventTypes.SET_BAR, this.handleSetBar);
       }
     }
   }

@@ -1,5 +1,6 @@
 import View from './View';
 import { IConfig } from '../Model/Model';
+import EventTypes from '../EventObserver/EventTypes';
 
 describe('view', () => {
   let view: View;
@@ -263,7 +264,7 @@ describe('view', () => {
         }));
 
         callback = jest.fn();
-        view.addObserver('changePos', callback);
+        view.addObserver(EventTypes.CHANGE_POSITION, callback);
 
         mousedown = new MouseEvent('mousedown', { clientX: 185 });
         mousemove = new MouseEvent('mousemove', { clientX: 184 });
@@ -380,7 +381,7 @@ describe('view', () => {
           toJSON: jest.fn,
         }));
         callback = jest.fn();
-        view.addObserver('changePos', callback);
+        view.addObserver(EventTypes.CHANGE_POSITION, callback);
         mousedown = new MouseEvent('mousedown', { clientY: 30 });
         mousemove = new MouseEvent('mousemove', { clientY: 50 });
       });
@@ -468,7 +469,7 @@ describe('view', () => {
           toJSON: jest.fn,
         }));
         callback = jest.fn();
-        view.addObserver('changePos', callback);
+        view.addObserver(EventTypes.CHANGE_POSITION, callback);
         mousedown = new MouseEvent('mousedown', { clientX: 30 });
       });
       test('Should call function mouseMove when event mousemove happens on track', () => {

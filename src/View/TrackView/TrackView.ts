@@ -34,7 +34,7 @@ class TrackView extends EventObserver {
   }
 
   private handleTrackMouseDown = (event: MouseEvent): void => {
-    this.broadcast('handlerMousedownEvent', event);
+    this.broadcast(EventTypes.HANDLER_MOUSEDOWN_EVENT, event);
   }
 }
 

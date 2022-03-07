@@ -80,7 +80,7 @@ class BarView extends EventObserver {
   }
 
   private handleBarMouseDown = (event: MouseEvent): void => {
-    this.broadcast('handlerMousedownEvent', event);
+    this.broadcast(EventTypes.HANDLER_MOUSEDOWN_EVENT, event);
   }
 
   private calcBarPosForSingle(handlerPos: number, handlerLength: number): void {

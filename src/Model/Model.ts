@@ -1,4 +1,5 @@
 import EventObserver from '../EventObserver/EventObserver';
+import EventTypes from '../EventObserver/EventTypes';
 
 interface IConfig {
   limits: {
@@ -187,9 +188,9 @@ class Model extends EventObserver {
         limits,
         isFrom,
       };
-      this.broadcast('calcPos', options);
+      this.broadcast(EventTypes.CALC_POSITION, options);
       const data = { isDouble: double, isFrom };
-      this.broadcast('setPos', data);
+      this.broadcast(EventTypes.SET_POSITION, data);
     } else {
       this.options.curValue = this.calcValueWithStep(value);
       const options = {
@@ -197,9 +198,9 @@ class Model extends EventObserver {
         limits,
         isFrom,
       };
-      this.broadcast('calcPos', options);
+      this.broadcast(EventTypes.CALC_POSITION, options);
       const data = { isDouble: double, isFrom };
-      this.broadcast('setPos', data);
+      this.broadcast(EventTypes.SET_POSITION, data);
     }
   }
 

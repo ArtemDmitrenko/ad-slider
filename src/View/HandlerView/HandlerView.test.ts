@@ -1,4 +1,5 @@
 import HandlerView from './HandlerView';
+import EventTypes from '../../EventObserver/EventTypes';
 
 describe('handlerView', () => {
   let parent: HTMLElement;
@@ -34,9 +35,9 @@ describe('handlerView', () => {
     const callback1 = jest.fn();
     const callback2 = jest.fn();
     const callback3 = jest.fn();
-    handlerView.addObserver('calcValueNotePos', callback1);
-    handlerView.addObserver('setValueNotePos', callback2);
-    handlerView.addObserver('setBar', callback3);
+    handlerView.addObserver(EventTypes.CALC_VALUE_NOTE_POSITION, callback1);
+    handlerView.addObserver(EventTypes.SET_VALUE_NOTE_POS, callback2);
+    handlerView.addObserver(EventTypes.SET_BAR, callback3);
     const options = { edge: 370, value: 10, limits: { min: 0, max: 100 } };
     handlerView.calcPos(options);
     handlerView.setPos(false);

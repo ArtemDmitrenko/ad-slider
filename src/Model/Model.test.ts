@@ -1,4 +1,5 @@
 import { Model, IConfig } from './Model';
+import EventTypes from '../EventObserver/EventTypes';
 
 describe('model', () => {
   let options: IConfig;
@@ -214,8 +215,8 @@ describe('model', () => {
         model = new Model(options);
         callback1 = jest.fn();
         callback2 = jest.fn();
-        model.addObserver('calcPos', callback1);
-        model.addObserver('setPos', callback2);
+        model.addObserver(EventTypes.CALC_POSITION, callback1);
+        model.addObserver(EventTypes.SET_POSITION, callback2);
       });
 
       test('should set curValue', () => {
@@ -253,8 +254,8 @@ describe('model', () => {
         callback1 = jest.fn();
         callback2 = jest.fn();
 
-        model.addObserver('calcPos', callback1);
-        model.addObserver('setPos', callback2);
+        model.addObserver(EventTypes.CALC_POSITION, callback1);
+        model.addObserver(EventTypes.SET_POSITION, callback2);
       });
 
       test('should set curValue and check function isValFromMovesOverValTo is return true', () => {
@@ -302,8 +303,8 @@ describe('model', () => {
         model = new Model(options);
         callback1 = jest.fn();
         callback2 = jest.fn();
-        model.addObserver('calcPos', callback1);
-        model.addObserver('setPos', callback2);
+        model.addObserver(EventTypes.CALC_POSITION, callback1);
+        model.addObserver(EventTypes.SET_POSITION, callback2);
       });
       test('check that function calcValueWithStep() is working', () => {
         handler.classList.remove('adslider__handler_type_from');
