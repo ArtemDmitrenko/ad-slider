@@ -30,16 +30,13 @@ class Model extends EventObserver {
       from: options.from,
       to: options.to,
     };
-    this.init(this.options);
+    this.init();
   }
 
-  public init(options: IConfig): void {
-    const {
-      limits, step, from, to, curValue, double,
-    } = options;
-    this.setLimitsAndValues(limits, curValue, to, from);
-    this.setStep(step);
-    this.setDouble(double, from);
+  public init(): void {
+    this.setLimitsAndValues();
+    this.setStep();
+    this.setDouble();
   }
 
   public setValueFromHandlerPos(data: {
@@ -63,33 +60,32 @@ class Model extends EventObserver {
     return Math.round(min + odds * relPos);
   }
 
-  private setDouble(double: boolean, from: number): void {
-    const { limits: { min } } = this.options;
+  private setDouble(): void {
+    const { limits: { min }, double, from } = this.options;
     if (double && !from) {
       this.options.from = min;
     }
     this.options.double = double;
   }
 
-  private setLimitsAndValues(
-    limits: { min: number; max: number },
-    newCurValue: number,
-    newTo: number,
-    newFrom: number,
-  ): void {
-    const { min, max } = limits;
-    const {curValue, from, to, double } = this.options;
+  private setLimitsAndValues(): void {
+    const {
+      limits: { min, max },
+      curValue,
+      from,
+      to,
+      double,
+    } = this.options;
     if (min >= max) {
       throw new Error('Min can not be the same or more than Max');
     }
-    this.options.limits = { min, max };
     if (!double) {
       if (max < curValue) {
         this.options.curValue = max;
       } else if (min > curValue) {
         this.options.curValue = min;
       } else {
-        this.setCurValue(newCurValue);
+        this.setCurValue(curValue);
       }
     } else if (max < to) {
       this.options.to = max;
@@ -97,22 +93,20 @@ class Model extends EventObserver {
     } else if (min > from) {
       this.options.from = min;
     } else {
-      this.setValueTo(newTo);
-      this.setValueFrom(newFrom);
+      this.setValueTo(to);
+      this.setValueFrom(from);
     }
   }
 
-  private setCurValue(value: number): void {
+  private setCurValue(curValue: number): void {
     const { limits: { min, max }, step, to } = this.options;
-    if (step) {
-      const newVal: number = this.setRoundedCurVal(
-        value,
-        step,
-        max,
-        min,
-      );
-      this.options.curValue = to || newVal;
-    }
+    const newVal: number = this.setRoundedCurVal(
+      curValue,
+      step,
+      max,
+      min,
+    );
+    this.options.curValue = to || newVal;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -129,7 +123,7 @@ class Model extends EventObserver {
     const numberOfSteps: number = Math.round((min - value) / step);
     let newCurValue: number = step * Math.abs(numberOfSteps) + min;
     if (newCurValue > max) {
-      newCurValue -= step;
+      newCurValue = max;
     }
     return newCurValue;
   }
@@ -144,6 +138,7 @@ class Model extends EventObserver {
         min,
       );
       this.options.to = newVal;
+      this.options.curValue = newVal;
     }
   }
 
@@ -163,12 +158,12 @@ class Model extends EventObserver {
     }
   }
 
-  private setStep(value: number): void {
-    const { limits: { min, max } } = this.options;
-    if (value > max - min) {
+  private setStep(): void {
+    const { limits: { min, max }, step } = this.options;
+    if (step > max - min) {
       throw new Error('Step can not be more than odd min and max limits');
     }
-    this.options.step = value || 1;
+    this.options.step = step || 1;
   }
 
   private setValAndBroadcast(value: number, isFrom: boolean): void {
