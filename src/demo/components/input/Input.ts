@@ -17,7 +17,7 @@ class Input {
   }
 
   public getValue(): number {
-    return +this.inputElement.value;
+    return Number(this.inputElement.value);
   }
 
   public setValue(value: number): void {
