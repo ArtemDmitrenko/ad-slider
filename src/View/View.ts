@@ -29,6 +29,18 @@ class View extends EventObserver {
 
   private handlerShift!: number;
 
+  private areHandlersInOnePoint!: boolean;
+
+  private mousedownClientX!: number;
+
+  private mousedownClientY!: number;
+
+  private leadHandler!: HandlerView;
+
+  private isHandlerTo!: boolean;
+
+  private isHandlerFrom!: boolean;
+
   constructor(container: HTMLElement) {
     super();
     this.render(container);
@@ -283,8 +295,34 @@ class View extends EventObserver {
     }
   }
 
+  private checkIfHandlersInOnePlace(event: MouseEvent): void {
+    if (this.handlerViewFrom) {
+      if (this.isVertical()) {
+        if (this.handlerView.handler.style.bottom === this.handlerViewFrom.handler.style.bottom) {
+          this.areHandlersInOnePoint = true;
+          this.mousedownClientY = event.clientY;
+          this.isHandlerFrom = false;
+          this.isHandlerTo = false;
+        } else {
+          this.areHandlersInOnePoint = false;
+        }
+      } else if (this.handlerView.handler.style.left === this.handlerViewFrom.handler.style.left) {
+        this.areHandlersInOnePoint = true;
+        this.mousedownClientX = event.clientX;
+        this.isHandlerFrom = false;
+        this.isHandlerTo = false;
+      } else {
+        this.areHandlersInOnePoint = false;
+      }
+    } else {
+      this.areHandlersInOnePoint = false;
+    }
+  }
+
   private handleMouseDown = (data: { event: MouseEvent; handler: HTMLElement }): void => {
-    this.calcShift(data.event, data.handler);
+    const { event, handler } = data;
+    this.calcShift(event, handler);
+    this.checkIfHandlersInOnePlace(event);
   }
 
   private mouseMove = (data: {
@@ -292,20 +330,58 @@ class View extends EventObserver {
     e: MouseEvent,
     handler: HandlerView
   }): void => {
-    let newPos;
-    if (data.e.type === 'mousedown') {
-      newPos = this.calcNewPos(data.shift, data.e);
+    const { shift, e, handler } = data;
+    if (this.areHandlersInOnePoint) {
+      this.findLeadHandler(e, handler);
     } else {
-      newPos = this.calcNewPos(this.handlerShift, data.e);
+      this.leadHandler = handler;
     }
-    const edge: number = this.getEdge(data.handler);
+    let newPos;
+    if (e.type === 'mousedown') {
+      newPos = this.calcNewPos(shift, e);
+    } else {
+      newPos = this.calcNewPos(this.handlerShift, e);
+    }
+    const edge: number = this.getEdge(this.leadHandler);
     newPos = this.checkNewPos(newPos);
-    const isFrom = data.handler.handler.classList.contains('adslider__handler_type_from');
+    const isFrom = this.leadHandler.handler.classList.contains('adslider__handler_type_from');
     const relPosition = newPos / edge;
     const options = {
       relPosition, isFrom,
     };
     this.broadcast(EventTypes.CHANGE_POSITION, options);
+  }
+
+  private findLeadHandler(e: MouseEvent, handler: HandlerView): void {
+    let isValueDecrease;
+    let isValueIncrease;
+    if (this.isVertical()) {
+      isValueIncrease = e.clientY < this.mousedownClientY;
+      isValueDecrease = e.clientY > this.mousedownClientY;
+    } else {
+      isValueIncrease = e.clientX > this.mousedownClientX;
+      isValueDecrease = e.clientX < this.mousedownClientX;
+    }
+    if (isValueIncrease) {
+      const isHandlerFromLeader = !this.isHandlerTo && this.isHandlerFrom;
+      if (isHandlerFromLeader && this.handlerViewFrom) {
+        this.leadHandler = this.handlerViewFrom;
+      } else {
+        this.leadHandler = this.handlerView;
+        this.isHandlerTo = true;
+        this.isHandlerFrom = false;
+      }
+    } else if (isValueDecrease) {
+      if (this.isHandlerTo && !this.isHandlerFrom) {
+        this.leadHandler = this.handlerView;
+      } else if (this.handlerViewFrom) {
+        this.leadHandler = this.handlerViewFrom;
+        this.isHandlerFrom = true;
+        this.isHandlerTo = false;
+      }
+    } else {
+      this.leadHandler = handler;
+    }
   }
 
   private getEdge(handler: HandlerView): number {

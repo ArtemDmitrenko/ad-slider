@@ -180,6 +180,7 @@ class Model extends EventObserver {
       this.broadcast(EventTypes.SET_POSITION, data);
     } else {
       this.options.curValue = this.calcValueWithStep(value);
+      this.options.to = this.options.curValue;
       const options = {
         value: this.options.curValue,
         limits,
@@ -192,8 +193,8 @@ class Model extends EventObserver {
   }
 
   private isValFromMovesOverValTo(value: number): boolean {
-    const { curValue } = this.options;
-    return value > curValue;
+    const { to } = this.options;
+    return value > to;
   }
 
   private isValToMovesOverValFrom(value: number): boolean {
