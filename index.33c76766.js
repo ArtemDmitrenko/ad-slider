@@ -3624,4 +3624,4 @@ function hmrAcceptRun(bundle, id) {
     }, "undefined" == typeof e && (C.jQuery = C.$ = S), S;
 });
 
-//# sourceMappingURL=demo-page.33c76766.js.map
+//# sourceMappingURL=index.33c76766.js.map

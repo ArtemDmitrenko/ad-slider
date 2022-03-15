@@ -2350,4 +2350,4 @@ exports["default"] = _default;
 
 },{"@babel/runtime/helpers/interopRequireDefault":"eigyQ","@babel/runtime/helpers/classCallCheck":"fIqcI","@babel/runtime/helpers/createClass":"eFNXV","@babel/runtime/helpers/assertThisInitialized":"k3YcS","@babel/runtime/helpers/inherits":"8mpJg","@babel/runtime/helpers/possibleConstructorReturn":"iiXLy","@babel/runtime/helpers/getPrototypeOf":"DHhBk","@babel/runtime/helpers/defineProperty":"eCMPI","../../EventObserver/EventObserver":"ftS0S","../../EventObserver/eventTypes":"cbWbf"}]},["6659E","8NCqq"], "8NCqq", "parcelRequire021d")
 
-//# sourceMappingURL=demo-page.2302a6c6.js.map
+//# sourceMappingURL=index.2302a6c6.js.map

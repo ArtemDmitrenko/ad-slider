@@ -140,12 +140,12 @@
       this[globalName] = mainExports;
     }
   }
-})({"d5t5p":[function(require,module,exports) {
+})({"fTjqZ":[function(require,module,exports) {
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "69f74e7f31319ffd";
-module.bundle.HMR_BUNDLE_ID = "46a049708d2a5316";
+module.bundle.HMR_BUNDLE_ID = "ceb846e586800997";
 "use strict";
 function _createForOfIteratorHelper(o, allowArrayLike) {
     var it;
@@ -454,7 +454,7 @@ function hmrAcceptRun(bundle, id) {
     acceptedAssets[id] = true;
 }
 
-},{}],"hCK5T":[function(require,module,exports) {
+},{}],"2S2Lu":[function(require,module,exports) {
 "use strict";
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 var _demoSliderInit = _interopRequireDefault(require("../../components/demo-slider/demo-slider-init"));
@@ -775,6 +775,6 @@ var Checkbox = /*#__PURE__*/ function() {
 var _default = Checkbox;
 exports["default"] = _default;
 
-},{"@babel/runtime/helpers/interopRequireDefault":"eigyQ","@babel/runtime/helpers/classCallCheck":"fIqcI","@babel/runtime/helpers/createClass":"eFNXV","@babel/runtime/helpers/defineProperty":"eCMPI"}]},["d5t5p","hCK5T"], "hCK5T", "parcelRequire021d")
+},{"@babel/runtime/helpers/interopRequireDefault":"eigyQ","@babel/runtime/helpers/classCallCheck":"fIqcI","@babel/runtime/helpers/createClass":"eFNXV","@babel/runtime/helpers/defineProperty":"eCMPI"}]},["fTjqZ","2S2Lu"], "2S2Lu", "parcelRequire021d")
 
-//# sourceMappingURL=demo-page.8d2a5316.js.map
+//# sourceMappingURL=index.86800997.js.map
