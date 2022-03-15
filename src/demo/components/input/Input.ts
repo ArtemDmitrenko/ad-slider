@@ -16,12 +16,19 @@ class Input {
     return this.inputElement;
   }
 
-  public getValue(): number {
+  public getValue(): number | null {
+    if (this.inputElement.value === '') {
+      return null;
+    }
     return Number(this.inputElement.value);
   }
 
-  public setValue(value: number): void {
-    this.inputElement.value = String(value);
+  public setValue(value: number | null | undefined): void {
+    if (typeof value === 'number') {
+      this.inputElement.value = String(value);
+    } else {
+      this.inputElement.value = '';
+    }
   }
 
   public hideInput(): void {

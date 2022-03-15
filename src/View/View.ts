@@ -49,25 +49,24 @@ class View extends EventObserver {
 
   public updateView(options: {
     vertical: boolean;
-    curValue: number;
     limits: { max: number; min: number };
     showValueNote: boolean;
     double: boolean;
-    from: number;
+    from?: number | null;
     to: number;
     step: number;
   }): void {
     const {
-      vertical, curValue, limits, showValueNote, double, from,
+      vertical, limits, showValueNote, double, from, to,
     } = options;
     this.setVerticalViewForSingle(vertical);
     this.handlerView.calcPos({
       edge: this.getEdge(this.handlerView),
-      value: curValue,
+      value: to,
       limits,
     });
     this.handlerView.setPos(double);
-    this.valueNoteView.setValue(curValue);
+    this.valueNoteView.setValue(to);
     this.valueNoteView.showValueNote(showValueNote);
     this.scaleView.drawScale(options, this.handlerView.handler);
     if (double) {
@@ -115,16 +114,21 @@ class View extends EventObserver {
 
   public setPos(options: {
     isDouble: boolean,
-    isFrom: boolean
+    isFrom: boolean,
+    showValueNote: boolean
   }): void {
-    const { isDouble, isFrom } = options;
+    const { isDouble, isFrom, showValueNote } = options;
     if (this.handlerViewFrom) {
       if (isFrom) {
         this.handlerViewFrom.setPos(isDouble);
       } else {
         this.handlerView.setPos(isDouble);
       }
-      this.setViewOfOneNote();
+      this.setViewOfOneNote(showValueNote);
+      this.valueNoteView.showValueNote(showValueNote);
+      if (this.valueNoteViewFrom) {
+        this.valueNoteViewFrom.showValueNote(showValueNote);
+      }
     } else {
       this.handlerView.setPos(isDouble);
     }
@@ -193,7 +197,7 @@ class View extends EventObserver {
         handler: this.handlerView.handler,
       });
     }
-    this.setViewOfOneNote();
+    this.setViewOfOneNote(showValueNote);
   }
 
   private renderHandlerFrom(): void {
@@ -256,6 +260,7 @@ class View extends EventObserver {
       const handlerToPos = this.handlerView.handler.getBoundingClientRect().left;
       const oddToFrom: number = handlerToPos - handlerFromPos;
       const middlePos = oddToFrom / 2 + handlerFromPos + this.handlerView.getLength() / 2;
+      this.checkIfHandlersInOnePlace(e);
       if (e.clientX <= middlePos) {
         const data = {
           shift: this.handlerViewFrom.getLength() / 2,
@@ -420,9 +425,10 @@ class View extends EventObserver {
       : e.clientX - shift - this.trackView.track.getBoundingClientRect().left;
   }
 
-  private setViewOfOneNote(): void {
+  private setViewOfOneNote(showValueNote: boolean): void {
     if (this.isSmallDistanceBetweenNotes()) {
       this.makeCommonNoteView();
+      this.showCommonValueNote(showValueNote);
     } else if (this.valueNoteViewCommon) {
       this.removeValueNotesFromAndTo();
     }
@@ -448,6 +454,16 @@ class View extends EventObserver {
       this.valueNoteViewCommon.note.classList.add('adslider__note_common');
       this.valueNoteViewCommon.setVerticalView(this.isVertical());
       this.updateCommonNoteView();
+    }
+  }
+
+  private showCommonValueNote(data: boolean): void {
+    if (data && this.valueNoteViewCommon) {
+      this.valueNoteViewCommon.note.classList.remove('adslider__note_hide');
+      this.valueNoteViewCommon.note.classList.add('adslider__note_show');
+    } else if (this.valueNoteViewCommon) {
+      this.valueNoteViewCommon.note.classList.remove('adslider__note_show');
+      this.valueNoteViewCommon.note.classList.add('adslider__note_hide');
     }
   }
 

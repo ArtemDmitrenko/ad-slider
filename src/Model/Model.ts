@@ -6,12 +6,11 @@ interface IConfig {
     min: number;
     max: number;
   };
-  curValue: number;
   showValueNote: boolean;
   step: number;
   vertical: boolean;
   double: boolean;
-  from: number;
+  from?: number | null;
   to: number;
 }
 
@@ -22,7 +21,6 @@ class Model extends EventObserver {
     super();
     this.options = {
       limits: options.limits,
-      curValue: options.to || options.curValue,
       showValueNote: options.showValueNote,
       step: options.step,
       vertical: options.vertical,
@@ -30,28 +28,41 @@ class Model extends EventObserver {
       from: options.from,
       to: options.to,
     };
-    this.init();
+    this.init(this.options);
   }
 
-  public init(): void {
-    this.setLimitsAndValues();
-    this.setStep();
-    this.setDouble();
+  public init(options: IConfig): void {
+    const {
+      limits, step, from, to, double,
+    } = options;
+    this.setLimitsAndValues(limits, to, from, double);
+    this.setStep(step);
+    // this.setValueTo(to);
+    // this.setValueFrom(from);
+    // this.setCurValue(curValue);
+    this.setDouble(double, from);
   }
+
+  // public init(): void {
+  //   this.setLimitsAndValues();
+  //   this.setStep();
+  //   this.setDouble();
+  // }
 
   public setValueFromHandlerPos(data: {
     relPosition: number;
     isFrom: boolean;
   }): void {
-    const value = this.calcValueFromHandlerPos(data.relPosition);
+    const { relPosition, isFrom } = data;
+    const value = this.calcValueFromHandlerPos(relPosition);
     const conditionForReturn = this.options.double && this.isValToMovesOverValFrom(value);
-    if (data.isFrom && this.isValFromMovesOverValTo(value)) {
+    if (isFrom && this.isValFromMovesOverValTo(value)) {
       return;
     }
-    if (!data.isFrom && conditionForReturn) {
+    if (!isFrom && conditionForReturn) {
       return;
     }
-    this.setValAndBroadcast(value, data.isFrom);
+    this.setValAndBroadcast(value, isFrom);
   }
 
   private calcValueFromHandlerPos(relPos: number): number {
@@ -60,57 +71,66 @@ class Model extends EventObserver {
     return Math.round(min + odds * relPos);
   }
 
-  private setDouble(): void {
-    const { limits: { min }, double, from } = this.options;
+  private setDouble(double: boolean, from: number | null | undefined): void {
+    const { limits: { min } } = this.options;
     if (double && !from) {
       this.options.from = min;
+    }
+    if (!double && from) {
+      this.options.from = null;
     }
     this.options.double = double;
   }
 
-  private setLimitsAndValues(): void {
-    const {
-      limits: { min, max },
-      curValue,
-      from,
-      to,
-      double,
-    } = this.options;
+  private setLimitsAndValues(
+    limits: { min: number; max: number },
+    to: number,
+    from: number | null | undefined,
+    double: boolean,
+  ): void {
+    const { min, max } = limits;
     if (min >= max) {
       throw new Error('Min can not be the same or more than Max');
     }
     if (!double) {
-      if (max < curValue) {
-        this.options.curValue = max;
-      } else if (min > curValue) {
-        this.options.curValue = min;
+      if (max < to) {
+        this.options.to = max;
+      } else if (min > to) {
+        this.options.to = min;
       } else {
-        this.setCurValue(curValue);
+        this.setValue(to);
       }
-    } else if (max < to) {
-      this.options.to = max;
-      this.options.curValue = max;
-    } else if (min > from) {
-      this.options.from = min;
-    } else {
-      this.setValueTo(to);
-      this.setValueFrom(from);
+    }
+    if (double && typeof from === 'number' && typeof to === 'number') {
+      if (max < to) {
+        this.options.to = max;
+      } else if (max < from) {
+        this.options.from = max;
+      } else if (min > to) {
+        this.options.to = min;
+      } else if (min > from) {
+        this.options.from = min;
+      } else {
+        this.setValueTo(to);
+        if (typeof from === 'number') {
+          this.setValueFrom(from);
+        }
+      }
     }
   }
 
-  private setCurValue(curValue: number): void {
-    const { limits: { min, max }, step, to } = this.options;
-    const newVal: number = this.setRoundedCurVal(
-      curValue,
+  private setValue(value: number): void {
+    const { limits: { min, max }, step } = this.options;
+    this.options.to = this.calcRoundedValue(
+      value,
       step,
       max,
       min,
     );
-    this.options.curValue = to || newVal;
   }
 
   // eslint-disable-next-line class-methods-use-this
-  private setRoundedCurVal(
+  private calcRoundedValue(
     value: number,
     step: number,
     max: number,
@@ -121,24 +141,22 @@ class Model extends EventObserver {
       return value;
     }
     const numberOfSteps: number = Math.round((min - value) / step);
-    let newCurValue: number = step * Math.abs(numberOfSteps) + min;
-    if (newCurValue > max) {
-      newCurValue = max;
+    let newValue: number = step * Math.abs(numberOfSteps) + min;
+    if (newValue > max) {
+      newValue = max;
     }
-    return newCurValue;
+    return newValue;
   }
 
   private setValueTo(value: number): void {
     const { limits: { min, max }, step } = this.options;
     if (step && value) {
-      const newVal: number = this.setRoundedCurVal(
+      this.options.to = this.calcRoundedValue(
         value,
         step,
         max,
         min,
       );
-      this.options.to = newVal;
-      this.options.curValue = newVal;
     }
   }
 
@@ -148,18 +166,17 @@ class Model extends EventObserver {
       throw new Error('Value From must be less than To');
     }
     if (step && value) {
-      const newVal = this.setRoundedCurVal(
+      this.options.from = this.calcRoundedValue(
         value,
         step,
         max,
         min,
       );
-      this.options.from = newVal;
     }
   }
 
-  private setStep(): void {
-    const { limits: { min, max }, step } = this.options;
+  private setStep(step: number): void {
+    const { limits: { min, max } } = this.options;
     if (step > max - min) {
       throw new Error('Step can not be more than odd min and max limits');
     }
@@ -176,18 +193,17 @@ class Model extends EventObserver {
         isFrom,
       };
       this.broadcast(EventTypes.CALC_POSITION, options);
-      const data = { isDouble: double, isFrom };
+      const data = { isDouble: double, isFrom, showValueNote: this.options.showValueNote };
       this.broadcast(EventTypes.SET_POSITION, data);
     } else {
-      this.options.curValue = this.calcValueWithStep(value);
-      this.options.to = this.options.curValue;
+      this.options.to = this.calcValueWithStep(value);
       const options = {
-        value: this.options.curValue,
+        value: this.options.to,
         limits,
         isFrom,
       };
       this.broadcast(EventTypes.CALC_POSITION, options);
-      const data = { isDouble: double, isFrom };
+      const data = { isDouble: double, isFrom, showValueNote: this.options.showValueNote };
       this.broadcast(EventTypes.SET_POSITION, data);
     }
   }
@@ -199,7 +215,10 @@ class Model extends EventObserver {
 
   private isValToMovesOverValFrom(value: number): boolean {
     const { from } = this.options;
-    return value < from;
+    if (from || from === 0) {
+      return value < from;
+    }
+    return false;
   }
 
   private calcValueWithStep(value: number): number {

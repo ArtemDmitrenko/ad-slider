@@ -21,13 +21,6 @@ import Presenter from './Presenter/Presenter';
       model.init(model.options);
       presenter.updateView();
     },
-    updateCurValue(curValue: number): void {
-      const { model } = $(this).data('presenter');
-      const presenter = $(this).data('presenter');
-      model.options.curValue = curValue;
-      model.init(model.options);
-      presenter.updateView();
-    },
     getOptions(): IConfig {
       return $(this).data('presenter').model.options;
     },
@@ -36,7 +29,6 @@ import Presenter from './Presenter/Presenter';
   type SliderMethods = {
     init(container: HTMLElement, options: IConfig): void,
     update(options: IConfig): void,
-    updateCurValue(curValue: number): void,
     getOptions(): IConfig,
   };
 

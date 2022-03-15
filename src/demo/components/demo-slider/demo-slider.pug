@@ -6,13 +6,12 @@ mixin demo-slider(options = {})
     const defaultLimits = { min: -100, max: 100 } 
     const { 
       limits = defaultLimits, 
-      curValue = 50,
       showValueNote = true,
       step = 1,
       vertical = false,
       double = false,
       from = null,
-      to = null
+      to = 30
     } = options;
     const { min, max } = limits;
 
@@ -23,7 +22,7 @@ mixin demo-slider(options = {})
       .demo-slider__maximum-value.js-demo-slider__maximum-value
         +input({ title: 'Максимальное значение:', defaultValue: max })
       .demo-slider__minimum-value.js-demo-slider__current-value
-        +input({ title: 'Текущее значение:', defaultValue: curValue })
+        +input({ title: 'Текущее значение:', defaultValue: to })
       .demo-slider__note-value.js-demo-slider__note-value
         +checkbox({ title: 'Показать значение', defaultValue: showValueNote })
       .demo-slider__step.js-demo-slider__step

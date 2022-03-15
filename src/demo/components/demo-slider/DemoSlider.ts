@@ -3,16 +3,15 @@ import Checkbox from '../checkbox/Checkbox';
 
 type Config = {
   limits: {
-    min: number;
-    max: number;
+    min: number | null;
+    max: number | null;
   };
-  curValue: number;
   showValueNote: boolean;
-  step: number;
-  vertical?: boolean;
-  double?: boolean;
-  from?: number;
-  to?: number;
+  step: number | null;
+  vertical: boolean;
+  double: boolean;
+  from?: number | null;
+  to: number | null;
 }
 
 class DemoSlider {
@@ -109,7 +108,7 @@ class DemoSlider {
         min: this.minValueInstance.getValue(),
         max: this.maxValueInstance.getValue(),
       },
-      curValue: this.currentValueInstance.getValue(),
+      // curValue: this.currentValueInstance.getValue(),
       showValueNote: this.noteValueInstance.isChecked(),
       step: this.stepInstance.getValue(),
       vertical: this.verticalInstance.isChecked(),
@@ -131,15 +130,17 @@ class DemoSlider {
 
   private updatePanel() {
     const {
-      curValue,
+      // curValue,
       limits: { min, max },
       step,
       from,
+      to,
       showValueNote,
       vertical,
       double,
     } = this.options;
-    this.currentValueInstance.setValue(curValue);
+    this.toInstance.setValue(to);
+    this.currentValueInstance.setValue(to);
     this.minValueInstance.setValue(min);
     this.maxValueInstance.setValue(max);
     this.stepInstance.setValue(step);
@@ -151,12 +152,9 @@ class DemoSlider {
     }
     if (double) {
       this.doubleInstance.setChecked();
-      if (from) {
-        this.fromInstance.setValue(from);
-      }
-      this.toInstance.setValue(curValue);
     }
-    this.setInputsForDouble();
+    this.fromInstance.setValue(from);
+    // this.setInputsForDouble();
   }
 
   private addListeners(): void {
@@ -180,7 +178,6 @@ class DemoSlider {
 
   private handleInputChange(): void {
     this.options = {
-      curValue: this.currentValueInstance.getValue(),
       limits: {
         min: this.minValueInstance.getValue(),
         max: this.maxValueInstance.getValue(),
@@ -190,8 +187,11 @@ class DemoSlider {
       vertical: this.verticalInstance.isChecked(),
       double: this.doubleInstance.isChecked(),
       from: this.fromInstance.getValue(),
-      to: this.toInstance.getValue(),
+      to: this.doubleInstance.isChecked() ? this.toInstance.getValue() : this.currentValueInstance.getValue(),
     };
+    console.log(this.options);
+    console.log(this.options.to);
+
     $('.js-demo-slider__adslider', this.parent).adslider(
       'update',
       this.options,

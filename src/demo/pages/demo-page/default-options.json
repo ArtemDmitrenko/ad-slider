@@ -1,36 +1,13 @@
 {
-  "defaultOptions": [
+  "defaultOptions": [  
     {
       "limits": { "min": -100, "max": 100 },
-      "curValue": 0,
-      "showValueNote": true,
-      "step": 30
-    },
-    {
-      "limits": { "min": -100, "max": 100 },
-      "curValue": 85,
       "showValueNote": true,
       "step": 20,
-      "double": true,
-      "from": 40,
-      "to": 90
-    },
-    {
-      "limits": { "min": 0, "max": 1000 },
-      "curValue": 500,
-      "showValueNote": true,
-      "step": 100,
-      "vertical": true
-    },
-    {
-      "limits": { "min": 0, "max": 100 },
-      "curValue": 85,
-      "showValueNote": true,
-      "step": 15,
-      "double": true,
+      "double": false,
       "from": 40,
       "to": 90,
-      "vertical": true
+      "vertical": false
     }
   ]
 }
