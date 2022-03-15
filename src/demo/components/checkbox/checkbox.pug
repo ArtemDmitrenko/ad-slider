@@ -1,8 +1,0 @@
-mixin checkbox(options = {})
-  - const { title = 'Показать значения', defaultValue = false } = options
-  
-  .checkbox
-    label.checkbox__label
-      input(type="checkbox" checked=defaultValue).checkbox__value.js-checkbox__value
-      span.checkbox__indicator
-      span.checkbox__text= title
