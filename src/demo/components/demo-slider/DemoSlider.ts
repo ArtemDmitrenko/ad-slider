@@ -108,7 +108,6 @@ class DemoSlider {
         min: this.minValueInstance.getValue(),
         max: this.maxValueInstance.getValue(),
       },
-      // curValue: this.currentValueInstance.getValue(),
       showValueNote: this.noteValueInstance.isChecked(),
       step: this.stepInstance.getValue(),
       vertical: this.verticalInstance.isChecked(),
@@ -130,7 +129,6 @@ class DemoSlider {
 
   private updatePanel() {
     const {
-      // curValue,
       limits: { min, max },
       step,
       from,
@@ -154,7 +152,7 @@ class DemoSlider {
       this.doubleInstance.setChecked();
     }
     this.fromInstance.setValue(from);
-    // this.setInputsForDouble();
+    this.setInputsForDouble();
   }
 
   private addListeners(): void {
@@ -189,8 +187,6 @@ class DemoSlider {
       from: this.fromInstance.getValue(),
       to: this.doubleInstance.isChecked() ? this.toInstance.getValue() : this.currentValueInstance.getValue(),
     };
-    console.log(this.options);
-    console.log(this.options.to);
 
     $('.js-demo-slider__adslider', this.parent).adslider(
       'update',
