@@ -58,17 +58,6 @@ class Model extends EventObserver {
     return Math.round(min + odds * relPos);
   }
 
-  private setDouble(): void {
-    const { limits: { min }, double, from } = this.options;
-    // const ifIsDoubleAndNoFrom = double && from === null && from === undefined;
-    // if (ifIsDoubleAndNoFrom) {
-    //   this.options.from = min;
-    // }
-    // if (!double && typeof from === 'number') {
-    //   this.options.from = null;
-    // }
-  }
-
   private setLimitsAndValues(): void {
     const {
       limits: { min, max },
