@@ -31,13 +31,15 @@ class HandlerView extends EventObserver {
 
   public calcPos(options: {
     edge: number,
-    value: number,
+    value: number | null | undefined,
     limits: { min: number; max: number },
   }): void {
     const { edge, value, limits: { min, max } } = options;
-    const oddValMin: number = value - min;
-    const oddMaxMin: number = max - min;
-    this.handlerPos = edge * (oddValMin / oddMaxMin);
+    if (value !== null && value !== undefined) {
+      const oddValMin: number = value - min;
+      const oddMaxMin: number = max - min;
+      this.handlerPos = edge * (oddValMin / oddMaxMin);
+    }
   }
 
   public setPos(isDouble: boolean): void {

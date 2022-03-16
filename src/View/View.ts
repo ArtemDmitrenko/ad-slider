@@ -125,10 +125,6 @@ class View extends EventObserver {
         this.handlerView.setPos(isDouble);
       }
       this.setViewOfOneNote(showValueNote);
-      this.valueNoteView.showValueNote(showValueNote);
-      if (this.valueNoteViewFrom) {
-        this.valueNoteViewFrom.showValueNote(showValueNote);
-      }
     } else {
       this.handlerView.setPos(isDouble);
     }
@@ -171,7 +167,7 @@ class View extends EventObserver {
 
   private updateViewForDouble(
     vertical: boolean,
-    from: number,
+    from: number | null | undefined,
     limits: { max: number; min: number },
     showValueNote: boolean,
   ): void {
@@ -430,7 +426,7 @@ class View extends EventObserver {
       this.makeCommonNoteView();
       this.showCommonValueNote(showValueNote);
     } else if (this.valueNoteViewCommon) {
-      this.removeValueNotesFromAndTo();
+      this.removeCommonNoteView();
     }
   }
 
@@ -483,7 +479,7 @@ class View extends EventObserver {
     }
   }
 
-  private removeValueNotesFromAndTo(): void {
+  private removeCommonNoteView(): void {
     if (this.valueNoteViewFrom && this.valueNoteViewCommon) {
       this.valueNoteView.showValueNote(true);
       this.valueNoteViewFrom.showValueNote(true);

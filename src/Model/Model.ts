@@ -34,7 +34,6 @@ class Model extends EventObserver {
   public init(): void {
     this.setLimitsAndValues();
     this.setStep();
-    this.setDouble();
   }
 
   public setValueFromHandlerPos(data: {
@@ -61,13 +60,13 @@ class Model extends EventObserver {
 
   private setDouble(): void {
     const { limits: { min }, double, from } = this.options;
-    const ifIsDoubleAndNoFrom = double && from === null && from === undefined;
-    if (ifIsDoubleAndNoFrom) {
-      this.options.from = min;
-    }
-    if (!double && typeof from === 'number') {
-      this.options.from = null;
-    }
+    // const ifIsDoubleAndNoFrom = double && from === null && from === undefined;
+    // if (ifIsDoubleAndNoFrom) {
+    //   this.options.from = min;
+    // }
+    // if (!double && typeof from === 'number') {
+    //   this.options.from = null;
+    // }
   }
 
   private setLimitsAndValues(): void {
@@ -89,8 +88,16 @@ class Model extends EventObserver {
         this.setValue(to);
       }
     }
-    const ifIsDoubleAndWithFromAndTo = double && typeof from === 'number' && typeof to === 'number';
-    if (ifIsDoubleAndWithFromAndTo) {
+    if (!double && typeof from === 'number') {
+      this.options.from = null;
+    }
+
+    const isDoubleAndNoFrom = double && (from === null || from === undefined);
+    if (isDoubleAndNoFrom) {
+      this.options.from = min;
+    }
+    const isDoubleWithFromAndTo = double && typeof from === 'number' && typeof to === 'number';
+    if (isDoubleWithFromAndTo) {
       if (min > from && min > to) {
         this.options.from = min;
         this.options.to = min;
