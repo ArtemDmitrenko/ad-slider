@@ -15,6 +15,8 @@ class HandlerView extends EventObserver {
   constructor(parent: HTMLElement) {
     super();
     this.render(parent);
+    this.handleMouseMove = this.mouseMove.bind(this);
+    this.handleMouseUp = this.mouseUp.bind(this);
   }
 
   public getLength(): number {
@@ -87,8 +89,6 @@ class HandlerView extends EventObserver {
   }
 
   private bindMousemove(event: MouseEvent): void {
-    this.handleMouseMove = this.mouseMove.bind(this);
-    this.handleMouseUp = this.mouseUp.bind(this);
     if (event.type === 'mousedown') {
       document.addEventListener('mousemove', this.handleMouseMove);
       document.addEventListener('mouseup', this.handleMouseUp);
