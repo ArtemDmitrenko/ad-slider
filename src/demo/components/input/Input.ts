@@ -3,13 +3,18 @@ class Input {
 
   private inputElement!: HTMLInputElement;
 
-  constructor(parent: Element) {
+  constructor(parent: Element, callback: Function) {
     this.parent = parent;
-    this.init();
+    this.init(callback);
   }
 
-  private init(): void {
+  private init(callback: Function): void {
     this.inputElement = this.parent.querySelector('.js-input__value') as HTMLInputElement;
+    this.inputElement.addEventListener('change', this.handleInputChange.bind(this, callback));
+  }
+
+  private handleInputChange = (callback: Function): void => {
+    callback();
   }
 
   public getInputElement(): HTMLInputElement {

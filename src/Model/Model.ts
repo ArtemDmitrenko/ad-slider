@@ -12,21 +12,23 @@ interface IConfig {
   double: boolean;
   from?: number | null;
   to: number;
+  onChange?: (data: IConfig) => void;
 }
 
 class Model extends EventObserver {
   public options: IConfig;
 
-  constructor(opt: IConfig) {
+  constructor(options: IConfig) {
     super();
     this.options = {
-      limits: opt.limits,
-      showValueNote: opt.showValueNote,
-      step: opt.step,
-      vertical: opt.vertical,
-      double: opt.double,
-      from: opt.from,
-      to: opt.to,
+      limits: options.limits,
+      showValueNote: options.showValueNote,
+      step: options.step,
+      vertical: options.vertical,
+      double: options.double,
+      from: options.from,
+      to: options.to,
+      onChange: options.onChange,
     };
     this.init();
   }
@@ -50,6 +52,13 @@ class Model extends EventObserver {
       return;
     }
     this.setValAndBroadcast(value, isFrom);
+    this.callOnChange();
+  }
+
+  private callOnChange() {
+    if (this.options.onChange && typeof this.options.onChange === 'function') {
+      this.options.onChange(this.options);
+    }
   }
 
   private calcValueFromHandlerPos(relPos: number): number {
@@ -201,6 +210,7 @@ class Model extends EventObserver {
       const data = { isDouble: double, isFrom, showValueNote: this.options.showValueNote };
       this.broadcast(EventTypes.SET_POSITION, data);
     }
+    this.callOnChange();
   }
 
   private isValFromMovesOverValTo(value: number): boolean {

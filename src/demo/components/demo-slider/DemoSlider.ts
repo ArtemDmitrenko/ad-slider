@@ -12,6 +12,7 @@ type Config = {
   double: boolean;
   from?: number | null;
   to: number | null;
+  onChange?: (data: Config) => void;
 }
 
 class DemoSlider {
@@ -41,8 +42,6 @@ class DemoSlider {
 
   private options!: Config;
 
-  private adslider!: HTMLElement | null;
-
   constructor(parent: HTMLElement) {
     this.parent = parent;
     this.init();
@@ -50,11 +49,9 @@ class DemoSlider {
     this.initPlugin();
     this.getSliderOptions();
     this.updatePanel();
-    this.addListeners();
   }
 
   private init(): void {
-    this.adslider = this.parent.querySelector('.js-demo-slider__adslider');
     const minValueElement = this.parent.querySelector('.js-demo-slider__minimum-value');
     const maxValueElement = this.parent.querySelector('.js-demo-slider__maximum-value');
     const currentValueElement = this.parent.querySelector('.js-demo-slider__current-value');
@@ -65,39 +62,39 @@ class DemoSlider {
     const verticalElement = this.parent.querySelector('.js-demo-slider__vertical-view');
     const doubleElement = this.parent.querySelector('.js-demo-slider__double');
     if (minValueElement) {
-      this.minValueInstance = new Input(minValueElement);
+      this.minValueInstance = new Input(minValueElement, this.handleInputChange);
       this.inputsArray.push(this.minValueInstance.getInputElement());
     }
     if (maxValueElement) {
-      this.maxValueInstance = new Input(maxValueElement);
+      this.maxValueInstance = new Input(maxValueElement, this.handleInputChange);
       this.inputsArray.push(this.maxValueInstance.getInputElement());
     }
     if (currentValueElement) {
-      this.currentValueInstance = new Input(currentValueElement);
+      this.currentValueInstance = new Input(currentValueElement, this.handleInputChange);
       this.inputsArray.push(this.currentValueInstance.getInputElement());
     }
     if (stepElement) {
-      this.stepInstance = new Input(stepElement);
+      this.stepInstance = new Input(stepElement, this.handleInputChange);
       this.inputsArray.push(this.stepInstance.getInputElement());
     }
     if (fromElement) {
-      this.fromInstance = new Input(fromElement);
+      this.fromInstance = new Input(fromElement, this.handleInputChange);
       this.inputsArray.push(this.fromInstance.getInputElement());
     }
     if (toElement) {
-      this.toInstance = new Input(toElement);
+      this.toInstance = new Input(toElement, this.handleInputChange);
       this.inputsArray.push(this.toInstance.getInputElement());
     }
     if (noteValueElement) {
-      this.noteValueInstance = new Checkbox(noteValueElement);
+      this.noteValueInstance = new Checkbox(noteValueElement, this.handleInputChange);
       this.inputsArray.push(this.noteValueInstance.getCheckboxElement());
     }
     if (verticalElement) {
-      this.verticalInstance = new Checkbox(verticalElement);
+      this.verticalInstance = new Checkbox(verticalElement, this.handleInputChange);
       this.inputsArray.push(this.verticalInstance.getCheckboxElement());
     }
     if (doubleElement) {
-      this.doubleInstance = new Checkbox(doubleElement);
+      this.doubleInstance = new Checkbox(doubleElement, this.handleInputChange);
       this.inputsArray.push(this.doubleInstance.getCheckboxElement());
     }
   }
@@ -114,7 +111,12 @@ class DemoSlider {
       double: this.doubleInstance.isChecked(),
       from: this.fromInstance.getValue(),
       to: this.toInstance.getValue(),
+      onChange: this.handleOnChange,
     };
+  }
+
+  private handleOnChange = () => {
+    this.updatePanel();
   }
 
   private initPlugin(): void {
@@ -155,26 +157,7 @@ class DemoSlider {
     this.setInputsForDouble();
   }
 
-  private addListeners(): void {
-    this.inputsArray.forEach((item) => {
-      item.addEventListener(
-        'change',
-        this.handleInputChange.bind(this),
-      );
-    });
-    if (this.adslider) {
-      this.adslider.addEventListener(
-        'mousemove',
-        this.updatePanel.bind(this),
-      );
-      this.adslider.addEventListener(
-        'click',
-        this.updatePanel.bind(this),
-      );
-    }
-  }
-
-  private handleInputChange(): void {
+  private handleInputChange = (): void => {
     this.options = {
       limits: {
         min: this.minValueInstance.getValue(),
@@ -186,8 +169,8 @@ class DemoSlider {
       double: this.doubleInstance.isChecked(),
       from: this.fromInstance.getValue(),
       to: this.doubleInstance.isChecked() ? this.toInstance.getValue() : this.currentValueInstance.getValue(),
+      onChange: this.options.onChange,
     };
-
     $('.js-demo-slider__adslider', this.parent).adslider(
       'update',
       this.options,

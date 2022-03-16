@@ -3,13 +3,18 @@ class Checkbox {
 
   private checkboxElement!: HTMLInputElement;
 
-  constructor(parent: Element) {
+  constructor(parent: Element, callback: Function) {
     this.parent = parent;
-    this.init();
+    this.init(callback);
   }
 
-  private init(): void {
+  private init(callback: Function): void {
     this.checkboxElement = this.parent.querySelector('.js-checkbox__value') as HTMLInputElement;
+    this.checkboxElement.addEventListener('change', this.handleInputChange.bind(this, callback));
+  }
+
+  private handleInputChange = (callback: Function): void => {
+    callback();
   }
 
   public getCheckboxElement(): HTMLInputElement {
