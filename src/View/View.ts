@@ -427,6 +427,10 @@ class View extends EventObserver {
       this.showCommonValueNote(showValueNote);
     } else if (this.valueNoteViewCommon) {
       this.removeCommonNoteView();
+      this.valueNoteView.showValueNote(showValueNote);
+      if (this.valueNoteViewFrom) {
+        this.valueNoteViewFrom.showValueNote(showValueNote);
+      }
     }
   }
 
