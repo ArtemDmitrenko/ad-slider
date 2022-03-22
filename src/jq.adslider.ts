@@ -17,8 +17,7 @@ import Presenter from './Presenter/Presenter';
     update(options: IConfig): void {
       const { model } = $(this).data('presenter');
       const presenter = $(this).data('presenter');
-      model.options = options;
-      model.init();
+      model.init(options);
       presenter.updateView();
     },
     getOptions(): IConfig {

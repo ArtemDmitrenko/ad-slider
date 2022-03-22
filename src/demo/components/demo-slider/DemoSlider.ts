@@ -130,6 +130,7 @@ class DemoSlider {
   }
 
   private updatePanel() {
+    this.getSliderOptions();
     const {
       limits: { min, max },
       step,
