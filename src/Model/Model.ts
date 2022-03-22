@@ -20,16 +20,7 @@ class Model extends EventObserver {
 
   constructor(options: IConfig) {
     super();
-    this.options = {
-      limits: options.limits,
-      showValueNote: options.showValueNote,
-      step: options.step,
-      vertical: options.vertical,
-      double: options.double,
-      from: options.from,
-      to: options.to,
-      onChange: options.onChange,
-    };
+    this.options = { ...options };
     this.init(options);
   }
 
@@ -55,7 +46,7 @@ class Model extends EventObserver {
   }
 
   private callOnChange() {
-    if (this.options.onChange && typeof this.options.onChange === 'function') {
+    if (typeof this.options.onChange === 'function') {
       this.options.onChange(this.options);
     }
   }
@@ -219,11 +210,8 @@ class Model extends EventObserver {
       return value;
     }
     const numberOfSteps: number = Math.round((min - value) / step);
-    let newValue: number = step * Math.abs(numberOfSteps) + min;
-    if (newValue > max) {
-      newValue = max;
-    }
-    return newValue;
+    const newValue: number = step * Math.abs(numberOfSteps) + min;
+    return newValue > max ? max : newValue;
   }
 
   private setValueTo(value: number, min: number, max: number, step: number): void {
@@ -252,28 +240,22 @@ class Model extends EventObserver {
   }
 
   private setValAndBroadcast(value: number, isFrom: boolean): void {
-    const { limits, double } = this.options;
+    const { limits, double, showValueNote } = this.options;
+    const data = { isDouble: double, isFrom, showValueNote };
+    const options = {
+      limits,
+      isFrom,
+      value,
+    };
     if (isFrom) {
       this.options.from = this.calcValueWithStep(value);
-      const options = {
-        value: this.options.from,
-        limits,
-        isFrom,
-      };
-      this.broadcast(EventTypes.CALC_POSITION, options);
-      const data = { isDouble: double, isFrom, showValueNote: this.options.showValueNote };
-      this.broadcast(EventTypes.SET_POSITION, data);
+      options.value = this.options.from;
     } else {
       this.options.to = this.calcValueWithStep(value);
-      const options = {
-        value: this.options.to,
-        limits,
-        isFrom,
-      };
-      this.broadcast(EventTypes.CALC_POSITION, options);
-      const data = { isDouble: double, isFrom, showValueNote: this.options.showValueNote };
-      this.broadcast(EventTypes.SET_POSITION, data);
+      options.value = this.options.to;
     }
+    this.broadcast(EventTypes.CALC_POSITION, options);
+    this.broadcast(EventTypes.SET_POSITION, data);
     this.callOnChange();
   }
 
