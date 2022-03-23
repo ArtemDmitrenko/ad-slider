@@ -178,10 +178,8 @@ class Model extends EventObserver {
         this.options.from = min;
         this.setValueTo(to, min, max, step);
       } else {
-        if (typeof from === 'number' && from !== this.options.from) {
-          if (from > to) {
-            return;
-          }
+        if (from !== this.options.from && from > to) {
+          return;
         }
         this.setValueFrom(from, min, max, step, to);
         this.setValueTo(to, min, max, step);
