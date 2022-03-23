@@ -18,6 +18,10 @@ class Presenter {
     this.view.updateView(this.model.options);
   }
 
+  public validateModel(options: IConfig): void {
+    this.model.init(options);
+  }
+
   private addObservers(): void {
     this.view.addObserver(EventTypes.CHANGE_POSITION, this.handleCalcValue);
     this.model.addObserver(EventTypes.CALC_POSITION, this.handleCalcPos);

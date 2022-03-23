@@ -266,10 +266,7 @@ class Model extends EventObserver {
 
   private isValToMovesOverValFrom(value: number): boolean {
     const { from } = this.options;
-    if (from || from === 0) {
-      return value < from;
-    }
-    return false;
+    return from || from === 0 ? value < from : false;
   }
 
   private calcValueWithStep(value: number): number {
@@ -285,11 +282,7 @@ class Model extends EventObserver {
       newValue -= step;
     }
     if (value > maxStepValue) {
-      if (value > maxStepValue + (max - maxStepValue) / 2) {
-        newValue = max;
-      } else {
-        newValue = maxStepValue;
-      }
+      newValue = value > maxStepValue + (max - maxStepValue) / 2 ? max : maxStepValue;
     }
     return newValue;
   }

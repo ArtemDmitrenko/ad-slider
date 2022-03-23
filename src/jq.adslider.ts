@@ -15,9 +15,8 @@ import Presenter from './Presenter/Presenter';
       }
     },
     update(options: IConfig): void {
-      const { model } = $(this).data('presenter');
       const presenter = $(this).data('presenter');
-      model.init(options);
+      presenter.validateModel(options);
       presenter.updateView();
     },
     getOptions(): IConfig {
@@ -31,15 +30,15 @@ import Presenter from './Presenter/Presenter';
     getOptions(): IConfig,
   };
 
-  $.fn.adslider = function (methodOrOptions: keyof SliderMethods): void | IConfig {
-    if (methodOrOptions === 'update') {
-      return methods.update.call(this, arguments[1]);
+  $.fn.adslider = function (methodOrOptions: keyof SliderMethods, options?: IConfig): void | IConfig {
+    if (methodOrOptions === 'update' && options) {
+      return methods.update.call(this, options);
     }
     if (methodOrOptions === 'getOptions') {
       return methods.getOptions.call(this);
     }
-    if (typeof methodOrOptions === 'object' || !methodOrOptions) {
-      return methods.init.call(this, this[0], methodOrOptions);
+    if (typeof methodOrOptions === 'object' && options) {
+      return methods.init.call(this, this[0], options);
     }
     $.error(`Method ${methodOrOptions} does not exist on jQuery.tooltip`);
   };
