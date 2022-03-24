@@ -481,12 +481,17 @@ var _Presenter = _interopRequireDefault(require("./Presenter/Presenter"));
             return $(this).data('presenter').model.options;
         }
     };
-    $.fn.adslider = function(methodOrOptions, options) {
-        if (methodOrOptions === 'update' && options) return methods.update.call(this, options);
-        if (methodOrOptions === 'getOptions') return methods.getOptions.call(this);
-        if (_typeof2["default"](methodOrOptions) === 'object' && options) return methods.init.call(this, this[0], options);
-        $.error("Method ".concat(methodOrOptions, " does not exist on jQuery.tooltip"));
-    };
+    function adslider(arg1, arg2) {
+        if (typeof arg1 === 'string') {
+            if (arg1 === 'update' && arg2) return methods.update.call(this, arg2);
+            if (arg1 === 'getOptions' && !arg2) return methods.getOptions.call(this);
+        } else if (_typeof2["default"](arg1) === 'object' && !arg2) {
+            var el = $(this);
+            return methods.init.call(this, el, arg1);
+        }
+        $.error("Method ".concat(arg1, " does not exist on jQuery.tooltip"));
+    }
+    $.fn.adslider = adslider;
 })(jQuery);
 
 },{"@babel/runtime/helpers/interopRequireDefault":"eigyQ","@babel/runtime/helpers/typeof":"1XGzZ","./main.scss":"2NwCl","./Presenter/Presenter":"e1PEa"}],"eigyQ":[function(require,module,exports) {
