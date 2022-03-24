@@ -3,6 +3,12 @@ import { IConfig } from './Model/Model';
 import Presenter from './Presenter/Presenter';
 
 (function ($) {
+  type SliderMethods = {
+    init(container: HTMLElement, options: IConfig): void,
+    update(options: IConfig): void,
+    getOptions(): IConfig,
+  };
+
   const methods = {
     init(container: HTMLElement, options: IConfig): void {
       if ($(this).data('inited')) {
@@ -24,22 +30,27 @@ import Presenter from './Presenter/Presenter';
     },
   };
 
-  type SliderMethods = {
-    init(container: HTMLElement, options: IConfig): void,
-    update(options: IConfig): void,
-    getOptions(): IConfig,
-  };
+  function adslider(this: typeof $, options: IConfig): void;
+  function adslider(this: typeof $, methodName: keyof SliderMethods, options: IConfig): void;
+  function adslider(this: typeof $, methodName: keyof SliderMethods): IConfig;
 
-  $.fn.adslider = function (methodOrOptions: keyof SliderMethods, options?: IConfig): void | IConfig {
-    if (methodOrOptions === 'update' && options) {
-      return methods.update.call(this, options);
+  function adslider(
+    this: typeof $,
+    arg1: keyof SliderMethods | IConfig,
+    arg2?: IConfig,
+  ): void | IConfig {
+    if (typeof arg1 === 'string') {
+      if (arg1 === 'update' && arg2) {
+        return methods.update.call(this, arg2);
+      }
+      if (arg1 === 'getOptions' && !arg2) {
+        return methods.getOptions.call(this);
+      }
+    } else if (typeof arg1 === 'object' && !arg2) {
+      const el = ($(this) as unknown) as HTMLElement;
+      return methods.init.call(this, el, arg1);
     }
-    if (methodOrOptions === 'getOptions') {
-      return methods.getOptions.call(this);
-    }
-    if (typeof methodOrOptions === 'object' && options) {
-      return methods.init.call(this, this[0], options);
-    }
-    $.error(`Method ${methodOrOptions} does not exist on jQuery.tooltip`);
-  };
+    $.error(`Method ${arg1} does not exist on jQuery.tooltip`);
+  }
+  $.fn.adslider = adslider;
 }(jQuery));
