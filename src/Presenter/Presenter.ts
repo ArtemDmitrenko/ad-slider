@@ -22,6 +22,10 @@ class Presenter {
     this.model.init(options);
   }
 
+  public getModelOptions(): IConfig {
+    return this.model.options;
+  }
+
   private addObservers(): void {
     this.view.addObserver(EventTypes.CHANGE_POSITION, this.handleCalcValue);
     this.model.addObserver(EventTypes.CALC_POSITION, this.handleCalcPos);

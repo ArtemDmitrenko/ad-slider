@@ -1,5 +1,5 @@
 interface JQuery {
-  adslider(options: string): IConfig,
-  adslider(userOptions: IConfig): void,
-  adslider(options: string, userOptions: IConfig): void,
+  adslider(this: typeof $, options: IConfig): void;
+  adslider(this: typeof $, methodName: keyof SliderMethods, options: IConfig): void;
+  adslider(this: typeof $, methodName: keyof SliderMethods): IConfig;
 }

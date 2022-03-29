@@ -26,7 +26,7 @@ import Presenter from './Presenter/Presenter';
       presenter.updateView();
     },
     getOptions(): IConfig {
-      return $(this).data('presenter').model.options;
+      return $(this).data('presenter').getModelOptions();
     },
   };
 
