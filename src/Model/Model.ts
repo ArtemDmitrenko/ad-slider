@@ -20,8 +20,8 @@ class Model extends EventObserver {
 
   constructor(options: IConfig) {
     super();
-    this.options = { ...options };
-    this.init(options);
+    this.validateValues(options);
+    this.init(this.options);
   }
 
   public init(options: IConfig): void {
@@ -43,6 +43,31 @@ class Model extends EventObserver {
     }
     this.setValAndBroadcast(value, isFrom);
     this.callOnChange();
+  }
+
+  private validateValues(options: IConfig) {
+    let defaultLimits;
+    if (options.limits) {
+      defaultLimits = {
+        min: typeof options.limits.min === 'number' ? options.limits.min : -100,
+        max: typeof options.limits.max === 'number' ? options.limits.max : 100,
+      };
+    } else {
+      defaultLimits = {
+        min: -100,
+        max: 100,
+      };
+    }
+    this.options = {
+      limits: defaultLimits,
+      showValueNote: options.showValueNote || true,
+      step: typeof options.step === 'number' && options.step !== 0 ? options.step : 5,
+      vertical: options.vertical || false,
+      double: options.double || false,
+      from: options.double && !options.from ? 0 : null,
+      to: typeof options.to === 'number' ? options.to : 0,
+      onChange: options.onChange,
+    };
   }
 
   private callOnChange() {

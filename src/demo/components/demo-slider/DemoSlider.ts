@@ -102,15 +102,15 @@ class DemoSlider {
   private setInitOptionsForSlider(): void {
     this.initOptions = {
       limits: {
-        min: this.minValueInstance.getValue(),
-        max: this.maxValueInstance.getValue(),
+        min: Number.isNaN(this.minValueInstance.getValue()) ? -100 : this.minValueInstance.getValue(),
+        max: Number.isNaN(this.maxValueInstance.getValue()) ? 100 : this.maxValueInstance.getValue(),
       },
-      showValueNote: this.noteValueInstance.isChecked(),
-      step: this.stepInstance.getValue(),
-      vertical: this.verticalInstance.isChecked(),
-      double: this.doubleInstance.isChecked(),
-      from: this.fromInstance.getValue(),
-      to: this.toInstance.getValue(),
+      showValueNote: this.noteValueInstance.isChecked() || true,
+      step: Number.isNaN(this.stepInstance.getValue()) || this.stepInstance.getValue() === 0 ? 5 : this.stepInstance.getValue(),
+      vertical: this.verticalInstance.isChecked() || false,
+      double: this.doubleInstance.isChecked() || false,
+      from: this.doubleInstance.isChecked() && !this.fromInstance.getValue() ? 0 : null,
+      to: this.toInstance.getValue() || 0,
       onChange: this.handleOnChange,
     };
   }
