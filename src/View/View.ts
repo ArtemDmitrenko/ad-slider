@@ -11,13 +11,9 @@ class View extends EventObserver {
 
   private handlerViewFrom?: HandlerView;
 
-  private valueNoteViewFrom?: ValueNoteView;
-
   private valueNoteViewCommon?: ValueNoteView;
 
   private trackView!: TrackView;
-
-  private valueNoteView!: ValueNoteView;
 
   private adslider!: HTMLElement;
 
@@ -60,8 +56,8 @@ class View extends EventObserver {
       limits,
     });
     this.handlerView.setPos(double);
-    this.valueNoteView.setValue(to);
-    this.valueNoteView.showValueNote(showValueNote);
+    this.handlerView.setValue(to);
+    this.handlerView.showValueNote(showValueNote);
     this.trackView.drawScale(options, this.handlerView.handler);
     if (double) {
       this.updateViewForDouble(
@@ -82,7 +78,7 @@ class View extends EventObserver {
     isFrom: boolean,
   }): void {
     const { value, limits, isFrom } = options;
-    if (this.handlerViewFrom && this.valueNoteViewFrom) {
+    if (this.handlerViewFrom) {
       const data = {
         edge: this.getEdge(this.handlerViewFrom),
         value,
@@ -90,10 +86,10 @@ class View extends EventObserver {
       };
       if (isFrom) {
         this.handlerViewFrom.calcPos(data);
-        this.valueNoteViewFrom.setValue(value);
+        this.handlerViewFrom.setValue(value);
       } else {
         this.handlerView.calcPos(data);
-        this.valueNoteView.setValue(value);
+        this.handlerView.setValue(value);
       }
     } else {
       const data = {
@@ -102,7 +98,7 @@ class View extends EventObserver {
         limits,
       };
       this.handlerView.calcPos(data);
-      this.valueNoteView.setValue(value);
+      this.handlerView.setValue(value);
     }
   }
 
@@ -129,24 +125,18 @@ class View extends EventObserver {
     this.adslider = document.createElement('div');
     this.adslider.classList.add('adslider');
     this.el.append(this.adslider);
-
     this.trackView = new TrackView(this.adslider);
     this.handlerView = new HandlerView(this.trackView.track);
-    this.valueNoteView = new ValueNoteView(this.adslider);
-
     this.handlerViewFrom = new HandlerView(this.trackView.track);
+    this.handlerView.addClassToValueNoteElement('adslider__note_type_to');
+    this.handlerViewFrom.addClassToValueNoteElement('adslider__handler_type_from');
     this.handlerViewFrom.handler.classList.add('adslider__handler_type_from');
-    this.valueNoteViewFrom = new ValueNoteView(this.adslider);
-    this.valueNoteViewFrom.note.classList.add('adslider__note_type_from');
-    this.valueNoteView.note.classList.add('adslider__note_type_to');
   }
 
   private deleteHandlerFrom(): void {
-    if (this.handlerViewFrom && this.valueNoteViewFrom) {
-      this.handlerViewFrom.handler.remove();
-      this.valueNoteViewFrom.note.remove();
+    if (this.handlerViewFrom) {
+      this.handlerViewFrom.deleteInstance();
       delete this.handlerViewFrom;
-      delete this.valueNoteViewFrom;
     }
   }
 
@@ -168,17 +158,17 @@ class View extends EventObserver {
     }
     this.updateObservers();
     this.setVerticalViewForDouble(vertical);
-    if (this.handlerViewFrom && this.valueNoteViewFrom) {
+    if (this.handlerViewFrom) {
       this.handlerViewFrom.calcPos({
         edge: this.getEdge(this.handlerViewFrom),
         value: from,
         limits,
       });
       this.handlerViewFrom.setPos(true);
-      this.valueNoteViewFrom.calcPos(this.handlerViewFrom.handler);
-      this.valueNoteViewFrom.setPos();
-      this.valueNoteViewFrom.setValue(from);
-      this.valueNoteViewFrom.showValueNote(showValueNote);
+      this.handlerViewFrom.calcValuePos(this.handlerViewFrom.handler);
+      this.handlerViewFrom.setValuePos();
+      this.handlerViewFrom.setValue(from);
+      this.handlerViewFrom.showValueNote(showValueNote);
       this.trackView.setBarLengthForDouble({
         valueFrom: this.handlerViewFrom.getPos(),
         valueTo: this.handlerView.getPos(),
@@ -191,8 +181,7 @@ class View extends EventObserver {
   private renderHandlerFrom(): void {
     this.handlerViewFrom = new HandlerView(this.trackView.track);
     this.handlerViewFrom.handler.classList.add('adslider__handler_type_from');
-    this.valueNoteViewFrom = new ValueNoteView(this.adslider);
-    this.valueNoteViewFrom.note.classList.add('adslider__note_type_from');
+    this.handlerViewFrom.addClassToValueNoteElement('adslider__note_type_from');
     this.handlerViewFrom.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleMouseDown);
     this.handlerViewFrom.addObserver(EventTypes.HANDLER_MOUSEMOVE_EVENT, this.mouseMove);
   }
@@ -277,13 +266,11 @@ class View extends EventObserver {
     }
     this.trackView.setVerticalView(vertical);
     this.handlerView.setVerticalView(vertical);
-    this.valueNoteView.setVerticalView(vertical);
   }
 
   private setVerticalViewForDouble(vertical: boolean): void {
-    if (this.handlerViewFrom && this.valueNoteViewFrom) {
+    if (this.handlerViewFrom) {
       this.handlerViewFrom.setVerticalView(vertical);
-      this.valueNoteViewFrom.setVerticalView(vertical);
     }
   }
 
@@ -418,30 +405,30 @@ class View extends EventObserver {
       this.showCommonValueNote(showValueNote);
     } else if (this.valueNoteViewCommon) {
       this.removeCommonNoteView();
-      this.valueNoteView.showValueNote(showValueNote);
-      if (this.valueNoteViewFrom) {
-        this.valueNoteViewFrom.showValueNote(showValueNote);
+      this.handlerView.showValueNote(showValueNote);
+      if (this.handlerViewFrom) {
+        this.handlerViewFrom.showValueNote(showValueNote);
       }
     }
   }
 
   private isSmallDistanceBetweenNotes(): boolean {
-    if (this.valueNoteViewFrom) {
-      const distAmongNotes: number = this.valueNoteView.getPos() - this.valueNoteViewFrom.getPos();
-      return distAmongNotes < this.valueNoteView.getSize();
+    if (this.handlerViewFrom) {
+      const distAmongNotes: number = this.handlerView.getValueNotePos() - this.handlerViewFrom.getValueNotePos();
+      return distAmongNotes < this.handlerView.getValueNoteSize();
     }
     return false;
   }
 
   private makeCommonNoteView(): void {
-    if (this.valueNoteViewFrom) {
-      this.valueNoteViewFrom.showValueNote(false);
+    if (this.handlerViewFrom) {
+      this.handlerViewFrom.showValueNote(false);
     }
-    this.valueNoteView.showValueNote(false);
+    this.handlerView.showValueNote(false);
     if (this.valueNoteViewCommon) {
       this.updateCommonNoteView();
     } else {
-      this.valueNoteViewCommon = new ValueNoteView(this.adslider);
+      this.valueNoteViewCommon = new ValueNoteView(this.trackView.track);
       this.valueNoteViewCommon.note.classList.add('adslider__note_common');
       this.valueNoteViewCommon.setVerticalView(this.isVertical());
       this.updateCommonNoteView();
@@ -460,12 +447,9 @@ class View extends EventObserver {
 
   private updateCommonNoteView(): void {
     if (this.handlerViewFrom && this.valueNoteViewCommon) {
-      const valueTo = this.valueNoteView.getValue();
-      let valueFrom: number;
-      if (this.valueNoteViewFrom) {
-        valueFrom = this.valueNoteViewFrom.getValue();
-        this.valueNoteViewCommon.setValueForTwo(valueFrom, valueTo);
-      }
+      const valueTo = this.handlerView.getValueOfNote();
+      const valueFrom = this.handlerViewFrom.getValueOfNote();
+      this.valueNoteViewCommon.setValueForTwo(valueFrom, valueTo);
       const leftEdgeOfHandlerFrom = this.handlerViewFrom.getPos();
       const rightEdgeOfHandlerTo = this.handlerView.getPos() + this.handlerView.getLength();
       const distAmongEdgesOfHandlers = rightEdgeOfHandlerTo - leftEdgeOfHandlerFrom;
@@ -475,9 +459,9 @@ class View extends EventObserver {
   }
 
   private removeCommonNoteView(): void {
-    if (this.valueNoteViewFrom && this.valueNoteViewCommon) {
-      this.valueNoteView.showValueNote(true);
-      this.valueNoteViewFrom.showValueNote(true);
+    if (this.handlerViewFrom && this.valueNoteViewCommon) {
+      this.handlerView.showValueNote(true);
+      this.handlerViewFrom.showValueNote(true);
       this.valueNoteViewCommon.note.remove();
       delete this.valueNoteViewCommon;
     }
@@ -516,7 +500,7 @@ class View extends EventObserver {
   }
 
   private updateObservers(): void {
-    if (this.handlerViewFrom && this.valueNoteViewFrom) {
+    if (this.handlerViewFrom && this.handlerViewFrom) {
       if (!Object.prototype.hasOwnProperty.call(this.handlerViewFrom.observers, EventTypes.CALC_VALUE_NOTE_POSITION)) {
         this.handlerViewFrom.addObserver(EventTypes.CALC_VALUE_NOTE_POSITION, this.handleCalcValueNoteFromPos);
         this.handlerViewFrom.addObserver(EventTypes.SET_VALUE_NOTE_POS, this.handleSetValueNoteFromPos);
@@ -526,23 +510,23 @@ class View extends EventObserver {
   }
 
   private handleSetValueNoteFromPos = () => {
-    if (this.valueNoteViewFrom) {
-      this.valueNoteViewFrom.setPos();
+    if (this.handlerViewFrom) {
+      this.handlerViewFrom.setValuePos();
     }
   }
 
   private handleCalcValueNoteFromPos = (handler: HTMLElement) => {
-    if (this.valueNoteViewFrom) {
-      this.valueNoteViewFrom.calcPos(handler);
+    if (this.handlerViewFrom) {
+      this.handlerViewFrom.calcValuePos(handler);
     }
   }
 
   private handleSetValueNotePos = () => {
-    this.valueNoteView.setPos();
+    this.handlerView.setValuePos();
   }
 
   private handleCalcValueNotePos = (handler: HTMLElement) => {
-    this.valueNoteView.calcPos(handler);
+    this.handlerView.calcValuePos(handler);
   }
 }
 

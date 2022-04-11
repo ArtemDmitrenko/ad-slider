@@ -48,14 +48,14 @@
     }
     &_direction {
       &_horizontal {
-        bottom: 4rem;
+        bottom: 2rem;
         transform: translate(-50%, 0);
         &::after {
           top: 2.125rem;
         }
       }
       &_vertical {
-        left: 4.3rem;
+        left: 2rem;
         transform: translate(0, 50%);
         &::after {
           left: -0.83rem;
@@ -119,9 +119,9 @@
     cursor: pointer;
     &_direction {
       &_horizontal {
-        bottom: -15px;
-        padding-top: 27px;
-        padding-bottom: -35px;  
+        height: 35px;
+        top: 0;
+        padding-top: 23px;
       }
       &_vertical {
         left: -45px;

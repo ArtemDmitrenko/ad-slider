@@ -1,6 +1,5 @@
 import { IConfig } from '../../Model/Model';
 import EventObserver from '../../EventObserver/EventObserver';
-import EventTypes from '../../EventObserver/eventTypes';
 
 class ScaleView extends EventObserver {
   private parent!: HTMLElement;
@@ -16,7 +15,6 @@ class ScaleView extends EventObserver {
   constructor(parent: HTMLElement) {
     super();
     this.render(parent);
-    this.addListeners();
   }
 
   public drawScale(options: IConfig, handler: HTMLElement): void {
@@ -55,14 +53,6 @@ class ScaleView extends EventObserver {
     }
     return line;
   }
-
-  private addListeners(): void {
-    this.scale.addEventListener('mousedown', this.handleScaleMouseDown);
-  }
-
-  private handleScaleMouseDown = (event: MouseEvent): void => {
-    this.broadcast(EventTypes.HANDLER_MOUSEDOWN_EVENT, event);
-  };
 
   private calcNumberOfLines(step: number, odd: number): void {
     this.numberOfLines = odd % step === 0 ? odd / step + 1 : Math.floor(odd / step + 2);

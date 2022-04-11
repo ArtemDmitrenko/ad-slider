@@ -76,6 +76,10 @@ class ValueNoteView extends EventObserver {
     return this.note.classList.contains('adslider__note_direction_vertical') ? parseInt(getComputedStyle(this.note).bottom, 10) : parseInt(getComputedStyle(this.note).left, 10);
   }
 
+  public addClassToNoteElement(className: string): void {
+    this.note.classList.add(className);
+  }
+
   private render(parent: HTMLElement): void {
     this.note = document.createElement('div');
     this.value = document.createElement('p');

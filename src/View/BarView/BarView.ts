@@ -1,5 +1,4 @@
 import EventObserver from '../../EventObserver/EventObserver';
-import EventTypes from '../../EventObserver/eventTypes';
 
 class BarView extends EventObserver {
   private bar!: HTMLElement;
@@ -9,7 +8,6 @@ class BarView extends EventObserver {
   constructor(parent: HTMLElement) {
     super();
     this.render(parent);
-    this.addListeners();
   }
 
   public setVerticalView(verticalView: boolean): void {
@@ -74,14 +72,6 @@ class BarView extends EventObserver {
     this.bar = document.createElement('div');
     this.bar.classList.add('adslider__bar');
     parent.append(this.bar);
-  }
-
-  private addListeners(): void {
-    this.bar.addEventListener('mousedown', this.handleBarMouseDown);
-  }
-
-  private handleBarMouseDown = (event: MouseEvent): void => {
-    this.broadcast(EventTypes.HANDLER_MOUSEDOWN_EVENT, event);
   }
 
   private calcBarPosForSingle(handlerPos: number, handlerLength: number): void {

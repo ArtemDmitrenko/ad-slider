@@ -1,5 +1,6 @@
 import EventObserver from '../../EventObserver/EventObserver';
 import EventTypes from '../../EventObserver/eventTypes';
+import ValueNoteView from '../ValueNoteView/ValueNoteView';
 
 class HandlerView extends EventObserver {
   public handler!: HTMLElement;
@@ -7,6 +8,8 @@ class HandlerView extends EventObserver {
   private parent!: HTMLElement;
 
   private handlerPos!: number;
+
+  private valueNoteView!: ValueNoteView;
 
   private handleMouseMove!: (e: MouseEvent) => void;
 
@@ -66,6 +69,44 @@ class HandlerView extends EventObserver {
       this.handler.classList.remove('adslider__handler_direction_vertical');
       this.handler.classList.add('adslider__handler_direction_horizontal');
     }
+    this.valueNoteView.setVerticalView(verticalView);
+  }
+
+  public setValue(value: number | null | undefined): void {
+    this.valueNoteView.setValue(value);
+  }
+
+  public showValueNote(isValueShown: boolean): void {
+    this.valueNoteView.showValueNote(isValueShown);
+  }
+
+  public calcValuePos(handler: HTMLElement): void {
+    this.valueNoteView.calcPos(handler);
+  }
+
+  public setValuePos(): void {
+    this.valueNoteView.setPos();
+  }
+
+  public getValueNotePos(): number {
+    return this.valueNoteView.getPos();
+  }
+
+  public getValueNoteSize(): number {
+    return this.valueNoteView.getSize();
+  }
+
+  public getValueOfNote(): number {
+    return this.valueNoteView.getValue();
+  }
+
+  public addClassToValueNoteElement(className: string): void {
+    this.valueNoteView.addClassToNoteElement(className);
+  }
+
+  public deleteInstance(): void {
+    this.handler.remove();
+    this.valueNoteView.note.remove();
   }
 
   private isVertical(): boolean {
@@ -77,6 +118,7 @@ class HandlerView extends EventObserver {
     this.handler = document.createElement('div');
     this.handler.classList.add('adslider__handler');
     this.parent.append(this.handler);
+    this.valueNoteView = new ValueNoteView(parent);
     this.handler.addEventListener('mousedown', this.handleHandlerMouseDown);
   }
 
