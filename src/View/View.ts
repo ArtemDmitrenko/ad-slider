@@ -1,8 +1,6 @@
 import HandlerView from './HandlerView/HandlerView';
 import TrackView from './TrackView/TrackView';
 import ValueNoteView from './ValueNoteView/ValueNoteView';
-import BarView from './BarView/BarView';
-import ScaleView from './ScaleView/ScaleView';
 import EventObserver from '../EventObserver/EventObserver';
 import EventTypes from '../EventObserver/eventTypes';
 
@@ -20,10 +18,6 @@ class View extends EventObserver {
   private trackView!: TrackView;
 
   private valueNoteView!: ValueNoteView;
-
-  private barView!: BarView;
-
-  private scaleView!: ScaleView;
 
   private adslider!: HTMLElement;
 
@@ -68,7 +62,7 @@ class View extends EventObserver {
     this.handlerView.setPos(double);
     this.valueNoteView.setValue(to);
     this.valueNoteView.showValueNote(showValueNote);
-    this.scaleView.drawScale(options, this.handlerView.handler);
+    this.trackView.drawScale(options, this.handlerView.handler);
     if (double) {
       this.updateViewForDouble(
         vertical,
@@ -137,8 +131,6 @@ class View extends EventObserver {
     this.el.append(this.adslider);
 
     this.trackView = new TrackView(this.adslider);
-    this.barView = new BarView(this.adslider);
-    this.scaleView = new ScaleView(this.adslider);
     this.handlerView = new HandlerView(this.trackView.track);
     this.valueNoteView = new ValueNoteView(this.adslider);
 
@@ -187,7 +179,7 @@ class View extends EventObserver {
       this.valueNoteViewFrom.setPos();
       this.valueNoteViewFrom.setValue(from);
       this.valueNoteViewFrom.showValueNote(showValueNote);
-      this.barView.setLengthForDouble({
+      this.trackView.setBarLengthForDouble({
         valueFrom: this.handlerViewFrom.getPos(),
         valueTo: this.handlerView.getPos(),
         handler: this.handlerView.handler,
@@ -286,7 +278,6 @@ class View extends EventObserver {
     this.trackView.setVerticalView(vertical);
     this.handlerView.setVerticalView(vertical);
     this.valueNoteView.setVerticalView(vertical);
-    this.barView.setVerticalView(vertical);
   }
 
   private setVerticalViewForDouble(vertical: boolean): void {
@@ -498,14 +489,14 @@ class View extends EventObserver {
     double: boolean
   }): void => {
     if (!data.double) {
-      this.barView.setLength(data.handler);
+      this.trackView.setBarLength(data.handler);
     } else if (this.handlerViewFrom) {
       const options = {
         valueFrom: this.handlerViewFrom.getPos(),
         valueTo: this.handlerView.getPos(),
         handler: data.handler,
       };
-      this.barView.setLengthForDouble(options);
+      this.trackView.setBarLengthForDouble(options);
     }
   }
 
@@ -517,8 +508,8 @@ class View extends EventObserver {
       this.handlerViewFrom.addObserver(EventTypes.HANDLER_MOUSEMOVE_EVENT, this.mouseMove);
     }
     this.trackView.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleChangePos);
-    this.barView.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleChangePos);
-    this.scaleView.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleChangePos);
+    // this.barView.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleChangePos);
+    // this.scaleView.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleChangePos);
     this.handlerView.addObserver(EventTypes.CALC_VALUE_NOTE_POSITION, this.handleCalcValueNotePos);
     this.handlerView.addObserver(EventTypes.SET_VALUE_NOTE_POS, this.handleSetValueNotePos);
     this.handlerView.addObserver(EventTypes.SET_BAR, this.handleSetBar);
