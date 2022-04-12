@@ -492,8 +492,6 @@ class View extends EventObserver {
       this.handlerViewFrom.addObserver(EventTypes.HANDLER_MOUSEMOVE_EVENT, this.mouseMove);
     }
     this.trackView.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleChangePos);
-    // this.barView.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleChangePos);
-    // this.scaleView.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleChangePos);
     this.handlerView.addObserver(EventTypes.CALC_VALUE_NOTE_POSITION, this.handleCalcValueNotePos);
     this.handlerView.addObserver(EventTypes.SET_VALUE_NOTE_POS, this.handleSetValueNotePos);
     this.handlerView.addObserver(EventTypes.SET_BAR, this.handleSetBar);
