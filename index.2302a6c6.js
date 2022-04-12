@@ -478,7 +478,7 @@ var _Presenter = _interopRequireDefault(require("./Presenter/Presenter"));
             presenter.updateView();
         },
         getOptions: function getOptions() {
-            return $(this).data('presenter').model.options;
+            return $(this).data('presenter').getModelOptions();
         }
     };
     function adslider(arg1, arg2) {
@@ -568,6 +568,12 @@ var Presenter = /*#__PURE__*/ function() {
             }
         },
         {
+            key: "getModelOptions",
+            value: function getModelOptions() {
+                return this.model.options;
+            }
+        },
+        {
             key: "addObservers",
             value: function addObservers() {
                 this.view.addObserver(_eventTypes["default"].CHANGE_POSITION, this.handleCalcValue);
@@ -636,31 +642,6 @@ var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/ge
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 var _EventObserver2 = _interopRequireDefault(require("../EventObserver/EventObserver"));
 var _eventTypes = _interopRequireDefault(require("../EventObserver/eventTypes"));
-function ownKeys(object, enumerableOnly) {
-    var keys = Object.keys(object);
-    if (Object.getOwnPropertySymbols) {
-        var symbols = Object.getOwnPropertySymbols(object);
-        if (enumerableOnly) symbols = symbols.filter(function(sym) {
-            return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-        });
-        keys.push.apply(keys, symbols);
-    }
-    return keys;
-}
-function _objectSpread(target) {
-    for(var i = 1; i < arguments.length; i++){
-        var source = arguments[i] != null ? arguments[i] : {
-        };
-        if (i % 2) ownKeys(Object(source), true).forEach(function(key) {
-            _defineProperty2["default"](target, key, source[key]);
-        });
-        else if (Object.getOwnPropertyDescriptors) Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-        else ownKeys(Object(source)).forEach(function(key) {
-            Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-        });
-    }
-    return target;
-}
 function _createSuper(Derived) {
     var hasNativeReflectConstruct = _isNativeReflectConstruct();
     return function _createSuperInternal() {
@@ -692,9 +673,8 @@ var Model1 = /*#__PURE__*/ function(_EventObserver) {
         _classCallCheck2["default"](this, Model2);
         _this = _super.call(this);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "options", void 0);
-        _this.options = _objectSpread({
-        }, options);
-        _this.init(options);
+        _this.validateValues(options);
+        _this.init(_this.options);
         return _this;
     }
     _createClass2["default"](Model2, [
@@ -714,6 +694,30 @@ var Model1 = /*#__PURE__*/ function(_EventObserver) {
                 if (!isFrom && conditionForReturn) return;
                 this.setValAndBroadcast(value, isFrom);
                 this.callOnChange();
+            }
+        },
+        {
+            key: "validateValues",
+            value: function validateValues(options) {
+                var defaultLimits;
+                if (options.limits) defaultLimits = {
+                    min: typeof options.limits.min === 'number' ? options.limits.min : -100,
+                    max: typeof options.limits.max === 'number' ? options.limits.max : 100
+                };
+                else defaultLimits = {
+                    min: -100,
+                    max: 100
+                };
+                this.options = {
+                    limits: defaultLimits,
+                    showValueNote: options.showValueNote || true,
+                    step: typeof options.step === 'number' && options.step !== 0 ? options.step : 5,
+                    vertical: options.vertical || false,
+                    "double": options["double"] || false,
+                    from: options["double"] && !options.from ? 0 : null,
+                    to: typeof options.to === 'number' ? options.to : 0,
+                    onChange: options.onChange
+                };
             }
         },
         {
@@ -1059,8 +1063,6 @@ var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/de
 var _HandlerView = _interopRequireDefault(require("./HandlerView/HandlerView"));
 var _TrackView = _interopRequireDefault(require("./TrackView/TrackView"));
 var _ValueNoteView = _interopRequireDefault(require("./ValueNoteView/ValueNoteView"));
-var _BarView = _interopRequireDefault(require("./BarView/BarView"));
-var _ScaleView = _interopRequireDefault(require("./ScaleView/ScaleView"));
 var _EventObserver2 = _interopRequireDefault(require("../EventObserver/EventObserver"));
 var _eventTypes = _interopRequireDefault(require("../EventObserver/eventTypes"));
 function _createSuper(Derived) {
@@ -1096,12 +1098,8 @@ var View1 = /*#__PURE__*/ function(_EventObserver) {
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "el", void 0);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handlerView", void 0);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handlerViewFrom", void 0);
-        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "valueNoteViewFrom", void 0);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "valueNoteViewCommon", void 0);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "trackView", void 0);
-        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "valueNoteView", void 0);
-        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "barView", void 0);
-        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "scaleView", void 0);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "adslider", void 0);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handlerShift", void 0);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "areHandlersInOnePoint", void 0);
@@ -1146,27 +1144,27 @@ var View1 = /*#__PURE__*/ function(_EventObserver) {
             _this.broadcast(_eventTypes["default"].CHANGE_POSITION, options);
         });
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleSetBar", function(data) {
-            if (!data["double"]) _this.barView.setLength(data.handler);
+            if (!data["double"]) _this.trackView.setBarLength(data.handler);
             else if (_this.handlerViewFrom) {
                 var options = {
                     valueFrom: _this.handlerViewFrom.getPos(),
                     valueTo: _this.handlerView.getPos(),
                     handler: data.handler
                 };
-                _this.barView.setLengthForDouble(options);
+                _this.trackView.setBarLengthForDouble(options);
             }
         });
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleSetValueNoteFromPos", function() {
-            if (_this.valueNoteViewFrom) _this.valueNoteViewFrom.setPos();
+            if (_this.handlerViewFrom) _this.handlerViewFrom.setValuePos();
         });
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleCalcValueNoteFromPos", function(handler) {
-            if (_this.valueNoteViewFrom) _this.valueNoteViewFrom.calcPos(handler);
+            if (_this.handlerViewFrom) _this.handlerViewFrom.calcValuePos(handler);
         });
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleSetValueNotePos", function() {
-            _this.valueNoteView.setPos();
+            _this.handlerView.setValuePos();
         });
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleCalcValueNotePos", function(handler) {
-            _this.valueNoteView.calcPos(handler);
+            _this.handlerView.calcValuePos(handler);
         });
         _this.render(container);
         _this.addObservers();
@@ -1184,9 +1182,9 @@ var View1 = /*#__PURE__*/ function(_EventObserver) {
                     limits: limits
                 });
                 this.handlerView.setPos(_double);
-                this.valueNoteView.setValue(to);
-                this.valueNoteView.showValueNote(showValueNote);
-                this.scaleView.drawScale(options, this.handlerView.handler);
+                this.handlerView.setValue(to);
+                this.handlerView.showValueNote(showValueNote);
+                this.trackView.drawScale(options, this.handlerView.handler);
                 if (_double) this.updateViewForDouble(vertical, from, limits, showValueNote);
                 else if (this.handlerViewFrom) {
                     this.deleteHandlerFrom();
@@ -1198,7 +1196,7 @@ var View1 = /*#__PURE__*/ function(_EventObserver) {
             key: "calcPos",
             value: function calcPos(options) {
                 var value = options.value, limits = options.limits, isFrom = options.isFrom;
-                if (this.handlerViewFrom && this.valueNoteViewFrom) {
+                if (this.handlerViewFrom) {
                     var data = {
                         edge: this.getEdge(this.handlerViewFrom),
                         value: value,
@@ -1206,10 +1204,10 @@ var View1 = /*#__PURE__*/ function(_EventObserver) {
                     };
                     if (isFrom) {
                         this.handlerViewFrom.calcPos(data);
-                        this.valueNoteViewFrom.setValue(value);
+                        this.handlerViewFrom.setValue(value);
                     } else {
                         this.handlerView.calcPos(data);
-                        this.valueNoteView.setValue(value);
+                        this.handlerView.setValue(value);
                     }
                 } else {
                     var _data = {
@@ -1218,7 +1216,7 @@ var View1 = /*#__PURE__*/ function(_EventObserver) {
                         limits: limits
                     };
                     this.handlerView.calcPos(_data);
-                    this.valueNoteView.setValue(value);
+                    this.handlerView.setValue(value);
                 }
             }
         },
@@ -1241,25 +1239,19 @@ var View1 = /*#__PURE__*/ function(_EventObserver) {
                 this.adslider.classList.add('adslider');
                 this.el.append(this.adslider);
                 this.trackView = new _TrackView["default"](this.adslider);
-                this.barView = new _BarView["default"](this.adslider);
-                this.scaleView = new _ScaleView["default"](this.adslider);
                 this.handlerView = new _HandlerView["default"](this.trackView.track);
-                this.valueNoteView = new _ValueNoteView["default"](this.adslider);
                 this.handlerViewFrom = new _HandlerView["default"](this.trackView.track);
+                this.handlerView.addClassToValueNoteElement('adslider__note_type_to');
+                this.handlerViewFrom.addClassToValueNoteElement('adslider__handler_type_from');
                 this.handlerViewFrom.handler.classList.add('adslider__handler_type_from');
-                this.valueNoteViewFrom = new _ValueNoteView["default"](this.adslider);
-                this.valueNoteViewFrom.note.classList.add('adslider__note_type_from');
-                this.valueNoteView.note.classList.add('adslider__note_type_to');
             }
         },
         {
             key: "deleteHandlerFrom",
             value: function deleteHandlerFrom() {
-                if (this.handlerViewFrom && this.valueNoteViewFrom) {
-                    this.handlerViewFrom.handler.remove();
-                    this.valueNoteViewFrom.note.remove();
+                if (this.handlerViewFrom) {
+                    this.handlerViewFrom.deleteInstance();
                     delete this.handlerViewFrom;
-                    delete this.valueNoteViewFrom;
                 }
             }
         },
@@ -1278,18 +1270,18 @@ var View1 = /*#__PURE__*/ function(_EventObserver) {
                 if (!this.handlerViewFrom) this.renderHandlerFrom();
                 this.updateObservers();
                 this.setVerticalViewForDouble(vertical);
-                if (this.handlerViewFrom && this.valueNoteViewFrom) {
+                if (this.handlerViewFrom) {
                     this.handlerViewFrom.calcPos({
                         edge: this.getEdge(this.handlerViewFrom),
                         value: from,
                         limits: limits
                     });
                     this.handlerViewFrom.setPos(true);
-                    this.valueNoteViewFrom.calcPos(this.handlerViewFrom.handler);
-                    this.valueNoteViewFrom.setPos();
-                    this.valueNoteViewFrom.setValue(from);
-                    this.valueNoteViewFrom.showValueNote(showValueNote);
-                    this.barView.setLengthForDouble({
+                    this.handlerViewFrom.calcValuePos(this.handlerViewFrom.handler);
+                    this.handlerViewFrom.setValuePos();
+                    this.handlerViewFrom.setValue(from);
+                    this.handlerViewFrom.showValueNote(showValueNote);
+                    this.trackView.setBarLengthForDouble({
                         valueFrom: this.handlerViewFrom.getPos(),
                         valueTo: this.handlerView.getPos(),
                         handler: this.handlerView.handler
@@ -1303,8 +1295,7 @@ var View1 = /*#__PURE__*/ function(_EventObserver) {
             value: function renderHandlerFrom() {
                 this.handlerViewFrom = new _HandlerView["default"](this.trackView.track);
                 this.handlerViewFrom.handler.classList.add('adslider__handler_type_from');
-                this.valueNoteViewFrom = new _ValueNoteView["default"](this.adslider);
-                this.valueNoteViewFrom.note.classList.add('adslider__note_type_from');
+                this.handlerViewFrom.addClassToValueNoteElement('adslider__note_type_from');
                 this.handlerViewFrom.addObserver(_eventTypes["default"].HANDLER_MOUSEDOWN_EVENT, this.handleMouseDown);
                 this.handlerViewFrom.addObserver(_eventTypes["default"].HANDLER_MOUSEMOVE_EVENT, this.mouseMove);
             }
@@ -1374,17 +1365,12 @@ var View1 = /*#__PURE__*/ function(_EventObserver) {
                 }
                 this.trackView.setVerticalView(vertical);
                 this.handlerView.setVerticalView(vertical);
-                this.valueNoteView.setVerticalView(vertical);
-                this.barView.setVerticalView(vertical);
             }
         },
         {
             key: "setVerticalViewForDouble",
             value: function setVerticalViewForDouble(vertical) {
-                if (this.handlerViewFrom && this.valueNoteViewFrom) {
-                    this.handlerViewFrom.setVerticalView(vertical);
-                    this.valueNoteViewFrom.setVerticalView(vertical);
-                }
+                if (this.handlerViewFrom) this.handlerViewFrom.setVerticalView(vertical);
             }
         },
         {
@@ -1486,17 +1472,17 @@ var View1 = /*#__PURE__*/ function(_EventObserver) {
                     this.showCommonValueNote(showValueNote);
                 } else if (this.valueNoteViewCommon) {
                     this.removeCommonNoteView();
-                    this.valueNoteView.showValueNote(showValueNote);
-                    if (this.valueNoteViewFrom) this.valueNoteViewFrom.showValueNote(showValueNote);
+                    this.handlerView.showValueNote(showValueNote);
+                    if (this.handlerViewFrom) this.handlerViewFrom.showValueNote(showValueNote);
                 }
             }
         },
         {
             key: "isSmallDistanceBetweenNotes",
             value: function isSmallDistanceBetweenNotes() {
-                if (this.valueNoteViewFrom) {
-                    var distAmongNotes = this.valueNoteView.getPos() - this.valueNoteViewFrom.getPos();
-                    return distAmongNotes < this.valueNoteView.getSize();
+                if (this.handlerViewFrom) {
+                    var distAmongNotes = this.handlerView.getValueNotePos() - this.handlerViewFrom.getValueNotePos();
+                    return distAmongNotes < this.handlerView.getValueNoteSize();
                 }
                 return false;
             }
@@ -1504,11 +1490,11 @@ var View1 = /*#__PURE__*/ function(_EventObserver) {
         {
             key: "makeCommonNoteView",
             value: function makeCommonNoteView() {
-                if (this.valueNoteViewFrom) this.valueNoteViewFrom.showValueNote(false);
-                this.valueNoteView.showValueNote(false);
+                if (this.handlerViewFrom) this.handlerViewFrom.showValueNote(false);
+                this.handlerView.showValueNote(false);
                 if (this.valueNoteViewCommon) this.updateCommonNoteView();
                 else {
-                    this.valueNoteViewCommon = new _ValueNoteView["default"](this.adslider);
+                    this.valueNoteViewCommon = new _ValueNoteView["default"](this.trackView.track);
                     this.valueNoteViewCommon.note.classList.add('adslider__note_common');
                     this.valueNoteViewCommon.setVerticalView(this.isVertical());
                     this.updateCommonNoteView();
@@ -1531,12 +1517,9 @@ var View1 = /*#__PURE__*/ function(_EventObserver) {
             key: "updateCommonNoteView",
             value: function updateCommonNoteView() {
                 if (this.handlerViewFrom && this.valueNoteViewCommon) {
-                    var valueTo = this.valueNoteView.getValue();
-                    var valueFrom;
-                    if (this.valueNoteViewFrom) {
-                        valueFrom = this.valueNoteViewFrom.getValue();
-                        this.valueNoteViewCommon.setValueForTwo(valueFrom, valueTo);
-                    }
+                    var valueTo = this.handlerView.getValueOfNote();
+                    var valueFrom = this.handlerViewFrom.getValueOfNote();
+                    this.valueNoteViewCommon.setValueForTwo(valueFrom, valueTo);
                     var leftEdgeOfHandlerFrom = this.handlerViewFrom.getPos();
                     var rightEdgeOfHandlerTo = this.handlerView.getPos() + this.handlerView.getLength();
                     var distAmongEdgesOfHandlers = rightEdgeOfHandlerTo - leftEdgeOfHandlerFrom;
@@ -1548,9 +1531,9 @@ var View1 = /*#__PURE__*/ function(_EventObserver) {
         {
             key: "removeCommonNoteView",
             value: function removeCommonNoteView() {
-                if (this.valueNoteViewFrom && this.valueNoteViewCommon) {
-                    this.valueNoteView.showValueNote(true);
-                    this.valueNoteViewFrom.showValueNote(true);
+                if (this.handlerViewFrom && this.valueNoteViewCommon) {
+                    this.handlerView.showValueNote(true);
+                    this.handlerViewFrom.showValueNote(true);
                     this.valueNoteViewCommon.note.remove();
                     delete this.valueNoteViewCommon;
                 }
@@ -1566,8 +1549,6 @@ var View1 = /*#__PURE__*/ function(_EventObserver) {
                     this.handlerViewFrom.addObserver(_eventTypes["default"].HANDLER_MOUSEMOVE_EVENT, this.mouseMove);
                 }
                 this.trackView.addObserver(_eventTypes["default"].HANDLER_MOUSEDOWN_EVENT, this.handleChangePos);
-                this.barView.addObserver(_eventTypes["default"].HANDLER_MOUSEDOWN_EVENT, this.handleChangePos);
-                this.scaleView.addObserver(_eventTypes["default"].HANDLER_MOUSEDOWN_EVENT, this.handleChangePos);
                 this.handlerView.addObserver(_eventTypes["default"].CALC_VALUE_NOTE_POSITION, this.handleCalcValueNotePos);
                 this.handlerView.addObserver(_eventTypes["default"].SET_VALUE_NOTE_POS, this.handleSetValueNotePos);
                 this.handlerView.addObserver(_eventTypes["default"].SET_BAR, this.handleSetBar);
@@ -1576,7 +1557,7 @@ var View1 = /*#__PURE__*/ function(_EventObserver) {
         {
             key: "updateObservers",
             value: function updateObservers() {
-                if (this.handlerViewFrom && this.valueNoteViewFrom) {
+                if (this.handlerViewFrom && this.handlerViewFrom) {
                     if (!Object.prototype.hasOwnProperty.call(this.handlerViewFrom.observers, _eventTypes["default"].CALC_VALUE_NOTE_POSITION)) {
                         this.handlerViewFrom.addObserver(_eventTypes["default"].CALC_VALUE_NOTE_POSITION, this.handleCalcValueNoteFromPos);
                         this.handlerViewFrom.addObserver(_eventTypes["default"].SET_VALUE_NOTE_POS, this.handleSetValueNoteFromPos);
@@ -1591,7 +1572,7 @@ var View1 = /*#__PURE__*/ function(_EventObserver) {
 var _default = View1;
 exports["default"] = _default;
 
-},{"@babel/runtime/helpers/interopRequireDefault":"eigyQ","@babel/runtime/helpers/classCallCheck":"fIqcI","@babel/runtime/helpers/createClass":"eFNXV","@babel/runtime/helpers/assertThisInitialized":"k3YcS","@babel/runtime/helpers/inherits":"8mpJg","@babel/runtime/helpers/possibleConstructorReturn":"iiXLy","@babel/runtime/helpers/getPrototypeOf":"DHhBk","@babel/runtime/helpers/defineProperty":"eCMPI","./HandlerView/HandlerView":"fCvxo","./TrackView/TrackView":"jw1m8","./ValueNoteView/ValueNoteView":"6LnC9","./BarView/BarView":"eLuNz","./ScaleView/ScaleView":"hseG1","../EventObserver/EventObserver":"ftS0S","../EventObserver/eventTypes":"cbWbf"}],"fCvxo":[function(require,module,exports) {
+},{"@babel/runtime/helpers/interopRequireDefault":"eigyQ","@babel/runtime/helpers/classCallCheck":"fIqcI","@babel/runtime/helpers/createClass":"eFNXV","@babel/runtime/helpers/assertThisInitialized":"k3YcS","@babel/runtime/helpers/inherits":"8mpJg","@babel/runtime/helpers/possibleConstructorReturn":"iiXLy","@babel/runtime/helpers/getPrototypeOf":"DHhBk","@babel/runtime/helpers/defineProperty":"eCMPI","./HandlerView/HandlerView":"fCvxo","./TrackView/TrackView":"jw1m8","./ValueNoteView/ValueNoteView":"6LnC9","../EventObserver/EventObserver":"ftS0S","../EventObserver/eventTypes":"cbWbf"}],"fCvxo":[function(require,module,exports) {
 "use strict";
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 Object.defineProperty(exports, "__esModule", {
@@ -1607,6 +1588,7 @@ var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/ge
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 var _EventObserver2 = _interopRequireDefault(require("../../EventObserver/EventObserver"));
 var _eventTypes = _interopRequireDefault(require("../../EventObserver/eventTypes"));
+var _ValueNoteView = _interopRequireDefault(require("../ValueNoteView/ValueNoteView"));
 function _createSuper(Derived) {
     var hasNativeReflectConstruct = _isNativeReflectConstruct();
     return function _createSuperInternal() {
@@ -1640,6 +1622,7 @@ var HandlerView1 = /*#__PURE__*/ function(_EventObserver) {
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handler", void 0);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "parent", void 0);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handlerPos", void 0);
+        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "valueNoteView", void 0);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleMouseMove", void 0);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleMouseUp", void 0);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleHandlerMouseDown", function(event) {
@@ -1711,6 +1694,62 @@ var HandlerView1 = /*#__PURE__*/ function(_EventObserver) {
                     this.handler.classList.remove('adslider__handler_direction_vertical');
                     this.handler.classList.add('adslider__handler_direction_horizontal');
                 }
+                this.valueNoteView.setVerticalView(verticalView);
+            }
+        },
+        {
+            key: "setValue",
+            value: function setValue(value) {
+                this.valueNoteView.setValue(value);
+            }
+        },
+        {
+            key: "showValueNote",
+            value: function showValueNote(isValueShown) {
+                this.valueNoteView.showValueNote(isValueShown);
+            }
+        },
+        {
+            key: "calcValuePos",
+            value: function calcValuePos(handler) {
+                this.valueNoteView.calcPos(handler);
+            }
+        },
+        {
+            key: "setValuePos",
+            value: function setValuePos() {
+                this.valueNoteView.setPos();
+            }
+        },
+        {
+            key: "getValueNotePos",
+            value: function getValueNotePos() {
+                return this.valueNoteView.getPos();
+            }
+        },
+        {
+            key: "getValueNoteSize",
+            value: function getValueNoteSize() {
+                return this.valueNoteView.getSize();
+            }
+        },
+        {
+            key: "getValueOfNote",
+            value: function getValueOfNote() {
+                return this.valueNoteView.getValue();
+            }
+        },
+        {
+            key: "addClassToValueNoteElement",
+            value: function addClassToValueNoteElement(className) {
+                this.valueNoteView.addClassToNoteElement(className);
+            }
+        },
+        {
+            key: "deleteInstance",
+            value: function deleteInstance() {
+                this.handler.remove();
+                this.valueNoteView.note.remove();
             }
         },
         {
@@ -1726,6 +1765,7 @@ var HandlerView1 = /*#__PURE__*/ function(_EventObserver) {
                 this.handler = document.createElement('div');
                 this.handler.classList.add('adslider__handler');
                 this.parent.append(this.handler);
+                this.valueNoteView = new _ValueNoteView["default"](parent);
                 this.handler.addEventListener('mousedown', this.handleHandlerMouseDown);
             }
         },
@@ -1762,100 +1802,7 @@ var HandlerView1 = /*#__PURE__*/ function(_EventObserver) {
 var _default = HandlerView1;
 exports["default"] = _default;
 
-},{"@babel/runtime/helpers/interopRequireDefault":"eigyQ","@babel/runtime/helpers/classCallCheck":"fIqcI","@babel/runtime/helpers/createClass":"eFNXV","@babel/runtime/helpers/assertThisInitialized":"k3YcS","@babel/runtime/helpers/inherits":"8mpJg","@babel/runtime/helpers/possibleConstructorReturn":"iiXLy","@babel/runtime/helpers/getPrototypeOf":"DHhBk","@babel/runtime/helpers/defineProperty":"eCMPI","../../EventObserver/EventObserver":"ftS0S","../../EventObserver/eventTypes":"cbWbf"}],"jw1m8":[function(require,module,exports) {
-"use strict";
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports["default"] = void 0;
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
-var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
-var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime/helpers/assertThisInitialized"));
-var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
-var _EventObserver2 = _interopRequireDefault(require("../../EventObserver/EventObserver"));
-var _eventTypes = _interopRequireDefault(require("../../EventObserver/eventTypes"));
-function _createSuper(Derived) {
-    var hasNativeReflectConstruct = _isNativeReflectConstruct();
-    return function _createSuperInternal() {
-        var Super = _getPrototypeOf2["default"](Derived), result;
-        if (hasNativeReflectConstruct) {
-            var NewTarget = _getPrototypeOf2["default"](this).constructor;
-            result = Reflect.construct(Super, arguments, NewTarget);
-        } else result = Super.apply(this, arguments);
-        return _possibleConstructorReturn2["default"](this, result);
-    };
-}
-function _isNativeReflectConstruct() {
-    if (typeof Reflect === "undefined" || !Reflect.construct) return false;
-    if (Reflect.construct.sham) return false;
-    if (typeof Proxy === "function") return true;
-    try {
-        Date.prototype.toString.call(Reflect.construct(Date, [], function() {
-        }));
-        return true;
-    } catch (e) {
-        return false;
-    }
-}
-var TrackView1 = /*#__PURE__*/ function(_EventObserver) {
-    _inherits2["default"](TrackView2, _EventObserver);
-    var _super = _createSuper(TrackView2);
-    function TrackView2(parent) {
-        var _this;
-        _classCallCheck2["default"](this, TrackView2);
-        _this = _super.call(this);
-        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "track", void 0);
-        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleTrackMouseDown", function(event) {
-            _this.broadcast(_eventTypes["default"].HANDLER_MOUSEDOWN_EVENT, event);
-        });
-        _this.render(parent);
-        _this.addListeners();
-        return _this;
-    }
-    _createClass2["default"](TrackView2, [
-        {
-            key: "getLength",
-            value: function getLength() {
-                return this.track.classList.contains('adslider__track_direction_vertical') ? parseInt(getComputedStyle(this.track).height, 10) : parseInt(getComputedStyle(this.track).width, 10);
-            }
-        },
-        {
-            key: "setVerticalView",
-            value: function setVerticalView(verticalView) {
-                if (verticalView) {
-                    this.track.classList.remove('adslider__track_direction_horizontal');
-                    this.track.classList.add('adslider__track_direction_vertical');
-                } else {
-                    this.track.classList.remove('adslider__track_direction_vertical');
-                    this.track.classList.add('adslider__track_direction_horizontal');
-                }
-            }
-        },
-        {
-            key: "render",
-            value: function render(parent) {
-                this.track = document.createElement('div');
-                this.track.classList.add('adslider__track');
-                parent.append(this.track);
-            }
-        },
-        {
-            key: "addListeners",
-            value: function addListeners() {
-                this.track.addEventListener('mousedown', this.handleTrackMouseDown);
-            }
-        }
-    ]);
-    return TrackView2;
-}(_EventObserver2["default"]);
-var _default = TrackView1;
-exports["default"] = _default;
-
-},{"@babel/runtime/helpers/interopRequireDefault":"eigyQ","@babel/runtime/helpers/classCallCheck":"fIqcI","@babel/runtime/helpers/createClass":"eFNXV","@babel/runtime/helpers/assertThisInitialized":"k3YcS","@babel/runtime/helpers/inherits":"8mpJg","@babel/runtime/helpers/possibleConstructorReturn":"iiXLy","@babel/runtime/helpers/getPrototypeOf":"DHhBk","@babel/runtime/helpers/defineProperty":"eCMPI","../../EventObserver/EventObserver":"ftS0S","../../EventObserver/eventTypes":"cbWbf"}],"6LnC9":[function(require,module,exports) {
+},{"@babel/runtime/helpers/interopRequireDefault":"eigyQ","@babel/runtime/helpers/classCallCheck":"fIqcI","@babel/runtime/helpers/createClass":"eFNXV","@babel/runtime/helpers/assertThisInitialized":"k3YcS","@babel/runtime/helpers/inherits":"8mpJg","@babel/runtime/helpers/possibleConstructorReturn":"iiXLy","@babel/runtime/helpers/getPrototypeOf":"DHhBk","@babel/runtime/helpers/defineProperty":"eCMPI","../../EventObserver/EventObserver":"ftS0S","../../EventObserver/eventTypes":"cbWbf","../ValueNoteView/ValueNoteView":"6LnC9"}],"6LnC9":[function(require,module,exports) {
 "use strict";
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 Object.defineProperty(exports, "__esModule", {
@@ -1990,6 +1937,12 @@ var ValueNoteView1 = /*#__PURE__*/ function(_EventObserver) {
             }
         },
         {
+            key: "addClassToNoteElement",
+            value: function addClassToNoteElement(className) {
+                this.note.classList.add(className);
+            }
+        },
+        {
             key: "render",
             value: function render(parent) {
                 this.note = document.createElement('div');
@@ -2012,7 +1965,7 @@ var ValueNoteView1 = /*#__PURE__*/ function(_EventObserver) {
 var _default = ValueNoteView1;
 exports["default"] = _default;
 
-},{"@babel/runtime/helpers/interopRequireDefault":"eigyQ","@babel/runtime/helpers/classCallCheck":"fIqcI","@babel/runtime/helpers/createClass":"eFNXV","@babel/runtime/helpers/assertThisInitialized":"k3YcS","@babel/runtime/helpers/inherits":"8mpJg","@babel/runtime/helpers/possibleConstructorReturn":"iiXLy","@babel/runtime/helpers/getPrototypeOf":"DHhBk","@babel/runtime/helpers/defineProperty":"eCMPI","../../EventObserver/EventObserver":"ftS0S"}],"eLuNz":[function(require,module,exports) {
+},{"@babel/runtime/helpers/interopRequireDefault":"eigyQ","@babel/runtime/helpers/classCallCheck":"fIqcI","@babel/runtime/helpers/createClass":"eFNXV","@babel/runtime/helpers/assertThisInitialized":"k3YcS","@babel/runtime/helpers/inherits":"8mpJg","@babel/runtime/helpers/possibleConstructorReturn":"iiXLy","@babel/runtime/helpers/getPrototypeOf":"DHhBk","@babel/runtime/helpers/defineProperty":"eCMPI","../../EventObserver/EventObserver":"ftS0S"}],"jw1m8":[function(require,module,exports) {
 "use strict";
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 Object.defineProperty(exports, "__esModule", {
@@ -2028,6 +1981,123 @@ var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/ge
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 var _EventObserver2 = _interopRequireDefault(require("../../EventObserver/EventObserver"));
 var _eventTypes = _interopRequireDefault(require("../../EventObserver/eventTypes"));
+var _BarView = _interopRequireDefault(require("../BarView/BarView"));
+var _ScaleView = _interopRequireDefault(require("../ScaleView/ScaleView"));
+function _createSuper(Derived) {
+    var hasNativeReflectConstruct = _isNativeReflectConstruct();
+    return function _createSuperInternal() {
+        var Super = _getPrototypeOf2["default"](Derived), result;
+        if (hasNativeReflectConstruct) {
+            var NewTarget = _getPrototypeOf2["default"](this).constructor;
+            result = Reflect.construct(Super, arguments, NewTarget);
+        } else result = Super.apply(this, arguments);
+        return _possibleConstructorReturn2["default"](this, result);
+    };
+}
+function _isNativeReflectConstruct() {
+    if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+    if (Reflect.construct.sham) return false;
+    if (typeof Proxy === "function") return true;
+    try {
+        Date.prototype.toString.call(Reflect.construct(Date, [], function() {
+        }));
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+var TrackView1 = /*#__PURE__*/ function(_EventObserver) {
+    _inherits2["default"](TrackView2, _EventObserver);
+    var _super = _createSuper(TrackView2);
+    function TrackView2(parent) {
+        var _this;
+        _classCallCheck2["default"](this, TrackView2);
+        _this = _super.call(this);
+        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "track", void 0);
+        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "barView", void 0);
+        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "scaleView", void 0);
+        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleTrackMouseDown", function(event) {
+            _this.broadcast(_eventTypes["default"].HANDLER_MOUSEDOWN_EVENT, event);
+        });
+        _this.render(parent);
+        _this.addListeners();
+        return _this;
+    }
+    _createClass2["default"](TrackView2, [
+        {
+            key: "getLength",
+            value: function getLength() {
+                return this.track.classList.contains('adslider__track_direction_vertical') ? parseInt(getComputedStyle(this.track).height, 10) : parseInt(getComputedStyle(this.track).width, 10);
+            }
+        },
+        {
+            key: "setVerticalView",
+            value: function setVerticalView(verticalView) {
+                if (verticalView) {
+                    this.track.classList.remove('adslider__track_direction_horizontal');
+                    this.track.classList.add('adslider__track_direction_vertical');
+                } else {
+                    this.track.classList.remove('adslider__track_direction_vertical');
+                    this.track.classList.add('adslider__track_direction_horizontal');
+                }
+                this.barView.setVerticalView(verticalView);
+            }
+        },
+        {
+            key: "setBarLengthForDouble",
+            value: function setBarLengthForDouble(options) {
+                this.barView.setLengthForDouble(options);
+            }
+        },
+        {
+            key: "setBarLength",
+            value: function setBarLength(handler) {
+                this.barView.setLength(handler);
+            }
+        },
+        {
+            key: "drawScale",
+            value: function drawScale(options, handler) {
+                this.scaleView.drawScale(options, handler);
+            }
+        },
+        {
+            key: "render",
+            value: function render(parent) {
+                this.track = document.createElement('div');
+                this.track.classList.add('adslider__track');
+                this.barView = new _BarView["default"](this.track);
+                this.scaleView = new _ScaleView["default"](this.track);
+                parent.append(this.track);
+            }
+        },
+        {
+            key: "addListeners",
+            value: function addListeners() {
+                this.track.addEventListener('mousedown', this.handleTrackMouseDown);
+            }
+        }
+    ]);
+    return TrackView2;
+}(_EventObserver2["default"]);
+var _default = TrackView1;
+exports["default"] = _default;
+
+},{"@babel/runtime/helpers/interopRequireDefault":"eigyQ","@babel/runtime/helpers/classCallCheck":"fIqcI","@babel/runtime/helpers/createClass":"eFNXV","@babel/runtime/helpers/assertThisInitialized":"k3YcS","@babel/runtime/helpers/inherits":"8mpJg","@babel/runtime/helpers/possibleConstructorReturn":"iiXLy","@babel/runtime/helpers/getPrototypeOf":"DHhBk","@babel/runtime/helpers/defineProperty":"eCMPI","../../EventObserver/EventObserver":"ftS0S","../../EventObserver/eventTypes":"cbWbf","../BarView/BarView":"eLuNz","../ScaleView/ScaleView":"hseG1"}],"eLuNz":[function(require,module,exports) {
+"use strict";
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports["default"] = void 0;
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
+var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
+var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime/helpers/assertThisInitialized"));
+var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+var _EventObserver2 = _interopRequireDefault(require("../../EventObserver/EventObserver"));
 function _createSuper(Derived) {
     var hasNativeReflectConstruct = _isNativeReflectConstruct();
     return function _createSuperInternal() {
@@ -2060,11 +2130,7 @@ var BarView1 = /*#__PURE__*/ function(_EventObserver) {
         _this = _super.call(this);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "bar", void 0);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "barPos", void 0);
-        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleBarMouseDown", function(event) {
-            _this.broadcast(_eventTypes["default"].HANDLER_MOUSEDOWN_EVENT, event);
-        });
         _this.render(parent);
-        _this.addListeners();
         return _this;
     }
     _createClass2["default"](BarView2, [
@@ -2134,12 +2200,6 @@ var BarView1 = /*#__PURE__*/ function(_EventObserver) {
             }
         },
         {
-            key: "addListeners",
-            value: function addListeners() {
-                this.bar.addEventListener('mousedown', this.handleBarMouseDown);
-            }
-        },
-        {
             key: "calcBarPosForSingle",
             value: function calcBarPosForSingle(handlerPos, handlerLength) {
                 this.barPos = handlerPos + handlerLength / 2;
@@ -2157,7 +2217,7 @@ var BarView1 = /*#__PURE__*/ function(_EventObserver) {
 var _default = BarView1;
 exports["default"] = _default;
 
-},{"@babel/runtime/helpers/interopRequireDefault":"eigyQ","@babel/runtime/helpers/classCallCheck":"fIqcI","@babel/runtime/helpers/createClass":"eFNXV","@babel/runtime/helpers/assertThisInitialized":"k3YcS","@babel/runtime/helpers/inherits":"8mpJg","@babel/runtime/helpers/possibleConstructorReturn":"iiXLy","@babel/runtime/helpers/getPrototypeOf":"DHhBk","@babel/runtime/helpers/defineProperty":"eCMPI","../../EventObserver/EventObserver":"ftS0S","../../EventObserver/eventTypes":"cbWbf"}],"hseG1":[function(require,module,exports) {
+},{"@babel/runtime/helpers/interopRequireDefault":"eigyQ","@babel/runtime/helpers/classCallCheck":"fIqcI","@babel/runtime/helpers/createClass":"eFNXV","@babel/runtime/helpers/assertThisInitialized":"k3YcS","@babel/runtime/helpers/inherits":"8mpJg","@babel/runtime/helpers/possibleConstructorReturn":"iiXLy","@babel/runtime/helpers/getPrototypeOf":"DHhBk","@babel/runtime/helpers/defineProperty":"eCMPI","../../EventObserver/EventObserver":"ftS0S"}],"hseG1":[function(require,module,exports) {
 "use strict";
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 Object.defineProperty(exports, "__esModule", {
@@ -2172,7 +2232,6 @@ var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime
 var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 var _EventObserver2 = _interopRequireDefault(require("../../EventObserver/EventObserver"));
-var _eventTypes = _interopRequireDefault(require("../../EventObserver/eventTypes"));
 function _createSuper(Derived) {
     var hasNativeReflectConstruct = _isNativeReflectConstruct();
     return function _createSuperInternal() {
@@ -2208,11 +2267,7 @@ var ScaleView1 = /*#__PURE__*/ function(_EventObserver) {
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "numberOfLines", void 0);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "lineArray", []);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "signArray", []);
-        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleScaleMouseDown", function(event) {
-            _this.broadcast(_eventTypes["default"].HANDLER_MOUSEDOWN_EVENT, event);
-        });
         _this.render(parent);
-        _this.addListeners();
         return _this;
     }
     _createClass2["default"](ScaleView2, [
@@ -2251,12 +2306,6 @@ var ScaleView1 = /*#__PURE__*/ function(_EventObserver) {
                 if (this.isVertical()) line.classList.add('adslider__scale-line_direction_vertical');
                 else line.classList.add('adslider__scale-line_direction_horizontal');
                 return line;
-            }
-        },
-        {
-            key: "addListeners",
-            value: function addListeners() {
-                this.scale.addEventListener('mousedown', this.handleScaleMouseDown);
             }
         },
         {
@@ -2426,6 +2475,6 @@ var ScaleView1 = /*#__PURE__*/ function(_EventObserver) {
 var _default = ScaleView1;
 exports["default"] = _default;
 
-},{"@babel/runtime/helpers/interopRequireDefault":"eigyQ","@babel/runtime/helpers/classCallCheck":"fIqcI","@babel/runtime/helpers/createClass":"eFNXV","@babel/runtime/helpers/assertThisInitialized":"k3YcS","@babel/runtime/helpers/inherits":"8mpJg","@babel/runtime/helpers/possibleConstructorReturn":"iiXLy","@babel/runtime/helpers/getPrototypeOf":"DHhBk","@babel/runtime/helpers/defineProperty":"eCMPI","../../EventObserver/EventObserver":"ftS0S","../../EventObserver/eventTypes":"cbWbf"}]},["6659E","8NCqq"], "8NCqq", "parcelRequire021d")
+},{"@babel/runtime/helpers/interopRequireDefault":"eigyQ","@babel/runtime/helpers/classCallCheck":"fIqcI","@babel/runtime/helpers/createClass":"eFNXV","@babel/runtime/helpers/assertThisInitialized":"k3YcS","@babel/runtime/helpers/inherits":"8mpJg","@babel/runtime/helpers/possibleConstructorReturn":"iiXLy","@babel/runtime/helpers/getPrototypeOf":"DHhBk","@babel/runtime/helpers/defineProperty":"eCMPI","../../EventObserver/EventObserver":"ftS0S"}]},["6659E","8NCqq"], "8NCqq", "parcelRequire021d")
 
 //# sourceMappingURL=index.2302a6c6.js.map
