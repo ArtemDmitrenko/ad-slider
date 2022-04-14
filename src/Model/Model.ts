@@ -61,18 +61,10 @@ class Model extends EventObserver {
   }
 
   private validateValues(options: IConfig) {
-    let defaultLimits;
-    if (options.limits) {
-      defaultLimits = {
-        min: typeof options.limits.min === 'number' ? options.limits.min : -100,
-        max: typeof options.limits.max === 'number' ? options.limits.max : 100,
-      };
-    } else {
-      defaultLimits = {
-        min: -100,
-        max: 100,
-      };
-    }
+    const defaultLimits = {
+      min: typeof options.limits.min === 'number' ? options.limits.min : -100,
+      max: typeof options.limits.max === 'number' ? options.limits.max : 100,
+    };
     this.options = {
       limits: defaultLimits,
       showValueNote: options.showValueNote || true,
@@ -115,17 +107,10 @@ class Model extends EventObserver {
     if (min >= max) {
       return;
     }
-    if (min !== this.options.limits.min) {
-      if (step > max - min) {
-        this.setMinValue(options);
-        return;
-      }
-    }
-    if (max !== this.options.limits.max) {
-      if (step > max - min) {
-        this.setMaxValue(options);
-        return;
-      }
+    if (step > max - min) {
+      this.setMinValue(options);
+      this.setMaxValue(options);
+      return;
     }
     if (step !== this.options.step) {
       if (step <= 0 || step > max - min) {
