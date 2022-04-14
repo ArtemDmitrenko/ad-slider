@@ -47,7 +47,7 @@ import Presenter from './Presenter/Presenter';
         return methods.getOptions.call(this);
       }
     } else if (typeof arg1 === 'object' && !arg2) {
-      const el = ($(this) as unknown) as HTMLElement;
+      const el = $(this)[0];
       return methods.init.call(this, el, arg1);
     }
     $.error(`Method ${arg1} does not exist on jQuery.tooltip`);

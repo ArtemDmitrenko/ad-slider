@@ -45,6 +45,21 @@ class Model extends EventObserver {
     this.callOnChange();
   }
 
+  public getOptions(): IConfig {
+    const {
+      limits, showValueNote, step, vertical, double, from, to,
+    } = this.options;
+    return {
+      limits,
+      showValueNote,
+      step,
+      vertical,
+      double,
+      from,
+      to,
+    };
+  }
+
   private validateValues(options: IConfig) {
     let defaultLimits;
     if (options.limits) {
@@ -122,16 +137,20 @@ class Model extends EventObserver {
     } else {
       this.setValuesForDoubleSlider(options);
     }
-    this.options.limits.min = min;
-    this.options.limits.max = max;
-    this.options.double = double;
-    this.options.vertical = vertical;
-    this.options.showValueNote = showValueNote;
-    this.options.step = step;
+    this.options = {
+      ...this.options,
+      limits: { min, max },
+      double,
+      vertical,
+      showValueNote,
+      step,
+    };
   }
 
   private setMinValue(options: IConfig): void {
-    const { limits: { min, max }, double, from, to } = options;
+    const {
+      limits: { min, max }, double, from, to,
+    } = options;
     this.options.step = max - min;
     if (!double) {
       this.options.to = min;

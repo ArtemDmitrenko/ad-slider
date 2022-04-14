@@ -23,7 +23,7 @@ class Presenter {
   }
 
   public getModelOptions(): IConfig {
-    return this.model.options;
+    return this.model.getOptions();
   }
 
   private addObservers(): void {
