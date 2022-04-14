@@ -75,16 +75,16 @@ class View extends EventObserver {
   public calcPos(options: {
     value: number,
     limits: { min: number; max: number },
-    isFrom: boolean,
+    isFromValueChanging: boolean,
   }): void {
-    const { value, limits, isFrom } = options;
+    const { value, limits, isFromValueChanging } = options;
     if (this.handlerViewFrom) {
       const data = {
         edge: this.getEdge(this.handlerViewFrom),
         value,
         limits,
       };
-      if (isFrom) {
+      if (isFromValueChanging) {
         this.handlerViewFrom.calcPos(data);
         this.handlerViewFrom.setValue(value);
       } else {
@@ -104,12 +104,12 @@ class View extends EventObserver {
 
   public setPos(options: {
     isDouble: boolean,
-    isFrom: boolean,
+    isFromValueChanging: boolean,
     showValueNote: boolean
   }): void {
-    const { isDouble, isFrom, showValueNote } = options;
+    const { isDouble, isFromValueChanging, showValueNote } = options;
     if (this.handlerViewFrom) {
-      if (isFrom) {
+      if (isFromValueChanging) {
         this.handlerViewFrom.setPos(isDouble);
       } else {
         this.handlerView.setPos(isDouble);
@@ -323,10 +323,10 @@ class View extends EventObserver {
     }
     const edge: number = this.getEdge(this.leadHandler);
     newPos = this.checkNewPos(newPos);
-    const isFrom = this.leadHandler.handler.classList.contains('adslider__handler_type_from');
+    const isFromValueChanging = this.leadHandler.handler.classList.contains('adslider__handler_type_from');
     const relPosition = newPos / edge;
     const options = {
-      relPosition, isFrom,
+      relPosition, isFromValueChanging,
     };
     this.broadcast(EventTypes.CHANGE_POSITION, options);
   }

@@ -155,19 +155,19 @@ describe('model', () => {
       });
 
       test('should set curValue', () => {
-        const data = { relPosition: 0.5948040674603174, isFrom: false };
+        const data = { relPosition: 0.5948040674603174, isFromValueChanging: false };
         model.setValueFromHandlerPos(data);
         expect(model.options.curValue).toBe(59);
       });
       test('should broadcast events', () => {
-        const data = { relPosition: 0.5948040674603174, isFrom: false };
+        const data = { relPosition: 0.5948040674603174, isFromValueChanging: false };
         model.setValueFromHandlerPos(data);
         expect(callback1).toBeCalled();
         expect(callback2).toBeCalled();
       });
 
       test('check that function calcValueWithStep is working properly (val less limits.min)', () => {
-        const data = { relPosition: -0.5, isFrom: false };
+        const data = { relPosition: -0.5, isFromValueChanging: false };
         model.setValueFromHandlerPos(data);
         expect(model.options.curValue).toBe(-49);
       });
@@ -195,21 +195,21 @@ describe('model', () => {
 
       test('should set curValue and check function isValFromMovesOverValTo is return true', () => {
         handler.classList.add('adslider__handler_type_from');
-        const data = { relPosition: 0.5948040674603174, isFrom: false };
+        const data = { relPosition: 0.5948040674603174, isFromValueChanging: false };
         model.setValueFromHandlerPos(data);
         expect(model.options.from).toBe(0);
       });
 
       test('should set curValue and check function isValFromMovesOverValTo is return false', () => {
         handler.classList.add('adslider__handler_type_from');
-        const data = { relPosition: 0.5948040674603174, isFrom: false };
+        const data = { relPosition: 0.5948040674603174, isFromValueChanging: false };
         model.setValueFromHandlerPos(data);
         expect(model.options.from).toBe(0);
       });
 
       test('should broadcast events', () => {
         handler.classList.add('adslider__handler_type_from');
-        const data = { relPosition: 0.5948040674603174, isFrom: false };
+        const data = { relPosition: 0.5948040674603174, isFromValueChanging: false };
         model.setValueFromHandlerPos(data);
         expect(callback1).toBeCalled();
         expect(callback2).toBeCalled();
@@ -217,7 +217,7 @@ describe('model', () => {
 
       test('check that function isValFromMovesOverValTo() is working', () => {
         handler.classList.remove('adslider__handler_type_from');
-        const data = { relPosition: 0.5948040674603174, isFrom: false };
+        const data = { relPosition: 0.5948040674603174, isFromValueChanging: false };
         model.setValueFromHandlerPos(data);
         expect(model.options.curValue).toBe(60);
       });
@@ -243,7 +243,7 @@ describe('model', () => {
       });
       test('check that function calcValueWithStep() is working', () => {
         handler.classList.remove('adslider__handler_type_from');
-        const data = { relPosition: 0.5948040674603174, isFrom: false };
+        const data = { relPosition: 0.5948040674603174, isFromValueChanging: false };
         model.setValueFromHandlerPos(data);
         expect(model.options.curValue).toBe(60);
       });

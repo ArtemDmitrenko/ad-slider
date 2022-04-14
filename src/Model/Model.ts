@@ -30,18 +30,18 @@ class Model extends EventObserver {
 
   public setValueFromHandlerPos(data: {
     relPosition: number;
-    isFrom: boolean;
+    isFromValueChanging: boolean;
   }): void {
-    const { relPosition, isFrom } = data;
+    const { relPosition, isFromValueChanging } = data;
     const value = this.calcValueFromHandlerPos(relPosition);
     const conditionForReturn = this.options.double && this.isValToMovesOverValFrom(value);
-    if (isFrom && this.isValFromMovesOverValTo(value)) {
+    if (isFromValueChanging && this.isValFromMovesOverValTo(value)) {
       return;
     }
-    if (!isFrom && conditionForReturn) {
+    if (!isFromValueChanging && conditionForReturn) {
       return;
     }
-    this.setValAndBroadcast(value, isFrom);
+    this.setValAndBroadcast(value, isFromValueChanging);
     this.callOnChange();
   }
 
@@ -93,8 +93,8 @@ class Model extends EventObserver {
       showValueNote,
     } = options;
     const isMinMaxNaN = Number.isNaN(min) || Number.isNaN(max);
-    const isFromToNaN = Number.isNaN(from) || Number.isNaN(to) || Number.isNaN(step);
-    if (isMinMaxNaN || isFromToNaN) {
+    const isFromValueChangingToNaN = Number.isNaN(from) || Number.isNaN(to) || Number.isNaN(step);
+    if (isMinMaxNaN || isFromValueChangingToNaN) {
       return;
     }
     if (min >= max) {
@@ -262,15 +262,15 @@ class Model extends EventObserver {
     }
   }
 
-  private setValAndBroadcast(value: number, isFrom: boolean): void {
+  private setValAndBroadcast(value: number, isFromValueChanging: boolean): void {
     const { limits, double, showValueNote } = this.options;
-    const data = { isDouble: double, isFrom, showValueNote };
+    const data = { isDouble: double, isFromValueChanging, showValueNote };
     const options = {
       limits,
-      isFrom,
+      isFromValueChanging,
       value,
     };
-    if (isFrom) {
+    if (isFromValueChanging) {
       this.options.from = this.calcValueWithStep(value);
       options.value = this.options.from;
     } else {

@@ -34,7 +34,7 @@ class Presenter {
 
   private handleCalcValue = (data: {
     relPosition: number,
-    isFrom: boolean
+    isFromValueChanging: boolean
   }) => {
     this.model.setValueFromHandlerPos(data);
   }
@@ -42,14 +42,14 @@ class Presenter {
   private handleCalcPos = (options: {
     value: number,
     limits: { min: number; max: number },
-    isFrom: boolean
+    isFromValueChanging: boolean
   }) => {
     this.view.calcPos(options);
   }
 
   private handleSetPos = (options: {
     isDouble: boolean,
-    isFrom: boolean,
+    isFromValueChanging: boolean,
     showValueNote: boolean
   }) => {
     this.view.setPos(options);
