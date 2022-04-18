@@ -315,16 +315,11 @@ class View extends EventObserver {
     } else {
       this.leadHandler = handler;
     }
-    let newPos;
-    if (e.type === 'mousedown') {
-      newPos = this.calcNewPos(shift, e);
-    } else {
-      newPos = this.calcNewPos(this.handlerShift, e);
-    }
+    const newPos = e.type === 'mousedown' ? this.calcNewPos(shift, e) : this.calcNewPos(this.handlerShift, e);
     const edge: number = this.getEdge(this.leadHandler);
-    newPos = this.checkNewPos(newPos);
+    const checkedNewPos = this.checkNewPos(newPos);
+    const relPosition = checkedNewPos / edge;
     const isFromValueChanging = this.leadHandler.handler.classList.contains('adslider__handler_type_from');
-    const relPosition = newPos / edge;
     const options = {
       relPosition, isFromValueChanging,
     };
@@ -332,15 +327,10 @@ class View extends EventObserver {
   }
 
   private findLeadHandler(e: MouseEvent, handler: HandlerView): void {
-    let isValueDecrease;
-    let isValueIncrease;
-    if (this.isVertical()) {
-      isValueIncrease = e.clientY < this.mousedownClientY;
-      isValueDecrease = e.clientY > this.mousedownClientY;
-    } else {
-      isValueIncrease = e.clientX > this.mousedownClientX;
-      isValueDecrease = e.clientX < this.mousedownClientX;
-    }
+    const isValueDecrease = this.isVertical()
+      ? e.clientY > this.mousedownClientY : e.clientX < this.mousedownClientX;
+    const isValueIncrease = this.isVertical()
+      ? e.clientY < this.mousedownClientY : e.clientX > this.mousedownClientX;
     if (isValueIncrease) {
       const isHandlerFromLeader = !this.isHandlerTo && this.isHandlerFrom;
       if (isHandlerFromLeader && this.handlerViewFrom) {
@@ -369,13 +359,13 @@ class View extends EventObserver {
 
   private checkNewPos(newPos: number): number {
     const edge = this.getEdge(this.handlerView);
-    let newPosCopy = newPos;
     if (newPos < 0) {
-      newPosCopy = 0;
-    } else if (newPos > edge) {
-      newPosCopy = edge;
+      return 0;
     }
-    return newPosCopy;
+    if (newPos > edge) {
+      return edge;
+    }
+    return newPos;
   }
 
   private calcShift(e: MouseEvent, handler: HTMLElement): void {

@@ -301,15 +301,15 @@ class Model extends EventObserver {
     const allNumberOfSteps: number = Math.floor(Math.abs(max - min) / step);
     const maxStepValue: number = min + allNumberOfSteps * step;
     const numberOfSteps: number = Math.round((value - min) / step);
-    let newValue: number = min + step * numberOfSteps;
+    const newValue: number = min + step * numberOfSteps;
     if (newValue < min) {
-      newValue += step;
+      return newValue + step;
     }
     if (newValue > max) {
-      newValue -= step;
+      return newValue - step;
     }
     if (value > maxStepValue) {
-      newValue = value > maxStepValue + (max - maxStepValue) / 2 ? max : maxStepValue;
+      return value > maxStepValue + (max - maxStepValue) / 2 ? max : maxStepValue;
     }
     return newValue;
   }
