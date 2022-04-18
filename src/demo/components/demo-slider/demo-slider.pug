@@ -18,21 +18,21 @@ mixin demo-slider(options = {})
   .demo-slider.js-demo-slider
     .demo-slider__panel
       .demo-slider__minimum-value.js-demo-slider__minimum-value
-        +input({ title: 'Минимальное значение:', defaultValue: min })
+        +input({ title: 'Минимальное значение:', defaultValue: typeof min === 'number' ? min : -100 })
       .demo-slider__maximum-value.js-demo-slider__maximum-value
-        +input({ title: 'Максимальное значение:', defaultValue: max })
+        +input({ title: 'Максимальное значение:', defaultValue: typeof max === 'number' ? max : 100 })
       .demo-slider__minimum-value.js-demo-slider__current-value
-        +input({ title: 'Текущее значение:', defaultValue: to })
+        +input({ title: 'Текущее значение:', defaultValue: typeof to === 'number' ? to : 0 })
       .demo-slider__note-value.js-demo-slider__note-value
-        +checkbox({ title: 'Показать значение', defaultValue: showValueNote })
+        +checkbox({ title: 'Показать значение', defaultValue: typeof showValueNote === 'boolean' ? showValueNote : true })
       .demo-slider__step.js-demo-slider__step
-        +input({ title: 'Шаг:', defaultValue: step })
+        +input({ title: 'Шаг:', defaultValue: typeof step === 'number' ? step : 5 })
       .demo-slider__vertical-view.js-demo-slider__vertical-view
-        +checkbox({ title: 'Вертикальный вид', defaultValue: vertical })
+        +checkbox({ title: 'Вертикальный вид', defaultValue: typeof vertical === 'boolean' ? vertical : false })
       .demo-slider__double.js-demo-slider__double
-        +checkbox({ title: 'Диапазон', defaultValue: double })
+        +checkbox({ title: 'Диапазон', defaultValue: typeof double === 'boolean' ? double : false })
       .demo-slider__from.js-demo-slider__from
-        +input({ title: 'От:', defaultValue: from })
+        +input({ title: 'От:', defaultValue: typeof from === 'number' ? from : -20 })
       .demo-slider__to.js-demo-slider__to
-        +input({ title: 'До:', defaultValue: to })
+        +input({ title: 'До:', defaultValue: typeof to === 'number' ? to : 0 })
     .demo-slider__adslider.js-demo-slider__adslider

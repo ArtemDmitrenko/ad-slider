@@ -3,15 +3,15 @@ import Checkbox from '../checkbox/Checkbox';
 
 type Config = {
   limits: {
-    min: number | null;
-    max: number | null;
+    min: number;
+    max: number;
   };
   showValueNote: boolean;
-  step: number | null;
+  step: number;
   vertical: boolean;
   double: boolean;
   from?: number | null;
-  to: number | null;
+  to: number;
   onChange?: (data: Config) => void;
 }
 
@@ -102,15 +102,15 @@ class DemoSlider {
   private setInitOptionsForSlider(): void {
     this.initOptions = {
       limits: {
-        min: Number.isNaN(this.minValueInstance.getValue()) ? -100 : this.minValueInstance.getValue(),
-        max: Number.isNaN(this.maxValueInstance.getValue()) ? 100 : this.maxValueInstance.getValue(),
+        min: this.minValueInstance.getValue(),
+        max: this.maxValueInstance.getValue(),
       },
-      showValueNote: this.noteValueInstance.isChecked() || true,
-      step: Number.isNaN(this.stepInstance.getValue()) || this.stepInstance.getValue() === 0 ? 5 : this.stepInstance.getValue(),
-      vertical: this.verticalInstance.isChecked() || false,
-      double: this.doubleInstance.isChecked() || false,
-      from: this.doubleInstance.isChecked() && !this.fromInstance.getValue() ? 0 : null,
-      to: this.toInstance.getValue() || 0,
+      showValueNote: this.noteValueInstance.isChecked(),
+      step: this.stepInstance.getValue(),
+      vertical: this.verticalInstance.isChecked(),
+      double: this.doubleInstance.isChecked(),
+      from: this.fromInstance.getValue(),
+      to: this.toInstance.getValue(),
       onChange: this.handleOnChange,
     };
   }
@@ -154,7 +154,7 @@ class DemoSlider {
     if (double) {
       this.doubleInstance.setChecked();
     }
-    this.fromInstance.setValue(from);
+    this.fromInstance.setValue(typeof from === 'number' ? from : min);
     this.setInputsForDouble();
   }
 

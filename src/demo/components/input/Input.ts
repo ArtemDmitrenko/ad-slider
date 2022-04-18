@@ -17,14 +17,11 @@ class Input {
     return this.inputElement;
   }
 
-  public getValue(): number | null {
-    if (this.inputElement.value === '') {
-      return null;
-    }
+  public getValue(): number {
     return Number(this.inputElement.value);
   }
 
-  public setValue(value: number | null | undefined): void {
+  public setValue(value: number | null): void {
     if (typeof value === 'number') {
       this.inputElement.value = String(value);
     } else {

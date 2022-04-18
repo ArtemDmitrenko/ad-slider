@@ -67,11 +67,11 @@ class Model extends EventObserver {
     };
     this.options = {
       limits: defaultLimits,
-      showValueNote: options.showValueNote || true,
-      step: typeof options.step === 'number' && options.step !== 0 ? options.step : 5,
-      vertical: options.vertical || false,
-      double: options.double || false,
-      from: options.double && !options.from ? 0 : null,
+      showValueNote: typeof options.showValueNote === 'boolean' ? options.showValueNote : true,
+      step: typeof options.step === 'number' ? options.step : 5,
+      vertical: typeof options.vertical === 'boolean' ? options.vertical : false,
+      double: typeof options.double === 'boolean' ? options.double : false,
+      from: typeof options.from === 'number' ? options.from : -20,
       to: typeof options.to === 'number' ? options.to : 0,
       onChange: options.onChange,
     };
