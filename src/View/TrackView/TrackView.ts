@@ -1,6 +1,5 @@
 import EventObserver from '../../EventObserver/EventObserver';
 import EventTypes from '../../EventObserver/eventTypes';
-import { IConfig } from '../../Model/Model';
 import BarView from '../BarView/BarView';
 import HandlerView from '../HandlerView/HandlerView';
 import ScaleView from '../ScaleView/ScaleView';
@@ -40,6 +39,88 @@ class TrackView extends EventObserver {
     this.addObservers();
   }
 
+  public updateTrackView(options: {
+    vertical: boolean;
+    limits: { max: number; min: number };
+    showValueNote: boolean;
+    double: boolean;
+    from?: number | null;
+    to: number;
+    step: number;
+  }): void {
+    const {
+      vertical, limits, showValueNote, double, from, to,
+    } = options;
+    this.handlerView.calcPos({
+      edge: this.getEdge(this.handlerView),
+      value: to,
+      limits,
+    });
+    this.handlerView.setPos(double);
+    this.handlerView.setValue(to);
+    this.handlerView.showValueNote(showValueNote);
+    this.scaleView.drawScale(options, this.handlerView.handler);
+    if (double) {
+      this.updateViewForDouble(
+        vertical,
+        from,
+        limits,
+        showValueNote,
+      );
+    } else if (this.handlerViewFrom) {
+      this.deleteHandlerFrom();
+      this.deleteValueNoteViewCommon();
+    }
+  }
+
+  public calcHandlerPos(options: {
+    value: number,
+    limits: { min: number; max: number },
+    isFromValueChanging: boolean,
+  }): void {
+    const { value, limits, isFromValueChanging } = options;
+    if (this.handlerViewFrom) {
+      const data = {
+        edge: this.getEdge(this.handlerViewFrom),
+        value,
+        limits,
+      };
+      if (isFromValueChanging) {
+        this.handlerViewFrom.calcPos(data);
+        this.handlerViewFrom.setValue(value);
+      } else {
+        this.handlerView.calcPos(data);
+        this.handlerView.setValue(value);
+      }
+    } else {
+      const data = {
+        edge: this.getEdge(this.handlerView),
+        value,
+        limits,
+      };
+      this.handlerView.calcPos(data);
+      this.handlerView.setValue(value);
+    }
+  }
+
+  public setHandlerPos(options: {
+    isDouble: boolean,
+    isFromValueChanging: boolean,
+    showValueNote: boolean
+  }): void {
+    const { isDouble, isFromValueChanging, showValueNote } = options;
+    if (this.handlerViewFrom) {
+      if (isFromValueChanging) {
+        this.handlerViewFrom.setPos(isDouble);
+      } else {
+        this.handlerView.setPos(isDouble);
+      }
+      this.setViewOfOneNote(showValueNote);
+    } else {
+      this.handlerView.setPos(isDouble);
+    }
+  }
+
   public getLength(): number {
     return this.track.classList.contains('adslider__track_direction_vertical') ? parseInt(getComputedStyle(this.track).height, 10) : parseInt(getComputedStyle(this.track).width, 10);
   }
@@ -56,34 +137,16 @@ class TrackView extends EventObserver {
     this.handlerView.setVerticalView(verticalView);
   }
 
-  public setBarLengthForDouble(options: {
-    valueFrom: number;
-    valueTo: number;
-    handler: HTMLElement;
-  }): void {
-    this.barView.setLengthForDouble(options);
-  }
-
-  public setBarLength(handler: HTMLElement): void {
-    this.barView.setLength(handler);
-  }
-
-  public drawScale(options: IConfig, handler: HTMLElement): void {
-    this.scaleView.drawScale(options, handler);
-  }
-
   private render(parent: HTMLElement): void {
     this.track = document.createElement('div');
     this.track.classList.add('adslider__track');
     this.barView = new BarView(this.track);
     this.scaleView = new ScaleView(this.track);
-
     this.handlerView = new HandlerView(this.track);
     this.handlerViewFrom = new HandlerView(this.track);
     this.handlerView.addClassToValueNoteElement('adslider__note_type_to');
     this.handlerViewFrom.addClassToValueNoteElement('adslider__handler_type_from');
     this.handlerViewFrom.handler.classList.add('adslider__handler_type_from');
-
     parent.append(this.track);
   }
 
@@ -102,11 +165,10 @@ class TrackView extends EventObserver {
       this.handlerViewFrom.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleMouseDown);
       this.handlerViewFrom.addObserver(EventTypes.HANDLER_MOUSEMOVE_EVENT, this.mouseMove);
     }
-    this.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleChangePos);
-
     this.handlerView.addObserver(EventTypes.CALC_VALUE_NOTE_POSITION, this.handleCalcValueNotePos);
     this.handlerView.addObserver(EventTypes.SET_VALUE_NOTE_POS, this.handleSetValueNotePos);
     this.handlerView.addObserver(EventTypes.SET_BAR, this.handleSetBar);
+    this.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleChangePos);
   }
 
   private handleMouseDown = (data: { event: MouseEvent; handler: HTMLElement }): void => {
@@ -164,7 +226,6 @@ class TrackView extends EventObserver {
     const newPos = e.type === 'mousedown' ? this.calcNewPos(shift, e) : this.calcNewPos(this.handlerShift, e);
     const edge: number = this.getEdge(this.leadHandler);
     const checkedNewPos = this.checkNewPos(newPos);
-
     const relPosition = checkedNewPos / edge;
     const isFromValueChanging = this.leadHandler.handler.classList.contains('adslider__handler_type_from');
     const options = {
@@ -235,104 +296,14 @@ class TrackView extends EventObserver {
     double: boolean
   }): void => {
     if (!data.double) {
-      this.setBarLength(data.handler);
+      this.barView.setLength(data.handler);
     } else if (this.handlerViewFrom) {
       const options = {
         valueFrom: this.handlerViewFrom.getPos(),
         valueTo: this.handlerView.getPos(),
         handler: data.handler,
       };
-      this.setBarLengthForDouble(options);
-    }
-  }
-
-  public updateTrackView(options: {
-    vertical: boolean;
-    limits: { max: number; min: number };
-    showValueNote: boolean;
-    double: boolean;
-    from?: number | null;
-    to: number;
-    step: number;
-  }): void {
-    const {
-      vertical, limits, showValueNote, double, from, to,
-    } = options;
-    this.handlerView.calcPos({
-      edge: this.getEdge(this.handlerView),
-      value: to,
-      limits,
-    });
-    this.handlerView.setPos(double);
-    this.handlerView.setValue(to);
-    this.handlerView.showValueNote(showValueNote);
-    this.drawScale(options, this.handlerView.handler);
-    if (double) {
-      this.updateViewForDouble(
-        vertical,
-        from,
-        limits,
-        showValueNote,
-      );
-    } else if (this.handlerViewFrom) {
-      this.deleteHandlerFrom();
-      this.deleteValueNoteViewCommon();
-    }
-  }
-
-  public calcHandlerPos(options: {
-    edge: number,
-    value: number | null | undefined,
-    limits: { min: number; max: number },
-  }): void {
-    this.handlerView.calcPos(options);
-  }
-
-  public calcHandlerPosFromView(options: {
-    value: number,
-    limits: { min: number; max: number },
-    isFromValueChanging: boolean,
-  }): void {
-    const { value, limits, isFromValueChanging } = options;
-    if (this.handlerViewFrom) {
-      const data = {
-        edge: this.getEdge(this.handlerViewFrom),
-        value,
-        limits,
-      };
-      if (isFromValueChanging) {
-        this.handlerViewFrom.calcPos(data);
-        this.handlerViewFrom.setValue(value);
-      } else {
-        this.handlerView.calcPos(data);
-        this.handlerView.setValue(value);
-      }
-    } else {
-      const data = {
-        edge: this.getEdge(this.handlerView),
-        value,
-        limits,
-      };
-      this.handlerView.calcPos(data);
-      this.handlerView.setValue(value);
-    }
-  }
-
-  public setHandlerPosFromView(options: {
-    isDouble: boolean,
-    isFromValueChanging: boolean,
-    showValueNote: boolean
-  }): void {
-    const { isDouble, isFromValueChanging, showValueNote } = options;
-    if (this.handlerViewFrom) {
-      if (isFromValueChanging) {
-        this.handlerViewFrom.setPos(isDouble);
-      } else {
-        this.handlerView.setPos(isDouble);
-      }
-      this.setViewOfOneNote(showValueNote);
-    } else {
-      this.handlerView.setPos(isDouble);
+      this.barView.setLengthForDouble(options);
     }
   }
 
@@ -358,7 +329,7 @@ class TrackView extends EventObserver {
       this.handlerViewFrom.setValuePos();
       this.handlerViewFrom.setValue(from);
       this.handlerViewFrom.showValueNote(showValueNote);
-      this.setBarLengthForDouble({
+      this.barView.setLengthForDouble({
         valueFrom: this.handlerViewFrom.getPos(),
         valueTo: this.handlerView.getPos(),
         handler: this.handlerView.handler,

@@ -34,7 +34,7 @@ class View extends EventObserver {
     limits: { min: number; max: number },
     isFromValueChanging: boolean,
   }): void {
-    this.trackView.calcHandlerPosFromView(options);
+    this.trackView.calcHandlerPos(options);
   }
 
   public setPos(options: {
@@ -42,7 +42,7 @@ class View extends EventObserver {
     isFromValueChanging: boolean,
     showValueNote: boolean
   }): void {
-    this.trackView.setHandlerPosFromView(options);
+    this.trackView.setHandlerPos(options);
   }
 
   private render(container: HTMLElement): void {
