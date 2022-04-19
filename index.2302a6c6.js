@@ -486,7 +486,7 @@ var _Presenter = _interopRequireDefault(require("./Presenter/Presenter"));
             if (arg1 === 'update' && arg2) return methods.update.call(this, arg2);
             if (arg1 === 'getOptions' && !arg2) return methods.getOptions.call(this);
         } else if (_typeof2["default"](arg1) === 'object' && !arg2) {
-            var el = $(this);
+            var el = $(this)[0];
             return methods.init.call(this, el, arg1);
         }
         $.error("Method ".concat(arg1, " does not exist on jQuery.tooltip"));
@@ -570,7 +570,7 @@ var Presenter = /*#__PURE__*/ function() {
         {
             key: "getModelOptions",
             value: function getModelOptions() {
-                return this.model.options;
+                return this.model.getOptions();
             }
         },
         {
@@ -642,6 +642,31 @@ var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/ge
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 var _EventObserver2 = _interopRequireDefault(require("../EventObserver/EventObserver"));
 var _eventTypes = _interopRequireDefault(require("../EventObserver/eventTypes"));
+function ownKeys(object, enumerableOnly) {
+    var keys = Object.keys(object);
+    if (Object.getOwnPropertySymbols) {
+        var symbols = Object.getOwnPropertySymbols(object);
+        if (enumerableOnly) symbols = symbols.filter(function(sym) {
+            return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+        });
+        keys.push.apply(keys, symbols);
+    }
+    return keys;
+}
+function _objectSpread(target) {
+    for(var i = 1; i < arguments.length; i++){
+        var source = arguments[i] != null ? arguments[i] : {
+        };
+        if (i % 2) ownKeys(Object(source), true).forEach(function(key) {
+            _defineProperty2["default"](target, key, source[key]);
+        });
+        else if (Object.getOwnPropertyDescriptors) Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+        else ownKeys(Object(source)).forEach(function(key) {
+            Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+        });
+    }
+    return target;
+}
 function _createSuper(Derived) {
     var hasNativeReflectConstruct = _isNativeReflectConstruct();
     return function _createSuperInternal() {
@@ -687,34 +712,44 @@ var Model1 = /*#__PURE__*/ function(_EventObserver) {
         {
             key: "setValueFromHandlerPos",
             value: function setValueFromHandlerPos(data) {
-                var relPosition = data.relPosition, isFrom = data.isFrom;
+                var relPosition = data.relPosition, isFromValueChanging = data.isFromValueChanging;
                 var value = this.calcValueFromHandlerPos(relPosition);
                 var conditionForReturn = this.options["double"] && this.isValToMovesOverValFrom(value);
-                if (isFrom && this.isValFromMovesOverValTo(value)) return;
-                if (!isFrom && conditionForReturn) return;
-                this.setValAndBroadcast(value, isFrom);
+                if (isFromValueChanging && this.isValFromMovesOverValTo(value)) return;
+                if (!isFromValueChanging && conditionForReturn) return;
+                this.setValAndBroadcast(value, isFromValueChanging);
                 this.callOnChange();
+            }
+        },
+        {
+            key: "getOptions",
+            value: function getOptions() {
+                var _this$options = this.options, limits = _this$options.limits, showValueNote = _this$options.showValueNote, step = _this$options.step, vertical = _this$options.vertical, _double = _this$options["double"], from = _this$options.from, to = _this$options.to;
+                return {
+                    limits: limits,
+                    showValueNote: showValueNote,
+                    step: step,
+                    vertical: vertical,
+                    "double": _double,
+                    from: from,
+                    to: to
+                };
             }
         },
         {
             key: "validateValues",
             value: function validateValues(options) {
-                var defaultLimits;
-                if (options.limits) defaultLimits = {
+                var defaultLimits = {
                     min: typeof options.limits.min === 'number' ? options.limits.min : -100,
                     max: typeof options.limits.max === 'number' ? options.limits.max : 100
                 };
-                else defaultLimits = {
-                    min: -100,
-                    max: 100
-                };
                 this.options = {
                     limits: defaultLimits,
-                    showValueNote: options.showValueNote || true,
-                    step: typeof options.step === 'number' && options.step !== 0 ? options.step : 5,
-                    vertical: options.vertical || false,
-                    "double": options["double"] || false,
-                    from: options["double"] && !options.from ? 0 : null,
+                    showValueNote: typeof options.showValueNote === 'boolean' ? options.showValueNote : true,
+                    step: typeof options.step === 'number' ? options.step : 5,
+                    vertical: typeof options.vertical === 'boolean' ? options.vertical : false,
+                    "double": typeof options["double"] === 'boolean' ? options["double"] : false,
+                    from: typeof options.from === 'number' ? options.from : -20,
                     to: typeof options.to === 'number' ? options.to : 0,
                     onChange: options.onChange
                 };
@@ -737,42 +772,41 @@ var Model1 = /*#__PURE__*/ function(_EventObserver) {
         {
             key: "setLimitsAndValues",
             value: function setLimitsAndValues(options) {
-                var _options$limits = options.limits, min = _options$limits.min, max = _options$limits.max, from = options.from, to = options.to, _double = options["double"], step = options.step, vertical = options.vertical, showValueNote = options.showValueNote;
+                var _options$limits = options.limits, min = _options$limits.min, max = _options$limits.max, from = options.from, to = options.to, _double2 = options["double"], step = options.step, vertical = options.vertical, showValueNote = options.showValueNote;
                 var isMinMaxNaN = Number.isNaN(min) || Number.isNaN(max);
-                var isFromToNaN = Number.isNaN(from) || Number.isNaN(to) || Number.isNaN(step);
-                if (isMinMaxNaN || isFromToNaN) return;
+                var isFromValueChangingToNaN = Number.isNaN(from) || Number.isNaN(to) || Number.isNaN(step);
+                if (isMinMaxNaN || isFromValueChangingToNaN) return;
                 if (min >= max) return;
-                if (min !== this.options.limits.min) {
-                    if (step > max - min) {
-                        this.setMinValue(options);
-                        return;
-                    }
-                }
-                if (max !== this.options.limits.max) {
-                    if (step > max - min) {
-                        this.setMaxValue(options);
-                        return;
-                    }
+                if (step > max - min) {
+                    this.setMinValue(options);
+                    this.setMaxValue(options);
+                    return;
                 }
                 if (step !== this.options.step) {
                     if (step <= 0 || step > max - min) return;
                 }
-                if (!_double) this.setValuesForSingleSlider(options);
+                if (!_double2) this.setValuesForSingleSlider(options);
                 else this.setValuesForDoubleSlider(options);
-                this.options.limits.min = min;
-                this.options.limits.max = max;
-                this.options["double"] = _double;
-                this.options.vertical = vertical;
-                this.options.showValueNote = showValueNote;
-                this.options.step = step;
+                this.options = _objectSpread(_objectSpread({
+                }, this.options), {
+                }, {
+                    limits: {
+                        min: min,
+                        max: max
+                    },
+                    "double": _double2,
+                    vertical: vertical,
+                    showValueNote: showValueNote,
+                    step: step
+                });
             }
         },
         {
             key: "setMinValue",
             value: function setMinValue(options) {
-                var _options$limits2 = options.limits, min = _options$limits2.min, max = _options$limits2.max, _double2 = options["double"], from = options.from, to = options.to;
+                var _options$limits2 = options.limits, min = _options$limits2.min, max = _options$limits2.max, _double3 = options["double"], from = options.from, to = options.to;
                 this.options.step = max - min;
-                if (!_double2) {
+                if (!_double3) {
                     this.options.to = min;
                     this.options.limits.min = min;
                 } else if (from && from < min) {
@@ -785,8 +819,8 @@ var Model1 = /*#__PURE__*/ function(_EventObserver) {
         {
             key: "setMaxValue",
             value: function setMaxValue(options) {
-                var _options$limits3 = options.limits, min = _options$limits3.min, max = _options$limits3.max, _double3 = options["double"], from = options.from;
-                var isDoubleWithFrom = _double3 && from;
+                var _options$limits3 = options.limits, min = _options$limits3.min, max = _options$limits3.max, _double4 = options["double"], from = options.from;
+                var isDoubleWithFrom = _double4 && from;
                 if (isDoubleWithFrom && max < from) this.options.from = max;
                 this.options.step = max - min;
                 this.options.to = max;
@@ -866,19 +900,19 @@ var Model1 = /*#__PURE__*/ function(_EventObserver) {
         },
         {
             key: "setValAndBroadcast",
-            value: function setValAndBroadcast(value, isFrom) {
-                var _this$options = this.options, limits = _this$options.limits, _double4 = _this$options["double"], showValueNote = _this$options.showValueNote;
+            value: function setValAndBroadcast(value, isFromValueChanging) {
+                var _this$options2 = this.options, limits = _this$options2.limits, _double5 = _this$options2["double"], showValueNote = _this$options2.showValueNote;
                 var data = {
-                    isDouble: _double4,
-                    isFrom: isFrom,
+                    isDouble: _double5,
+                    isFromValueChanging: isFromValueChanging,
                     showValueNote: showValueNote
                 };
                 var options = {
                     limits: limits,
-                    isFrom: isFrom,
+                    isFromValueChanging: isFromValueChanging,
                     value: value
                 };
-                if (isFrom) {
+                if (isFromValueChanging) {
                     this.options.from = this.calcValueWithStep(value);
                     options.value = this.options.from;
                 } else {
@@ -907,14 +941,14 @@ var Model1 = /*#__PURE__*/ function(_EventObserver) {
         {
             key: "calcValueWithStep",
             value: function calcValueWithStep(value) {
-                var _this$options2 = this.options, _this$options2$limits = _this$options2.limits, min = _this$options2$limits.min, max = _this$options2$limits.max, step = _this$options2.step;
+                var _this$options3 = this.options, _this$options3$limits = _this$options3.limits, min = _this$options3$limits.min, max = _this$options3$limits.max, step = _this$options3.step;
                 var allNumberOfSteps = Math.floor(Math.abs(max - min) / step);
                 var maxStepValue = min + allNumberOfSteps * step;
                 var numberOfSteps = Math.round((value - min) / step);
                 var newValue = min + step * numberOfSteps;
-                if (newValue < min) newValue += step;
-                if (newValue > max) newValue -= step;
-                if (value > maxStepValue) newValue = value > maxStepValue + (max - maxStepValue) / 2 ? max : maxStepValue;
+                if (newValue < min) return newValue + step;
+                if (value > maxStepValue) return value > maxStepValue + (max - maxStepValue) / 2 ? max : maxStepValue;
+                if (newValue > max) return newValue - step;
                 return newValue;
             }
         }
@@ -1060,9 +1094,7 @@ var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits
 var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
 var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
-var _HandlerView = _interopRequireDefault(require("./HandlerView/HandlerView"));
 var _TrackView = _interopRequireDefault(require("./TrackView/TrackView"));
-var _ValueNoteView = _interopRequireDefault(require("./ValueNoteView/ValueNoteView"));
 var _EventObserver2 = _interopRequireDefault(require("../EventObserver/EventObserver"));
 var _eventTypes = _interopRequireDefault(require("../EventObserver/eventTypes"));
 function _createSuper(Derived) {
@@ -1096,11 +1128,127 @@ var View1 = /*#__PURE__*/ function(_EventObserver) {
         _classCallCheck2["default"](this, View2);
         _this = _super.call(this);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "el", void 0);
+        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "trackView", void 0);
+        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "adslider", void 0);
+        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleChangePos", function(data) {
+            _this.broadcast(_eventTypes["default"].CHANGE_POSITION, data);
+        });
+        _this.render(container);
+        _this.addObservers();
+        return _this;
+    }
+    _createClass2["default"](View2, [
+        {
+            key: "updateView",
+            value: function updateView(options) {
+                var vertical = options.vertical;
+                this.setVerticalViewForSingle(vertical);
+                this.trackView.updateTrackView(options);
+            }
+        },
+        {
+            key: "calcPos",
+            value: function calcPos(options) {
+                this.trackView.calcHandlerPos(options);
+            }
+        },
+        {
+            key: "setPos",
+            value: function setPos(options) {
+                this.trackView.setHandlerPos(options);
+            }
+        },
+        {
+            key: "render",
+            value: function render(container) {
+                this.el = container;
+                this.adslider = document.createElement('div');
+                this.adslider.classList.add('adslider');
+                this.el.append(this.adslider);
+                this.trackView = new _TrackView["default"](this.adslider);
+            }
+        },
+        {
+            key: "setVerticalViewForSingle",
+            value: function setVerticalViewForSingle(vertical) {
+                if (vertical) {
+                    this.adslider.classList.remove('adslider_direction_horizontal');
+                    this.adslider.classList.add('adslider_direction_vertical');
+                } else {
+                    this.adslider.classList.remove('adslider_direction_vertical');
+                    this.adslider.classList.add('adslider_direction_horizontal');
+                }
+                this.trackView.setVerticalView(vertical);
+            }
+        },
+        {
+            key: "addObservers",
+            value: function addObservers() {
+                this.trackView.addObserver(_eventTypes["default"].CHANGE_POSITION, this.handleChangePos);
+            }
+        }
+    ]);
+    return View2;
+}(_EventObserver2["default"]);
+var _default = View1;
+exports["default"] = _default;
+
+},{"@babel/runtime/helpers/interopRequireDefault":"eigyQ","@babel/runtime/helpers/classCallCheck":"fIqcI","@babel/runtime/helpers/createClass":"eFNXV","@babel/runtime/helpers/assertThisInitialized":"k3YcS","@babel/runtime/helpers/inherits":"8mpJg","@babel/runtime/helpers/possibleConstructorReturn":"iiXLy","@babel/runtime/helpers/getPrototypeOf":"DHhBk","@babel/runtime/helpers/defineProperty":"eCMPI","./TrackView/TrackView":"jw1m8","../EventObserver/EventObserver":"ftS0S","../EventObserver/eventTypes":"cbWbf"}],"jw1m8":[function(require,module,exports) {
+"use strict";
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports["default"] = void 0;
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
+var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
+var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime/helpers/assertThisInitialized"));
+var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+var _EventObserver2 = _interopRequireDefault(require("../../EventObserver/EventObserver"));
+var _eventTypes = _interopRequireDefault(require("../../EventObserver/eventTypes"));
+var _BarView = _interopRequireDefault(require("../BarView/BarView"));
+var _HandlerView = _interopRequireDefault(require("../HandlerView/HandlerView"));
+var _ScaleView = _interopRequireDefault(require("../ScaleView/ScaleView"));
+var _ValueNoteView = _interopRequireDefault(require("../ValueNoteView/ValueNoteView"));
+function _createSuper(Derived) {
+    var hasNativeReflectConstruct = _isNativeReflectConstruct();
+    return function _createSuperInternal() {
+        var Super = _getPrototypeOf2["default"](Derived), result;
+        if (hasNativeReflectConstruct) {
+            var NewTarget = _getPrototypeOf2["default"](this).constructor;
+            result = Reflect.construct(Super, arguments, NewTarget);
+        } else result = Super.apply(this, arguments);
+        return _possibleConstructorReturn2["default"](this, result);
+    };
+}
+function _isNativeReflectConstruct() {
+    if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+    if (Reflect.construct.sham) return false;
+    if (typeof Proxy === "function") return true;
+    try {
+        Date.prototype.toString.call(Reflect.construct(Date, [], function() {
+        }));
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+var TrackView1 = /*#__PURE__*/ function(_EventObserver) {
+    _inherits2["default"](TrackView2, _EventObserver);
+    var _super = _createSuper(TrackView2);
+    function TrackView2(parent) {
+        var _this;
+        _classCallCheck2["default"](this, TrackView2);
+        _this = _super.call(this);
+        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "track", void 0);
+        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "barView", void 0);
+        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "scaleView", void 0);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handlerView", void 0);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handlerViewFrom", void 0);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "valueNoteViewCommon", void 0);
-        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "trackView", void 0);
-        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "adslider", void 0);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handlerShift", void 0);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "areHandlersInOnePoint", void 0);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "mousedownClientX", void 0);
@@ -1108,6 +1256,52 @@ var View1 = /*#__PURE__*/ function(_EventObserver) {
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "leadHandler", void 0);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "isHandlerTo", void 0);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "isHandlerFrom", void 0);
+        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleTrackMouseDown", function(event) {
+            _this.broadcast(_eventTypes["default"].HANDLER_MOUSEDOWN_EVENT, event);
+        });
+        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleMouseDown", function(data) {
+            var event = data.event, handler = data.handler;
+            _this.calcShift(event, handler);
+            _this.checkIfHandlersInOnePlace(event);
+        });
+        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "mouseMove", function(data) {
+            var shift = data.shift, e = data.e, handler = data.handler;
+            if (_this.areHandlersInOnePoint) _this.findLeadHandler(e, handler);
+            else _this.leadHandler = handler;
+            var newPos = e.type === 'mousedown' ? _this.calcNewPos(shift, e) : _this.calcNewPos(_this.handlerShift, e);
+            var edge = _this.getEdge(_this.leadHandler);
+            var checkedNewPos = _this.checkNewPos(newPos);
+            var relPosition = checkedNewPos / edge;
+            var isFromValueChanging = _this.leadHandler.handler.classList.contains('adslider__handler_type_from');
+            var options = {
+                relPosition: relPosition,
+                isFromValueChanging: isFromValueChanging
+            };
+            _this.broadcast(_eventTypes["default"].CHANGE_POSITION, options);
+        });
+        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleSetValueNotePos", function() {
+            _this.handlerView.setValuePos();
+        });
+        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleCalcValueNotePos", function(handler) {
+            _this.handlerView.calcValuePos(handler);
+        });
+        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleSetBar", function(data) {
+            if (!data["double"]) _this.barView.setLength(data.handler);
+            else if (_this.handlerViewFrom) {
+                var options = {
+                    valueFrom: _this.handlerViewFrom.getPos(),
+                    valueTo: _this.handlerView.getPos(),
+                    handler: data.handler
+                };
+                _this.barView.setLengthForDouble(options);
+            }
+        });
+        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleSetValueNoteFromPos", function() {
+            if (_this.handlerViewFrom) _this.handlerViewFrom.setValuePos();
+        });
+        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleCalcValueNoteFromPos", function(handler) {
+            if (_this.handlerViewFrom) _this.handlerViewFrom.calcValuePos(handler);
+        });
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleChangePos", function(e) {
             if (_this.isDouble()) {
                 if (_this.handlerView.handler.classList.contains('adslider__handler_direction_horizontal')) _this.changeHandlerPosForDoubleHorizontal(e);
@@ -1121,61 +1315,16 @@ var View1 = /*#__PURE__*/ function(_EventObserver) {
                 _this.mouseMove(data);
             }
         });
-        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleMouseDown", function(data) {
-            var event = data.event, handler = data.handler;
-            _this.calcShift(event, handler);
-            _this.checkIfHandlersInOnePlace(event);
-        });
-        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "mouseMove", function(data) {
-            var shift = data.shift, e = data.e, handler = data.handler;
-            if (_this.areHandlersInOnePoint) _this.findLeadHandler(e, handler);
-            else _this.leadHandler = handler;
-            var newPos;
-            if (e.type === 'mousedown') newPos = _this.calcNewPos(shift, e);
-            else newPos = _this.calcNewPos(_this.handlerShift, e);
-            var edge = _this.getEdge(_this.leadHandler);
-            newPos = _this.checkNewPos(newPos);
-            var isFrom = _this.leadHandler.handler.classList.contains('adslider__handler_type_from');
-            var relPosition = newPos / edge;
-            var options = {
-                relPosition: relPosition,
-                isFrom: isFrom
-            };
-            _this.broadcast(_eventTypes["default"].CHANGE_POSITION, options);
-        });
-        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleSetBar", function(data) {
-            if (!data["double"]) _this.trackView.setBarLength(data.handler);
-            else if (_this.handlerViewFrom) {
-                var options = {
-                    valueFrom: _this.handlerViewFrom.getPos(),
-                    valueTo: _this.handlerView.getPos(),
-                    handler: data.handler
-                };
-                _this.trackView.setBarLengthForDouble(options);
-            }
-        });
-        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleSetValueNoteFromPos", function() {
-            if (_this.handlerViewFrom) _this.handlerViewFrom.setValuePos();
-        });
-        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleCalcValueNoteFromPos", function(handler) {
-            if (_this.handlerViewFrom) _this.handlerViewFrom.calcValuePos(handler);
-        });
-        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleSetValueNotePos", function() {
-            _this.handlerView.setValuePos();
-        });
-        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleCalcValueNotePos", function(handler) {
-            _this.handlerView.calcValuePos(handler);
-        });
-        _this.render(container);
+        _this.render(parent);
+        _this.addListeners();
         _this.addObservers();
         return _this;
     }
-    _createClass2["default"](View2, [
+    _createClass2["default"](TrackView2, [
         {
-            key: "updateView",
-            value: function updateView(options) {
+            key: "updateTrackView",
+            value: function updateTrackView(options) {
                 var vertical = options.vertical, limits = options.limits, showValueNote = options.showValueNote, _double = options["double"], from = options.from, to = options.to;
-                this.setVerticalViewForSingle(vertical);
                 this.handlerView.calcPos({
                     edge: this.getEdge(this.handlerView),
                     value: to,
@@ -1184,7 +1333,7 @@ var View1 = /*#__PURE__*/ function(_EventObserver) {
                 this.handlerView.setPos(_double);
                 this.handlerView.setValue(to);
                 this.handlerView.showValueNote(showValueNote);
-                this.trackView.drawScale(options, this.handlerView.handler);
+                this.scaleView.drawScale(options, this.handlerView.handler);
                 if (_double) this.updateViewForDouble(vertical, from, limits, showValueNote);
                 else if (this.handlerViewFrom) {
                     this.deleteHandlerFrom();
@@ -1193,16 +1342,16 @@ var View1 = /*#__PURE__*/ function(_EventObserver) {
             }
         },
         {
-            key: "calcPos",
-            value: function calcPos(options) {
-                var value = options.value, limits = options.limits, isFrom = options.isFrom;
+            key: "calcHandlerPos",
+            value: function calcHandlerPos(options) {
+                var value = options.value, limits = options.limits, isFromValueChanging = options.isFromValueChanging;
                 if (this.handlerViewFrom) {
                     var data = {
                         edge: this.getEdge(this.handlerViewFrom),
                         value: value,
                         limits: limits
                     };
-                    if (isFrom) {
+                    if (isFromValueChanging) {
                         this.handlerViewFrom.calcPos(data);
                         this.handlerViewFrom.setValue(value);
                     } else {
@@ -1221,29 +1370,195 @@ var View1 = /*#__PURE__*/ function(_EventObserver) {
             }
         },
         {
-            key: "setPos",
-            value: function setPos(options) {
-                var isDouble = options.isDouble, isFrom = options.isFrom, showValueNote = options.showValueNote;
+            key: "setHandlerPos",
+            value: function setHandlerPos(options) {
+                var isDouble = options.isDouble, isFromValueChanging = options.isFromValueChanging, showValueNote = options.showValueNote;
                 if (this.handlerViewFrom) {
-                    if (isFrom) this.handlerViewFrom.setPos(isDouble);
+                    if (isFromValueChanging) this.handlerViewFrom.setPos(isDouble);
                     else this.handlerView.setPos(isDouble);
                     this.setViewOfOneNote(showValueNote);
                 } else this.handlerView.setPos(isDouble);
             }
         },
         {
+            key: "getLength",
+            value: function getLength() {
+                return this.track.classList.contains('adslider__track_direction_vertical') ? parseInt(getComputedStyle(this.track).height, 10) : parseInt(getComputedStyle(this.track).width, 10);
+            }
+        },
+        {
+            key: "setVerticalView",
+            value: function setVerticalView(verticalView) {
+                if (verticalView) {
+                    this.track.classList.remove('adslider__track_direction_horizontal');
+                    this.track.classList.add('adslider__track_direction_vertical');
+                } else {
+                    this.track.classList.remove('adslider__track_direction_vertical');
+                    this.track.classList.add('adslider__track_direction_horizontal');
+                }
+                this.barView.setVerticalView(verticalView);
+                this.handlerView.setVerticalView(verticalView);
+            }
+        },
+        {
             key: "render",
-            value: function render(container) {
-                this.el = container;
-                this.adslider = document.createElement('div');
-                this.adslider.classList.add('adslider');
-                this.el.append(this.adslider);
-                this.trackView = new _TrackView["default"](this.adslider);
-                this.handlerView = new _HandlerView["default"](this.trackView.track);
-                this.handlerViewFrom = new _HandlerView["default"](this.trackView.track);
+            value: function render(parent) {
+                this.track = document.createElement('div');
+                this.track.classList.add('adslider__track');
+                this.barView = new _BarView["default"](this.track);
+                this.scaleView = new _ScaleView["default"](this.track);
+                this.handlerView = new _HandlerView["default"](this.track);
+                this.handlerViewFrom = new _HandlerView["default"](this.track);
                 this.handlerView.addClassToValueNoteElement('adslider__note_type_to');
                 this.handlerViewFrom.addClassToValueNoteElement('adslider__handler_type_from');
                 this.handlerViewFrom.handler.classList.add('adslider__handler_type_from');
+                parent.append(this.track);
+            }
+        },
+        {
+            key: "addListeners",
+            value: function addListeners() {
+                this.track.addEventListener('mousedown', this.handleTrackMouseDown);
+            }
+        },
+        {
+            key: "addObservers",
+            value: function addObservers() {
+                this.handlerView.addObserver(_eventTypes["default"].HANDLER_MOUSEDOWN_EVENT, this.handleMouseDown);
+                this.handlerView.addObserver(_eventTypes["default"].HANDLER_MOUSEMOVE_EVENT, this.mouseMove);
+                if (this.handlerViewFrom) {
+                    this.handlerViewFrom.addObserver(_eventTypes["default"].HANDLER_MOUSEDOWN_EVENT, this.handleMouseDown);
+                    this.handlerViewFrom.addObserver(_eventTypes["default"].HANDLER_MOUSEMOVE_EVENT, this.mouseMove);
+                }
+                this.handlerView.addObserver(_eventTypes["default"].CALC_VALUE_NOTE_POSITION, this.handleCalcValueNotePos);
+                this.handlerView.addObserver(_eventTypes["default"].SET_VALUE_NOTE_POS, this.handleSetValueNotePos);
+                this.handlerView.addObserver(_eventTypes["default"].SET_BAR, this.handleSetBar);
+                this.addObserver(_eventTypes["default"].HANDLER_MOUSEDOWN_EVENT, this.handleChangePos);
+            }
+        },
+        {
+            key: "calcShift",
+            value: function calcShift(e, handler) {
+                var shift = this.isVertical() ? e.clientY - handler.getBoundingClientRect().bottom : e.clientX - handler.getBoundingClientRect().left;
+                this.handlerShift = Math.abs(shift);
+            }
+        },
+        {
+            key: "checkIfHandlersInOnePlace",
+            value: function checkIfHandlersInOnePlace(event) {
+                if (this.handlerViewFrom) {
+                    if (this.isVertical()) {
+                        if (this.handlerView.handler.style.bottom === this.handlerViewFrom.handler.style.bottom) {
+                            this.areHandlersInOnePoint = true;
+                            this.mousedownClientY = event.clientY;
+                            this.isHandlerFrom = false;
+                            this.isHandlerTo = false;
+                        } else this.areHandlersInOnePoint = false;
+                    } else if (this.handlerView.handler.style.left === this.handlerViewFrom.handler.style.left) {
+                        this.areHandlersInOnePoint = true;
+                        this.mousedownClientX = event.clientX;
+                        this.isHandlerFrom = false;
+                        this.isHandlerTo = false;
+                    } else this.areHandlersInOnePoint = false;
+                } else this.areHandlersInOnePoint = false;
+            }
+        },
+        {
+            key: "isVertical",
+            value: function isVertical() {
+                return this.track.classList.contains('adslider__track_direction_vertical');
+            }
+        },
+        {
+            key: "findLeadHandler",
+            value: function findLeadHandler(e, handler) {
+                var isValueDecrease = this.isVertical() ? e.clientY > this.mousedownClientY : e.clientX < this.mousedownClientX;
+                var isValueIncrease = this.isVertical() ? e.clientY < this.mousedownClientY : e.clientX > this.mousedownClientX;
+                if (isValueIncrease) {
+                    var isHandlerFromLeader = !this.isHandlerTo && this.isHandlerFrom;
+                    if (isHandlerFromLeader && this.handlerViewFrom) this.leadHandler = this.handlerViewFrom;
+                    else {
+                        this.leadHandler = this.handlerView;
+                        this.isHandlerTo = true;
+                        this.isHandlerFrom = false;
+                    }
+                } else if (isValueDecrease) {
+                    if (this.isHandlerTo && !this.isHandlerFrom) this.leadHandler = this.handlerView;
+                    else if (this.handlerViewFrom) {
+                        this.leadHandler = this.handlerViewFrom;
+                        this.isHandlerFrom = true;
+                        this.isHandlerTo = false;
+                    }
+                } else this.leadHandler = handler;
+            }
+        },
+        {
+            key: "calcNewPos",
+            value: function calcNewPos(shift, e) {
+                return this.isVertical() ? this.track.getBoundingClientRect().bottom - e.clientY - shift : e.clientX - shift - this.track.getBoundingClientRect().left;
+            }
+        },
+        {
+            key: "getEdge",
+            value: function getEdge(handler) {
+                return this.getLength() - handler.getLength();
+            }
+        },
+        {
+            key: "checkNewPos",
+            value: function checkNewPos(newPos) {
+                var edge = this.getEdge(this.handlerView);
+                if (newPos < 0) return 0;
+                if (newPos > edge) return edge;
+                return newPos;
+            }
+        },
+        {
+            key: "updateViewForDouble",
+            value: function updateViewForDouble(vertical, from, limits, showValueNote) {
+                if (!this.handlerViewFrom) this.renderHandlerFrom();
+                this.updateObservers();
+                this.setVerticalViewForDouble(vertical);
+                if (this.handlerViewFrom) {
+                    this.handlerViewFrom.calcPos({
+                        edge: this.getEdge(this.handlerViewFrom),
+                        value: from,
+                        limits: limits
+                    });
+                    this.handlerViewFrom.setPos(true);
+                    this.handlerViewFrom.calcValuePos(this.handlerViewFrom.handler);
+                    this.handlerViewFrom.setValuePos();
+                    this.handlerViewFrom.setValue(from);
+                    this.handlerViewFrom.showValueNote(showValueNote);
+                    this.barView.setLengthForDouble({
+                        valueFrom: this.handlerViewFrom.getPos(),
+                        valueTo: this.handlerView.getPos(),
+                        handler: this.handlerView.handler
+                    });
+                }
+                this.setViewOfOneNote(showValueNote);
+            }
+        },
+        {
+            key: "renderHandlerFrom",
+            value: function renderHandlerFrom() {
+                this.handlerViewFrom = new _HandlerView["default"](this.track);
+                this.handlerViewFrom.handler.classList.add('adslider__handler_type_from');
+                this.handlerViewFrom.addClassToValueNoteElement('adslider__note_type_from');
+                this.handlerViewFrom.addObserver(_eventTypes["default"].HANDLER_MOUSEDOWN_EVENT, this.handleMouseDown);
+                this.handlerViewFrom.addObserver(_eventTypes["default"].HANDLER_MOUSEMOVE_EVENT, this.mouseMove);
+            }
+        },
+        {
+            key: "updateObservers",
+            value: function updateObservers() {
+                if (this.handlerViewFrom && this.handlerViewFrom) {
+                    if (!Object.prototype.hasOwnProperty.call(this.handlerViewFrom.observers, _eventTypes["default"].CALC_VALUE_NOTE_POSITION)) {
+                        this.handlerViewFrom.addObserver(_eventTypes["default"].CALC_VALUE_NOTE_POSITION, this.handleCalcValueNoteFromPos);
+                        this.handlerViewFrom.addObserver(_eventTypes["default"].SET_VALUE_NOTE_POS, this.handleSetValueNoteFromPos);
+                        this.handlerViewFrom.addObserver(_eventTypes["default"].SET_BAR, this.handleSetBar);
+                    }
+                }
             }
         },
         {
@@ -1265,39 +1580,84 @@ var View1 = /*#__PURE__*/ function(_EventObserver) {
             }
         },
         {
-            key: "updateViewForDouble",
-            value: function updateViewForDouble(vertical, from, limits, showValueNote) {
-                if (!this.handlerViewFrom) this.renderHandlerFrom();
-                this.updateObservers();
-                this.setVerticalViewForDouble(vertical);
-                if (this.handlerViewFrom) {
-                    this.handlerViewFrom.calcPos({
-                        edge: this.getEdge(this.handlerViewFrom),
-                        value: from,
-                        limits: limits
-                    });
-                    this.handlerViewFrom.setPos(true);
-                    this.handlerViewFrom.calcValuePos(this.handlerViewFrom.handler);
-                    this.handlerViewFrom.setValuePos();
-                    this.handlerViewFrom.setValue(from);
-                    this.handlerViewFrom.showValueNote(showValueNote);
-                    this.trackView.setBarLengthForDouble({
-                        valueFrom: this.handlerViewFrom.getPos(),
-                        valueTo: this.handlerView.getPos(),
-                        handler: this.handlerView.handler
-                    });
-                }
-                this.setViewOfOneNote(showValueNote);
+            key: "setVerticalViewForDouble",
+            value: function setVerticalViewForDouble(vertical) {
+                if (this.handlerViewFrom) this.handlerViewFrom.setVerticalView(vertical);
             }
         },
         {
-            key: "renderHandlerFrom",
-            value: function renderHandlerFrom() {
-                this.handlerViewFrom = new _HandlerView["default"](this.trackView.track);
-                this.handlerViewFrom.handler.classList.add('adslider__handler_type_from');
-                this.handlerViewFrom.addClassToValueNoteElement('adslider__note_type_from');
-                this.handlerViewFrom.addObserver(_eventTypes["default"].HANDLER_MOUSEDOWN_EVENT, this.handleMouseDown);
-                this.handlerViewFrom.addObserver(_eventTypes["default"].HANDLER_MOUSEMOVE_EVENT, this.mouseMove);
+            key: "setViewOfOneNote",
+            value: function setViewOfOneNote(showValueNote) {
+                if (this.isSmallDistanceBetweenNotes()) {
+                    this.makeCommonNoteView();
+                    this.showCommonValueNote(showValueNote);
+                } else if (this.valueNoteViewCommon) {
+                    this.removeCommonNoteView();
+                    this.handlerView.showValueNote(showValueNote);
+                    if (this.handlerViewFrom) this.handlerViewFrom.showValueNote(showValueNote);
+                }
+            }
+        },
+        {
+            key: "isSmallDistanceBetweenNotes",
+            value: function isSmallDistanceBetweenNotes() {
+                if (this.handlerViewFrom) {
+                    var distAmongNotes = this.handlerView.getValueNotePos() - this.handlerViewFrom.getValueNotePos();
+                    return distAmongNotes < this.handlerView.getValueNoteSize();
+                }
+                return false;
+            }
+        },
+        {
+            key: "makeCommonNoteView",
+            value: function makeCommonNoteView() {
+                if (this.handlerViewFrom) this.handlerViewFrom.showValueNote(false);
+                this.handlerView.showValueNote(false);
+                if (this.valueNoteViewCommon) this.updateCommonNoteView();
+                else {
+                    this.valueNoteViewCommon = new _ValueNoteView["default"](this.track);
+                    this.valueNoteViewCommon.note.classList.add('adslider__note_common');
+                    this.valueNoteViewCommon.setVerticalView(this.isVertical());
+                    this.updateCommonNoteView();
+                }
+            }
+        },
+        {
+            key: "showCommonValueNote",
+            value: function showCommonValueNote(data) {
+                if (data && this.valueNoteViewCommon) {
+                    this.valueNoteViewCommon.note.classList.remove('adslider__note_hide');
+                    this.valueNoteViewCommon.note.classList.add('adslider__note_show');
+                } else if (this.valueNoteViewCommon) {
+                    this.valueNoteViewCommon.note.classList.remove('adslider__note_show');
+                    this.valueNoteViewCommon.note.classList.add('adslider__note_hide');
+                }
+            }
+        },
+        {
+            key: "updateCommonNoteView",
+            value: function updateCommonNoteView() {
+                if (this.handlerViewFrom && this.valueNoteViewCommon) {
+                    var valueTo = this.handlerView.getValueOfNote();
+                    var valueFrom = this.handlerViewFrom.getValueOfNote();
+                    this.valueNoteViewCommon.setValueForTwo(valueFrom, valueTo);
+                    var leftEdgeOfHandlerFrom = this.handlerViewFrom.getPos();
+                    var rightEdgeOfHandlerTo = this.handlerView.getPos() + this.handlerView.getLength();
+                    var distAmongEdgesOfHandlers = rightEdgeOfHandlerTo - leftEdgeOfHandlerFrom;
+                    this.valueNoteViewCommon.valueNotePos = leftEdgeOfHandlerFrom + distAmongEdgesOfHandlers / 2;
+                    this.valueNoteViewCommon.setPos();
+                }
+            }
+        },
+        {
+            key: "removeCommonNoteView",
+            value: function removeCommonNoteView() {
+                if (this.handlerViewFrom && this.valueNoteViewCommon) {
+                    this.handlerView.showValueNote(true);
+                    this.handlerViewFrom.showValueNote(true);
+                    this.valueNoteViewCommon.note.remove();
+                    delete this.valueNoteViewCommon;
+                }
             }
         },
         {
@@ -1354,225 +1714,150 @@ var View1 = /*#__PURE__*/ function(_EventObserver) {
             }
         },
         {
-            key: "setVerticalViewForSingle",
-            value: function setVerticalViewForSingle(vertical) {
-                if (vertical) {
-                    this.adslider.classList.remove('adslider_direction_horizontal');
-                    this.adslider.classList.add('adslider_direction_vertical');
-                } else {
-                    this.adslider.classList.remove('adslider_direction_vertical');
-                    this.adslider.classList.add('adslider_direction_horizontal');
-                }
-                this.trackView.setVerticalView(vertical);
-                this.handlerView.setVerticalView(vertical);
-            }
-        },
-        {
-            key: "setVerticalViewForDouble",
-            value: function setVerticalViewForDouble(vertical) {
-                if (this.handlerViewFrom) this.handlerViewFrom.setVerticalView(vertical);
-            }
-        },
-        {
-            key: "checkIfHandlersInOnePlace",
-            value: function checkIfHandlersInOnePlace(event) {
-                if (this.handlerViewFrom) {
-                    if (this.isVertical()) {
-                        if (this.handlerView.handler.style.bottom === this.handlerViewFrom.handler.style.bottom) {
-                            this.areHandlersInOnePoint = true;
-                            this.mousedownClientY = event.clientY;
-                            this.isHandlerFrom = false;
-                            this.isHandlerTo = false;
-                        } else this.areHandlersInOnePoint = false;
-                    } else if (this.handlerView.handler.style.left === this.handlerViewFrom.handler.style.left) {
-                        this.areHandlersInOnePoint = true;
-                        this.mousedownClientX = event.clientX;
-                        this.isHandlerFrom = false;
-                        this.isHandlerTo = false;
-                    } else this.areHandlersInOnePoint = false;
-                } else this.areHandlersInOnePoint = false;
-            }
-        },
-        {
-            key: "findLeadHandler",
-            value: function findLeadHandler(e, handler) {
-                var isValueDecrease;
-                var isValueIncrease;
-                if (this.isVertical()) {
-                    isValueIncrease = e.clientY < this.mousedownClientY;
-                    isValueDecrease = e.clientY > this.mousedownClientY;
-                } else {
-                    isValueIncrease = e.clientX > this.mousedownClientX;
-                    isValueDecrease = e.clientX < this.mousedownClientX;
-                }
-                if (isValueIncrease) {
-                    var isHandlerFromLeader = !this.isHandlerTo && this.isHandlerFrom;
-                    if (isHandlerFromLeader && this.handlerViewFrom) this.leadHandler = this.handlerViewFrom;
-                    else {
-                        this.leadHandler = this.handlerView;
-                        this.isHandlerTo = true;
-                        this.isHandlerFrom = false;
-                    }
-                } else if (isValueDecrease) {
-                    if (this.isHandlerTo && !this.isHandlerFrom) this.leadHandler = this.handlerView;
-                    else if (this.handlerViewFrom) {
-                        this.leadHandler = this.handlerViewFrom;
-                        this.isHandlerFrom = true;
-                        this.isHandlerTo = false;
-                    }
-                } else this.leadHandler = handler;
-            }
-        },
-        {
-            key: "getEdge",
-            value: function getEdge(handler) {
-                return this.trackView.getLength() - handler.getLength();
-            }
-        },
-        {
-            key: "checkNewPos",
-            value: function checkNewPos(newPos) {
-                var edge = this.getEdge(this.handlerView);
-                var newPosCopy = newPos;
-                if (newPos < 0) newPosCopy = 0;
-                else if (newPos > edge) newPosCopy = edge;
-                return newPosCopy;
-            }
-        },
-        {
-            key: "calcShift",
-            value: function calcShift(e, handler) {
-                var shift = this.isVertical() ? e.clientY - handler.getBoundingClientRect().bottom : e.clientX - handler.getBoundingClientRect().left;
-                this.handlerShift = Math.abs(shift);
-            }
-        },
-        {
-            key: "isVertical",
-            value: function isVertical() {
-                return this.adslider.classList.contains('adslider_direction_vertical');
-            }
-        },
-        {
             key: "isDouble",
             value: function isDouble() {
                 return !!this.handlerViewFrom;
             }
-        },
+        }
+    ]);
+    return TrackView2;
+}(_EventObserver2["default"]);
+var _default = TrackView1;
+exports["default"] = _default;
+
+},{"@babel/runtime/helpers/interopRequireDefault":"eigyQ","@babel/runtime/helpers/classCallCheck":"fIqcI","@babel/runtime/helpers/createClass":"eFNXV","@babel/runtime/helpers/assertThisInitialized":"k3YcS","@babel/runtime/helpers/inherits":"8mpJg","@babel/runtime/helpers/possibleConstructorReturn":"iiXLy","@babel/runtime/helpers/getPrototypeOf":"DHhBk","@babel/runtime/helpers/defineProperty":"eCMPI","../../EventObserver/EventObserver":"ftS0S","../../EventObserver/eventTypes":"cbWbf","../BarView/BarView":"eLuNz","../HandlerView/HandlerView":"fCvxo","../ScaleView/ScaleView":"hseG1","../ValueNoteView/ValueNoteView":"6LnC9"}],"eLuNz":[function(require,module,exports) {
+"use strict";
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports["default"] = void 0;
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
+var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
+var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime/helpers/assertThisInitialized"));
+var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+var _EventObserver2 = _interopRequireDefault(require("../../EventObserver/EventObserver"));
+function _createSuper(Derived) {
+    var hasNativeReflectConstruct = _isNativeReflectConstruct();
+    return function _createSuperInternal() {
+        var Super = _getPrototypeOf2["default"](Derived), result;
+        if (hasNativeReflectConstruct) {
+            var NewTarget = _getPrototypeOf2["default"](this).constructor;
+            result = Reflect.construct(Super, arguments, NewTarget);
+        } else result = Super.apply(this, arguments);
+        return _possibleConstructorReturn2["default"](this, result);
+    };
+}
+function _isNativeReflectConstruct() {
+    if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+    if (Reflect.construct.sham) return false;
+    if (typeof Proxy === "function") return true;
+    try {
+        Date.prototype.toString.call(Reflect.construct(Date, [], function() {
+        }));
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+var BarView1 = /*#__PURE__*/ function(_EventObserver) {
+    _inherits2["default"](BarView2, _EventObserver);
+    var _super = _createSuper(BarView2);
+    function BarView2(parent) {
+        var _this;
+        _classCallCheck2["default"](this, BarView2);
+        _this = _super.call(this);
+        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "bar", void 0);
+        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "barPos", void 0);
+        _this.render(parent);
+        return _this;
+    }
+    _createClass2["default"](BarView2, [
         {
-            key: "calcNewPos",
-            value: function calcNewPos(shift, e) {
-                return this.isVertical() ? this.trackView.track.getBoundingClientRect().bottom - e.clientY - shift : e.clientX - shift - this.trackView.track.getBoundingClientRect().left;
-            }
-        },
-        {
-            key: "setViewOfOneNote",
-            value: function setViewOfOneNote(showValueNote) {
-                if (this.isSmallDistanceBetweenNotes()) {
-                    this.makeCommonNoteView();
-                    this.showCommonValueNote(showValueNote);
-                } else if (this.valueNoteViewCommon) {
-                    this.removeCommonNoteView();
-                    this.handlerView.showValueNote(showValueNote);
-                    if (this.handlerViewFrom) this.handlerViewFrom.showValueNote(showValueNote);
+            key: "setVerticalView",
+            value: function setVerticalView(verticalView) {
+                if (verticalView) {
+                    this.bar.classList.remove('adslider__bar_direction_horizontal');
+                    this.bar.classList.add('adslider__bar_direction_vertical');
+                } else {
+                    this.bar.classList.remove('adslider__bar_direction_vertical');
+                    this.bar.classList.add('adslider__bar_direction_horizontal');
                 }
             }
         },
         {
-            key: "isSmallDistanceBetweenNotes",
-            value: function isSmallDistanceBetweenNotes() {
-                if (this.handlerViewFrom) {
-                    var distAmongNotes = this.handlerView.getValueNotePos() - this.handlerViewFrom.getValueNotePos();
-                    return distAmongNotes < this.handlerView.getValueNoteSize();
-                }
-                return false;
-            }
-        },
-        {
-            key: "makeCommonNoteView",
-            value: function makeCommonNoteView() {
-                if (this.handlerViewFrom) this.handlerViewFrom.showValueNote(false);
-                this.handlerView.showValueNote(false);
-                if (this.valueNoteViewCommon) this.updateCommonNoteView();
-                else {
-                    this.valueNoteViewCommon = new _ValueNoteView["default"](this.trackView.track);
-                    this.valueNoteViewCommon.note.classList.add('adslider__note_common');
-                    this.valueNoteViewCommon.setVerticalView(this.isVertical());
-                    this.updateCommonNoteView();
+            key: "setLength",
+            value: function setLength(handler) {
+                this.bar.style.bottom = '';
+                this.bar.style.left = '';
+                if (this.bar.classList.contains('adslider__bar_direction_horizontal')) {
+                    this.bar.style.height = '';
+                    var handlerPos = parseInt(getComputedStyle(handler).left, 10);
+                    var handlerLength = parseInt(getComputedStyle(handler).width, 10);
+                    this.calcBarPosForSingle(handlerPos, handlerLength);
+                    this.bar.style.width = "".concat(this.barPos, "px");
+                } else {
+                    this.bar.style.width = '';
+                    var _handlerPos = parseInt(getComputedStyle(handler).bottom, 10);
+                    var _handlerLength = parseInt(getComputedStyle(handler).height, 10);
+                    this.calcBarPosForSingle(_handlerPos, _handlerLength);
+                    this.bar.style.height = "".concat(this.barPos, "px");
                 }
             }
         },
         {
-            key: "showCommonValueNote",
-            value: function showCommonValueNote(data) {
-                if (data && this.valueNoteViewCommon) {
-                    this.valueNoteViewCommon.note.classList.remove('adslider__note_hide');
-                    this.valueNoteViewCommon.note.classList.add('adslider__note_show');
-                } else if (this.valueNoteViewCommon) {
-                    this.valueNoteViewCommon.note.classList.remove('adslider__note_show');
-                    this.valueNoteViewCommon.note.classList.add('adslider__note_hide');
+            key: "setLengthForDouble",
+            value: function setLengthForDouble(options) {
+                var valueFrom = options.valueFrom, valueTo = options.valueTo, handler = options.handler;
+                var handlerLength = parseInt(getComputedStyle(handler).width, 10);
+                var barRightEdge = valueTo + handlerLength / 2;
+                var barLeftEdge = valueFrom + handlerLength / 2;
+                var barLength = Math.abs(barRightEdge - barLeftEdge);
+                if (this.bar.classList.contains('adslider__bar_direction_horizontal')) {
+                    this.bar.style.height = '';
+                    this.bar.style.bottom = '';
+                    this.bar.style.width = "".concat(barLength, "px");
+                    this.calcBarPosForDouble(valueFrom, valueTo, handlerLength);
+                    this.bar.style.left = "".concat(this.barPos, "px");
+                } else {
+                    this.bar.style.width = '';
+                    this.bar.style.left = '';
+                    this.bar.style.height = "".concat(barLength, "px");
+                    this.calcBarPosForDouble(valueFrom, valueTo, handlerLength);
+                    this.bar.style.bottom = "".concat(this.barPos, "px");
                 }
             }
         },
         {
-            key: "updateCommonNoteView",
-            value: function updateCommonNoteView() {
-                if (this.handlerViewFrom && this.valueNoteViewCommon) {
-                    var valueTo = this.handlerView.getValueOfNote();
-                    var valueFrom = this.handlerViewFrom.getValueOfNote();
-                    this.valueNoteViewCommon.setValueForTwo(valueFrom, valueTo);
-                    var leftEdgeOfHandlerFrom = this.handlerViewFrom.getPos();
-                    var rightEdgeOfHandlerTo = this.handlerView.getPos() + this.handlerView.getLength();
-                    var distAmongEdgesOfHandlers = rightEdgeOfHandlerTo - leftEdgeOfHandlerFrom;
-                    this.valueNoteViewCommon.valueNotePos = leftEdgeOfHandlerFrom + distAmongEdgesOfHandlers / 2;
-                    this.valueNoteViewCommon.setPos();
-                }
+            key: "render",
+            value: function render(parent) {
+                this.bar = document.createElement('div');
+                this.bar.classList.add('adslider__bar');
+                parent.append(this.bar);
             }
         },
         {
-            key: "removeCommonNoteView",
-            value: function removeCommonNoteView() {
-                if (this.handlerViewFrom && this.valueNoteViewCommon) {
-                    this.handlerView.showValueNote(true);
-                    this.handlerViewFrom.showValueNote(true);
-                    this.valueNoteViewCommon.note.remove();
-                    delete this.valueNoteViewCommon;
-                }
+            key: "calcBarPosForSingle",
+            value: function calcBarPosForSingle(handlerPos, handlerLength) {
+                this.barPos = handlerPos + handlerLength / 2;
             }
         },
         {
-            key: "addObservers",
-            value: function addObservers() {
-                this.handlerView.addObserver(_eventTypes["default"].HANDLER_MOUSEDOWN_EVENT, this.handleMouseDown);
-                this.handlerView.addObserver(_eventTypes["default"].HANDLER_MOUSEMOVE_EVENT, this.mouseMove);
-                if (this.handlerViewFrom) {
-                    this.handlerViewFrom.addObserver(_eventTypes["default"].HANDLER_MOUSEDOWN_EVENT, this.handleMouseDown);
-                    this.handlerViewFrom.addObserver(_eventTypes["default"].HANDLER_MOUSEMOVE_EVENT, this.mouseMove);
-                }
-                this.trackView.addObserver(_eventTypes["default"].HANDLER_MOUSEDOWN_EVENT, this.handleChangePos);
-                this.handlerView.addObserver(_eventTypes["default"].CALC_VALUE_NOTE_POSITION, this.handleCalcValueNotePos);
-                this.handlerView.addObserver(_eventTypes["default"].SET_VALUE_NOTE_POS, this.handleSetValueNotePos);
-                this.handlerView.addObserver(_eventTypes["default"].SET_BAR, this.handleSetBar);
-            }
-        },
-        {
-            key: "updateObservers",
-            value: function updateObservers() {
-                if (this.handlerViewFrom && this.handlerViewFrom) {
-                    if (!Object.prototype.hasOwnProperty.call(this.handlerViewFrom.observers, _eventTypes["default"].CALC_VALUE_NOTE_POSITION)) {
-                        this.handlerViewFrom.addObserver(_eventTypes["default"].CALC_VALUE_NOTE_POSITION, this.handleCalcValueNoteFromPos);
-                        this.handlerViewFrom.addObserver(_eventTypes["default"].SET_VALUE_NOTE_POS, this.handleSetValueNoteFromPos);
-                        this.handlerViewFrom.addObserver(_eventTypes["default"].SET_BAR, this.handleSetBar);
-                    }
-                }
+            key: "calcBarPosForDouble",
+            value: function calcBarPosForDouble(handlerPosFrom, handlerPosTo, handlerLength) {
+                this.barPos = handlerPosFrom < handlerPosTo ? handlerPosFrom + handlerLength / 2 : handlerPosTo + handlerLength / 2;
             }
         }
     ]);
-    return View2;
+    return BarView2;
 }(_EventObserver2["default"]);
-var _default = View1;
+var _default = BarView1;
 exports["default"] = _default;
 
-},{"@babel/runtime/helpers/interopRequireDefault":"eigyQ","@babel/runtime/helpers/classCallCheck":"fIqcI","@babel/runtime/helpers/createClass":"eFNXV","@babel/runtime/helpers/assertThisInitialized":"k3YcS","@babel/runtime/helpers/inherits":"8mpJg","@babel/runtime/helpers/possibleConstructorReturn":"iiXLy","@babel/runtime/helpers/getPrototypeOf":"DHhBk","@babel/runtime/helpers/defineProperty":"eCMPI","./HandlerView/HandlerView":"fCvxo","./TrackView/TrackView":"jw1m8","./ValueNoteView/ValueNoteView":"6LnC9","../EventObserver/EventObserver":"ftS0S","../EventObserver/eventTypes":"cbWbf"}],"fCvxo":[function(require,module,exports) {
+},{"@babel/runtime/helpers/interopRequireDefault":"eigyQ","@babel/runtime/helpers/classCallCheck":"fIqcI","@babel/runtime/helpers/createClass":"eFNXV","@babel/runtime/helpers/assertThisInitialized":"k3YcS","@babel/runtime/helpers/inherits":"8mpJg","@babel/runtime/helpers/possibleConstructorReturn":"iiXLy","@babel/runtime/helpers/getPrototypeOf":"DHhBk","@babel/runtime/helpers/defineProperty":"eCMPI","../../EventObserver/EventObserver":"ftS0S"}],"fCvxo":[function(require,module,exports) {
 "use strict";
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 Object.defineProperty(exports, "__esModule", {
@@ -1965,258 +2250,6 @@ var ValueNoteView1 = /*#__PURE__*/ function(_EventObserver) {
 var _default = ValueNoteView1;
 exports["default"] = _default;
 
-},{"@babel/runtime/helpers/interopRequireDefault":"eigyQ","@babel/runtime/helpers/classCallCheck":"fIqcI","@babel/runtime/helpers/createClass":"eFNXV","@babel/runtime/helpers/assertThisInitialized":"k3YcS","@babel/runtime/helpers/inherits":"8mpJg","@babel/runtime/helpers/possibleConstructorReturn":"iiXLy","@babel/runtime/helpers/getPrototypeOf":"DHhBk","@babel/runtime/helpers/defineProperty":"eCMPI","../../EventObserver/EventObserver":"ftS0S"}],"jw1m8":[function(require,module,exports) {
-"use strict";
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports["default"] = void 0;
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
-var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
-var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime/helpers/assertThisInitialized"));
-var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
-var _EventObserver2 = _interopRequireDefault(require("../../EventObserver/EventObserver"));
-var _eventTypes = _interopRequireDefault(require("../../EventObserver/eventTypes"));
-var _BarView = _interopRequireDefault(require("../BarView/BarView"));
-var _ScaleView = _interopRequireDefault(require("../ScaleView/ScaleView"));
-function _createSuper(Derived) {
-    var hasNativeReflectConstruct = _isNativeReflectConstruct();
-    return function _createSuperInternal() {
-        var Super = _getPrototypeOf2["default"](Derived), result;
-        if (hasNativeReflectConstruct) {
-            var NewTarget = _getPrototypeOf2["default"](this).constructor;
-            result = Reflect.construct(Super, arguments, NewTarget);
-        } else result = Super.apply(this, arguments);
-        return _possibleConstructorReturn2["default"](this, result);
-    };
-}
-function _isNativeReflectConstruct() {
-    if (typeof Reflect === "undefined" || !Reflect.construct) return false;
-    if (Reflect.construct.sham) return false;
-    if (typeof Proxy === "function") return true;
-    try {
-        Date.prototype.toString.call(Reflect.construct(Date, [], function() {
-        }));
-        return true;
-    } catch (e) {
-        return false;
-    }
-}
-var TrackView1 = /*#__PURE__*/ function(_EventObserver) {
-    _inherits2["default"](TrackView2, _EventObserver);
-    var _super = _createSuper(TrackView2);
-    function TrackView2(parent) {
-        var _this;
-        _classCallCheck2["default"](this, TrackView2);
-        _this = _super.call(this);
-        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "track", void 0);
-        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "barView", void 0);
-        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "scaleView", void 0);
-        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "handleTrackMouseDown", function(event) {
-            _this.broadcast(_eventTypes["default"].HANDLER_MOUSEDOWN_EVENT, event);
-        });
-        _this.render(parent);
-        _this.addListeners();
-        return _this;
-    }
-    _createClass2["default"](TrackView2, [
-        {
-            key: "getLength",
-            value: function getLength() {
-                return this.track.classList.contains('adslider__track_direction_vertical') ? parseInt(getComputedStyle(this.track).height, 10) : parseInt(getComputedStyle(this.track).width, 10);
-            }
-        },
-        {
-            key: "setVerticalView",
-            value: function setVerticalView(verticalView) {
-                if (verticalView) {
-                    this.track.classList.remove('adslider__track_direction_horizontal');
-                    this.track.classList.add('adslider__track_direction_vertical');
-                } else {
-                    this.track.classList.remove('adslider__track_direction_vertical');
-                    this.track.classList.add('adslider__track_direction_horizontal');
-                }
-                this.barView.setVerticalView(verticalView);
-            }
-        },
-        {
-            key: "setBarLengthForDouble",
-            value: function setBarLengthForDouble(options) {
-                this.barView.setLengthForDouble(options);
-            }
-        },
-        {
-            key: "setBarLength",
-            value: function setBarLength(handler) {
-                this.barView.setLength(handler);
-            }
-        },
-        {
-            key: "drawScale",
-            value: function drawScale(options, handler) {
-                this.scaleView.drawScale(options, handler);
-            }
-        },
-        {
-            key: "render",
-            value: function render(parent) {
-                this.track = document.createElement('div');
-                this.track.classList.add('adslider__track');
-                this.barView = new _BarView["default"](this.track);
-                this.scaleView = new _ScaleView["default"](this.track);
-                parent.append(this.track);
-            }
-        },
-        {
-            key: "addListeners",
-            value: function addListeners() {
-                this.track.addEventListener('mousedown', this.handleTrackMouseDown);
-            }
-        }
-    ]);
-    return TrackView2;
-}(_EventObserver2["default"]);
-var _default = TrackView1;
-exports["default"] = _default;
-
-},{"@babel/runtime/helpers/interopRequireDefault":"eigyQ","@babel/runtime/helpers/classCallCheck":"fIqcI","@babel/runtime/helpers/createClass":"eFNXV","@babel/runtime/helpers/assertThisInitialized":"k3YcS","@babel/runtime/helpers/inherits":"8mpJg","@babel/runtime/helpers/possibleConstructorReturn":"iiXLy","@babel/runtime/helpers/getPrototypeOf":"DHhBk","@babel/runtime/helpers/defineProperty":"eCMPI","../../EventObserver/EventObserver":"ftS0S","../../EventObserver/eventTypes":"cbWbf","../BarView/BarView":"eLuNz","../ScaleView/ScaleView":"hseG1"}],"eLuNz":[function(require,module,exports) {
-"use strict";
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports["default"] = void 0;
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
-var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
-var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime/helpers/assertThisInitialized"));
-var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
-var _EventObserver2 = _interopRequireDefault(require("../../EventObserver/EventObserver"));
-function _createSuper(Derived) {
-    var hasNativeReflectConstruct = _isNativeReflectConstruct();
-    return function _createSuperInternal() {
-        var Super = _getPrototypeOf2["default"](Derived), result;
-        if (hasNativeReflectConstruct) {
-            var NewTarget = _getPrototypeOf2["default"](this).constructor;
-            result = Reflect.construct(Super, arguments, NewTarget);
-        } else result = Super.apply(this, arguments);
-        return _possibleConstructorReturn2["default"](this, result);
-    };
-}
-function _isNativeReflectConstruct() {
-    if (typeof Reflect === "undefined" || !Reflect.construct) return false;
-    if (Reflect.construct.sham) return false;
-    if (typeof Proxy === "function") return true;
-    try {
-        Date.prototype.toString.call(Reflect.construct(Date, [], function() {
-        }));
-        return true;
-    } catch (e) {
-        return false;
-    }
-}
-var BarView1 = /*#__PURE__*/ function(_EventObserver) {
-    _inherits2["default"](BarView2, _EventObserver);
-    var _super = _createSuper(BarView2);
-    function BarView2(parent) {
-        var _this;
-        _classCallCheck2["default"](this, BarView2);
-        _this = _super.call(this);
-        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "bar", void 0);
-        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "barPos", void 0);
-        _this.render(parent);
-        return _this;
-    }
-    _createClass2["default"](BarView2, [
-        {
-            key: "setVerticalView",
-            value: function setVerticalView(verticalView) {
-                if (verticalView) {
-                    this.bar.classList.remove('adslider__bar_direction_horizontal');
-                    this.bar.classList.add('adslider__bar_direction_vertical');
-                } else {
-                    this.bar.classList.remove('adslider__bar_direction_vertical');
-                    this.bar.classList.add('adslider__bar_direction_horizontal');
-                }
-            }
-        },
-        {
-            key: "setLength",
-            value: function setLength(handler) {
-                var handlerPos;
-                var handlerLength;
-                this.bar.style.bottom = '';
-                this.bar.style.left = '';
-                if (this.bar.classList.contains('adslider__bar_direction_horizontal')) {
-                    this.bar.style.height = '';
-                    handlerPos = parseInt(getComputedStyle(handler).left, 10);
-                    handlerLength = parseInt(getComputedStyle(handler).width, 10);
-                    this.calcBarPosForSingle(handlerPos, handlerLength);
-                    this.bar.style.width = "".concat(this.barPos, "px");
-                } else {
-                    this.bar.style.width = '';
-                    handlerPos = parseInt(getComputedStyle(handler).bottom, 10);
-                    handlerLength = parseInt(getComputedStyle(handler).height, 10);
-                    this.calcBarPosForSingle(handlerPos, handlerLength);
-                    this.bar.style.height = "".concat(this.barPos, "px");
-                }
-            }
-        },
-        {
-            key: "setLengthForDouble",
-            value: function setLengthForDouble(options) {
-                var valueFrom = options.valueFrom, valueTo = options.valueTo, handler = options.handler;
-                var handlerLength = parseInt(getComputedStyle(handler).width, 10);
-                var barRightEdge = valueTo + handlerLength / 2;
-                var barLeftEdge = valueFrom + handlerLength / 2;
-                var barLength = Math.abs(barRightEdge - barLeftEdge);
-                if (this.bar.classList.contains('adslider__bar_direction_horizontal')) {
-                    this.bar.style.height = '';
-                    this.bar.style.bottom = '';
-                    this.bar.style.width = "".concat(barLength, "px");
-                    this.calcBarPosForDouble(valueFrom, valueTo, handlerLength);
-                    this.bar.style.left = "".concat(this.barPos, "px");
-                } else {
-                    this.bar.style.width = '';
-                    this.bar.style.left = '';
-                    this.bar.style.height = "".concat(barLength, "px");
-                    this.calcBarPosForDouble(valueFrom, valueTo, handlerLength);
-                    this.bar.style.bottom = "".concat(this.barPos, "px");
-                }
-            }
-        },
-        {
-            key: "render",
-            value: function render(parent) {
-                this.bar = document.createElement('div');
-                this.bar.classList.add('adslider__bar');
-                parent.append(this.bar);
-            }
-        },
-        {
-            key: "calcBarPosForSingle",
-            value: function calcBarPosForSingle(handlerPos, handlerLength) {
-                this.barPos = handlerPos + handlerLength / 2;
-            }
-        },
-        {
-            key: "calcBarPosForDouble",
-            value: function calcBarPosForDouble(handlerPosFrom, handlerPosTo, handlerLength) {
-                this.barPos = handlerPosFrom < handlerPosTo ? handlerPosFrom + handlerLength / 2 : handlerPosTo + handlerLength / 2;
-            }
-        }
-    ]);
-    return BarView2;
-}(_EventObserver2["default"]);
-var _default = BarView1;
-exports["default"] = _default;
-
 },{"@babel/runtime/helpers/interopRequireDefault":"eigyQ","@babel/runtime/helpers/classCallCheck":"fIqcI","@babel/runtime/helpers/createClass":"eFNXV","@babel/runtime/helpers/assertThisInitialized":"k3YcS","@babel/runtime/helpers/inherits":"8mpJg","@babel/runtime/helpers/possibleConstructorReturn":"iiXLy","@babel/runtime/helpers/getPrototypeOf":"DHhBk","@babel/runtime/helpers/defineProperty":"eCMPI","../../EventObserver/EventObserver":"ftS0S"}],"hseG1":[function(require,module,exports) {
 "use strict";
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
@@ -2317,25 +2350,22 @@ var ScaleView1 = /*#__PURE__*/ function(_EventObserver) {
         {
             key: "setScalePos",
             value: function setScalePos(handler) {
-                var handlerLength;
-                var trackLength;
-                var scaleLength;
                 if (this.isVertical()) {
                     this.scale.style.width = '';
                     this.scale.style.left = '';
-                    handlerLength = parseInt(getComputedStyle(handler).height, 10);
-                    trackLength = parseInt(getComputedStyle(this.parent).height, 10);
-                    scaleLength = trackLength - handlerLength;
+                    var handlerLength = parseInt(getComputedStyle(handler).height, 10);
+                    var trackLength = parseInt(getComputedStyle(this.parent).height, 10);
+                    var scaleLength = trackLength - handlerLength;
                     this.scale.style.height = "".concat(scaleLength, "px");
                     this.scale.style.top = "".concat(handlerLength / 2, "px");
                 } else {
                     this.scale.style.height = '';
                     this.scale.style.top = '';
-                    handlerLength = parseInt(getComputedStyle(handler).width, 10);
-                    trackLength = parseInt(getComputedStyle(this.parent).width, 10);
-                    scaleLength = trackLength - handlerLength;
-                    this.scale.style.width = "".concat(scaleLength, "px");
-                    this.scale.style.left = "".concat(handlerLength / 2, "px");
+                    var _handlerLength = parseInt(getComputedStyle(handler).width, 10);
+                    var _trackLength = parseInt(getComputedStyle(this.parent).width, 10);
+                    var _scaleLength = _trackLength - _handlerLength;
+                    this.scale.style.width = "".concat(_scaleLength, "px");
+                    this.scale.style.left = "".concat(_handlerLength / 2, "px");
                 }
             }
         },
@@ -2376,9 +2406,7 @@ var ScaleView1 = /*#__PURE__*/ function(_EventObserver) {
         {
             key: "capacityCheckForSign",
             value: function capacityCheckForSign() {
-                var isSmallDistanceBetweenSigns;
-                if (this.isVertical()) isSmallDistanceBetweenSigns = this.isSmallDistanceBetweenVerticalSigns();
-                else isSmallDistanceBetweenSigns = this.isSmallDistanceBetweenHorizontalSigns();
+                var isSmallDistanceBetweenSigns = this.isVertical() ? this.isSmallDistanceBetweenVerticalSigns() : this.isSmallDistanceBetweenHorizontalSigns();
                 if (isSmallDistanceBetweenSigns) this.hideSigns();
                 this.lineArray = [];
                 this.signArray = [];
@@ -2415,9 +2443,7 @@ var ScaleView1 = /*#__PURE__*/ function(_EventObserver) {
         {
             key: "setPenultimateSignView",
             value: function setPenultimateSignView() {
-                var distanceBetweenLastSigns;
-                if (this.isVertical()) distanceBetweenLastSigns = this.calcDistanceBetweenLastVerticalSigns();
-                else distanceBetweenLastSigns = this.calcDistanceBetweenLastHorizontalSigns();
+                var distanceBetweenLastSigns = this.isVertical() ? this.calcDistanceBetweenLastVerticalSigns() : this.calcDistanceBetweenLastHorizontalSigns();
                 if (distanceBetweenLastSigns < 0) {
                     this.lineArray[this.lineArray.length - 2].classList.add('adslider__scale-line_hidden');
                     this.lineArray = this.lineArray.filter(function(_el, i, array) {
@@ -2456,11 +2482,9 @@ var ScaleView1 = /*#__PURE__*/ function(_EventObserver) {
             key: "calcSigns",
             value: function calcSigns(index, options) {
                 var step = options.step, _options$limits3 = options.limits, min = _options$limits3.min, max = _options$limits3.max;
-                var value;
-                if (index === 0) value = min;
-                else if (index === this.numberOfLines - 1) value = max;
-                else value = index * step + min;
-                return Math.round(value);
+                if (index === 0) return Math.round(min);
+                if (index === this.numberOfLines - 1) return Math.round(max);
+                return Math.round(index * step + min);
             }
         },
         {

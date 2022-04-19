@@ -587,15 +587,15 @@ var DemoSlider = /*#__PURE__*/ function() {
             value: function setInitOptionsForSlider() {
                 this.initOptions = {
                     limits: {
-                        min: Number.isNaN(this.minValueInstance.getValue()) ? -100 : this.minValueInstance.getValue(),
-                        max: Number.isNaN(this.maxValueInstance.getValue()) ? 100 : this.maxValueInstance.getValue()
+                        min: this.minValueInstance.getValue(),
+                        max: this.maxValueInstance.getValue()
                     },
-                    showValueNote: this.noteValueInstance.isChecked() || true,
-                    step: Number.isNaN(this.stepInstance.getValue()) || this.stepInstance.getValue() === 0 ? 5 : this.stepInstance.getValue(),
-                    vertical: this.verticalInstance.isChecked() || false,
-                    "double": this.doubleInstance.isChecked() || false,
-                    from: this.doubleInstance.isChecked() && !this.fromInstance.getValue() ? 0 : null,
-                    to: this.toInstance.getValue() || 0,
+                    showValueNote: this.noteValueInstance.isChecked(),
+                    step: this.stepInstance.getValue(),
+                    vertical: this.verticalInstance.isChecked(),
+                    "double": this.doubleInstance.isChecked(),
+                    from: this.fromInstance.getValue(),
+                    to: this.toInstance.getValue(),
                     onChange: this.handleOnChange
                 };
             }
@@ -625,7 +625,7 @@ var DemoSlider = /*#__PURE__*/ function() {
                 if (showValueNote) this.noteValueInstance.setChecked();
                 if (vertical) this.verticalInstance.setChecked();
                 if (_double) this.doubleInstance.setChecked();
-                this.fromInstance.setValue(from);
+                this.fromInstance.setValue(typeof from === 'number' ? from : min);
                 this.setInputsForDouble();
             }
         },
@@ -684,7 +684,6 @@ var Input = /*#__PURE__*/ function() {
         {
             key: "getValue",
             value: function getValue() {
-                if (this.inputElement.value === '') return null;
                 return Number(this.inputElement.value);
             }
         },
