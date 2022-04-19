@@ -305,11 +305,11 @@ class Model extends EventObserver {
     if (newValue < min) {
       return newValue + step;
     }
-    if (newValue > max) {
-      return newValue - step;
-    }
     if (value > maxStepValue) {
       return value > maxStepValue + (max - maxStepValue) / 2 ? max : maxStepValue;
+    }
+    if (newValue > max) {
+      return newValue - step;
     }
     return newValue;
   }
