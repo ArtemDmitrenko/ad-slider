@@ -222,9 +222,11 @@ class TrackView extends EventObserver {
 
   private findLeadHandler(e: MouseEvent, handler: HandlerView): void {
     const isValueDecrease = this.isVertical()
-      ? e.clientY > this.mousedownClientY : e.clientX < this.mousedownClientX;
+      ? e.clientY > this.mousedownClientY
+      : e.clientX < this.mousedownClientX;
     const isValueIncrease = this.isVertical()
-      ? e.clientY < this.mousedownClientY : e.clientX > this.mousedownClientX;
+      ? e.clientY < this.mousedownClientY
+      : e.clientX > this.mousedownClientX;
     if (isValueIncrease) {
       const isHandlerFromLeader = !this.isHandlerTo && this.isHandlerFrom;
       if (isHandlerFromLeader && this.handlerViewFrom) {

@@ -165,7 +165,8 @@ class ScaleView extends EventObserver {
 
   private setPenultimateSignView() {
     const distanceBetweenLastSigns = this.isVertical()
-      ? this.calcDistanceBetweenLastVerticalSigns() : this.calcDistanceBetweenLastHorizontalSigns();
+      ? this.calcDistanceBetweenLastVerticalSigns()
+      : this.calcDistanceBetweenLastHorizontalSigns();
     if (distanceBetweenLastSigns < 0) {
       this.lineArray[this.lineArray.length - 2].classList.add(
         'adslider__scale-line_hidden',
