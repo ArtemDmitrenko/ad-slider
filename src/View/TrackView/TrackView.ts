@@ -103,10 +103,10 @@ class TrackView extends EventObserver {
     const { isDouble, isFromValueChanging, showValueNote } = options;
     if (isFromValueChanging && this.handlerViewFrom) {
       this.handlerViewFrom.setPos(isDouble);
-      this.setViewOfOneNote(showValueNote);
     } else {
       this.handlerViewTo.setPos(isDouble);
     }
+    this.setViewOfOneNote(showValueNote);
   }
 
   public getLength(): number {
@@ -305,7 +305,7 @@ class TrackView extends EventObserver {
         limits,
       });
       this.handlerViewFrom.setPos(true);
-      this.handlerViewFrom.calcValueNotePos(this.handlerViewFrom.handler);
+      this.handlerViewFrom.calcValueNotePos();
       this.handlerViewFrom.setValueNotePos();
       this.handlerViewFrom.setValueForNote(from);
       this.handlerViewFrom.showValueNote(showValueNote);
@@ -343,7 +343,7 @@ class TrackView extends EventObserver {
 
   private deleteValueNoteViewCommon(): void {
     if (this.valueNoteViewCommon) {
-      this.valueNoteViewCommon.note.remove();
+      this.valueNoteViewCommon.noteElement.remove();
       delete this.valueNoteViewCommon;
     }
   }
@@ -384,7 +384,7 @@ class TrackView extends EventObserver {
       this.updateCommonNoteView();
     } else {
       this.valueNoteViewCommon = new ValueNoteView(this.track);
-      this.valueNoteViewCommon.note.classList.add('adslider__note_common');
+      this.valueNoteViewCommon.noteElement.classList.add('adslider__note_common');
       this.valueNoteViewCommon.setVerticalView(this.isVertical());
       this.updateCommonNoteView();
     }
@@ -392,11 +392,11 @@ class TrackView extends EventObserver {
 
   private showCommonValueNote(data: boolean): void {
     if (data && this.valueNoteViewCommon) {
-      this.valueNoteViewCommon.note.classList.remove('adslider__note_hide');
-      this.valueNoteViewCommon.note.classList.add('adslider__note_show');
+      this.valueNoteViewCommon.noteElement.classList.remove('adslider__note_hide');
+      this.valueNoteViewCommon.noteElement.classList.add('adslider__note_show');
     } else if (this.valueNoteViewCommon) {
-      this.valueNoteViewCommon.note.classList.remove('adslider__note_show');
-      this.valueNoteViewCommon.note.classList.add('adslider__note_hide');
+      this.valueNoteViewCommon.noteElement.classList.remove('adslider__note_show');
+      this.valueNoteViewCommon.noteElement.classList.add('adslider__note_hide');
     }
   }
 
@@ -417,7 +417,7 @@ class TrackView extends EventObserver {
     if (this.handlerViewFrom && this.valueNoteViewCommon) {
       this.handlerViewTo.showValueNote(true);
       this.handlerViewFrom.showValueNote(true);
-      this.valueNoteViewCommon.note.remove();
+      this.valueNoteViewCommon.noteElement.remove();
       delete this.valueNoteViewCommon;
     }
   }
