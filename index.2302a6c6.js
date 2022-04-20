@@ -2003,7 +2003,7 @@ var HandlerView1 = /*#__PURE__*/ function(_EventObserver) {
             key: "deleteInstance",
             value: function deleteInstance() {
                 this.handler.remove();
-                this.valueNoteView.note.remove();
+                this.valueNoteView.noteElement.remove();
             }
         },
         {
