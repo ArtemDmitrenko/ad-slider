@@ -1343,10 +1343,9 @@ var TrackView1 = /*#__PURE__*/ function(_EventObserver) {
             key: "setHandlerPos",
             value: function setHandlerPos(options) {
                 var isDouble = options.isDouble, isFromValueChanging = options.isFromValueChanging, showValueNote = options.showValueNote;
-                if (isFromValueChanging && this.handlerViewFrom) {
-                    this.handlerViewFrom.setPos(isDouble);
-                    this.setViewOfOneNote(showValueNote);
-                } else this.handlerViewTo.setPos(isDouble);
+                if (isFromValueChanging && this.handlerViewFrom) this.handlerViewFrom.setPos(isDouble);
+                else this.handlerViewTo.setPos(isDouble);
+                this.setViewOfOneNote(showValueNote);
             }
         },
         {
@@ -1493,7 +1492,7 @@ var TrackView1 = /*#__PURE__*/ function(_EventObserver) {
                         limits: limits
                     });
                     this.handlerViewFrom.setPos(true);
-                    this.handlerViewFrom.calcValueNotePos(this.handlerViewFrom.handler);
+                    this.handlerViewFrom.calcValueNotePos();
                     this.handlerViewFrom.setValueNotePos();
                     this.handlerViewFrom.setValueForNote(from);
                     this.handlerViewFrom.showValueNote(showValueNote);
@@ -1537,7 +1536,7 @@ var TrackView1 = /*#__PURE__*/ function(_EventObserver) {
             key: "deleteValueNoteViewCommon",
             value: function deleteValueNoteViewCommon() {
                 if (this.valueNoteViewCommon) {
-                    this.valueNoteViewCommon.note.remove();
+                    this.valueNoteViewCommon.noteElement.remove();
                     delete this.valueNoteViewCommon;
                 }
             }
@@ -1579,7 +1578,7 @@ var TrackView1 = /*#__PURE__*/ function(_EventObserver) {
                 if (this.valueNoteViewCommon) this.updateCommonNoteView();
                 else {
                     this.valueNoteViewCommon = new _ValueNoteView["default"](this.track);
-                    this.valueNoteViewCommon.note.classList.add('adslider__note_common');
+                    this.valueNoteViewCommon.noteElement.classList.add('adslider__note_common');
                     this.valueNoteViewCommon.setVerticalView(this.isVertical());
                     this.updateCommonNoteView();
                 }
@@ -1589,11 +1588,11 @@ var TrackView1 = /*#__PURE__*/ function(_EventObserver) {
             key: "showCommonValueNote",
             value: function showCommonValueNote(data) {
                 if (data && this.valueNoteViewCommon) {
-                    this.valueNoteViewCommon.note.classList.remove('adslider__note_hide');
-                    this.valueNoteViewCommon.note.classList.add('adslider__note_show');
+                    this.valueNoteViewCommon.noteElement.classList.remove('adslider__note_hide');
+                    this.valueNoteViewCommon.noteElement.classList.add('adslider__note_show');
                 } else if (this.valueNoteViewCommon) {
-                    this.valueNoteViewCommon.note.classList.remove('adslider__note_show');
-                    this.valueNoteViewCommon.note.classList.add('adslider__note_hide');
+                    this.valueNoteViewCommon.noteElement.classList.remove('adslider__note_show');
+                    this.valueNoteViewCommon.noteElement.classList.add('adslider__note_hide');
                 }
             }
         },
@@ -1618,7 +1617,7 @@ var TrackView1 = /*#__PURE__*/ function(_EventObserver) {
                 if (this.handlerViewFrom && this.valueNoteViewCommon) {
                     this.handlerViewTo.showValueNote(true);
                     this.handlerViewFrom.showValueNote(true);
-                    this.valueNoteViewCommon.note.remove();
+                    this.valueNoteViewCommon.noteElement.remove();
                     delete this.valueNoteViewCommon;
                 }
             }
@@ -1922,13 +1921,7 @@ var HandlerView1 = /*#__PURE__*/ function(_EventObserver) {
                     this.handler.style.bottom = '';
                     this.handler.style.left = "".concat(this.handlerPos, "px");
                 }
-                var options = {
-                    handlerBottomPos: getComputedStyle(this.handler).bottom,
-                    handlerHeight: getComputedStyle(this.handler).height,
-                    handlerLeftPos: getComputedStyle(this.handler).left,
-                    handlerWidth: getComputedStyle(this.handler).width
-                };
-                this.calcValueNotePos(options);
+                this.calcValueNotePos();
                 this.setValueNotePos();
                 var data = {
                     handler: this.handler,
@@ -1965,7 +1958,13 @@ var HandlerView1 = /*#__PURE__*/ function(_EventObserver) {
         },
         {
             key: "calcValueNotePos",
-            value: function calcValueNotePos(options) {
+            value: function calcValueNotePos() {
+                var options = {
+                    handlerBottomPos: getComputedStyle(this.handler).bottom,
+                    handlerHeight: getComputedStyle(this.handler).height,
+                    handlerLeftPos: getComputedStyle(this.handler).left,
+                    handlerWidth: getComputedStyle(this.handler).width
+                };
                 this.valueNoteView.calcPos(options);
             }
         },
