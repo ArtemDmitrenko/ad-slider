@@ -46,34 +46,33 @@ class Model extends EventObserver {
   }
 
   public getOptions(): IConfig {
+    return { ...this.options };
+  }
+
+  private validateValues(options: IConfig) {
     const {
-      limits, showValueNote, step, vertical, double, from, to,
-    } = this.options;
-    return {
-      limits,
+      limits: { min, max },
       showValueNote,
       step,
       vertical,
       double,
       from,
       to,
-    };
-  }
-
-  private validateValues(options: IConfig) {
+      onChange,
+    } = options;
     const defaultLimits = {
-      min: typeof options.limits.min === 'number' ? options.limits.min : -100,
-      max: typeof options.limits.max === 'number' ? options.limits.max : 100,
+      min: typeof min === 'number' ? min : -100,
+      max: typeof max === 'number' ? max : 100,
     };
     this.options = {
       limits: defaultLimits,
-      showValueNote: typeof options.showValueNote === 'boolean' ? options.showValueNote : true,
-      step: typeof options.step === 'number' ? options.step : 5,
-      vertical: typeof options.vertical === 'boolean' ? options.vertical : false,
-      double: typeof options.double === 'boolean' ? options.double : false,
-      from: typeof options.from === 'number' ? options.from : -20,
-      to: typeof options.to === 'number' ? options.to : 0,
-      onChange: options.onChange,
+      showValueNote: typeof showValueNote === 'boolean' ? showValueNote : true,
+      step: typeof step === 'number' ? step : 5,
+      vertical: typeof vertical === 'boolean' ? vertical : false,
+      double: typeof double === 'boolean' ? double : false,
+      from: typeof from === 'number' ? from : -20,
+      to: typeof to === 'number' ? to : 0,
+      onChange,
     };
   }
 
@@ -113,7 +112,8 @@ class Model extends EventObserver {
       return;
     }
     if (step !== this.options.step) {
-      if (step <= 0 || step > max - min) {
+      const isStepNotValid = step <= 0 || step > max - min;
+      if (isStepNotValid) {
         return;
       }
     }
