@@ -117,7 +117,7 @@ class HandlerView extends EventObserver {
 
   public deleteInstance(): void {
     this.handler.remove();
-    this.valueNoteView.note.remove();
+    this.valueNoteView.noteElement.remove();
   }
 
   private isVertical(): boolean {
