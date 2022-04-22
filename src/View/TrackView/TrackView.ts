@@ -110,7 +110,9 @@ class TrackView extends EventObserver {
   }
 
   public getLength(): number {
-    return this.track.classList.contains('adslider__track_direction_vertical') ? parseInt(getComputedStyle(this.track).height, 10) : parseInt(getComputedStyle(this.track).width, 10);
+    return this.isVertical()
+      ? parseInt(getComputedStyle(this.track).height, 10)
+      : parseInt(getComputedStyle(this.track).width, 10);
   }
 
   public setVerticalView(verticalView: boolean): void {
@@ -132,9 +134,6 @@ class TrackView extends EventObserver {
     this.scaleView = new ScaleView(this.track);
     this.handlerViewTo = new HandlerView(this.track);
     this.handlerViewFrom = new HandlerView(this.track);
-    this.handlerViewTo.addClassToValueNoteElement('adslider__note_type_to');
-    this.handlerViewFrom.addClassToValueNoteElement('adslider__handler_type_from');
-    this.handlerViewFrom.handler.classList.add('adslider__handler_type_from');
     parent.append(this.track);
   }
 
@@ -170,28 +169,24 @@ class TrackView extends EventObserver {
     this.handlerShift = Math.abs(shift);
   }
 
-  private checkIfHandlersInOnePlace(event: MouseEvent): void {
+  private areHandlersInOnePlace(): boolean {
     if (this.handlerViewFrom) {
       if (this.isVertical()) {
-        if (this.handlerViewTo.handler.style.bottom === this.handlerViewFrom.handler.style.bottom) {
-          this.areHandlersInOnePoint = true;
-          this.mousedownClientY = event.clientY;
-          this.isHandlerFrom = false;
-          this.isHandlerTo = false;
-        } else {
-          this.areHandlersInOnePoint = false;
-        }
-      } else if (this.handlerViewTo.handler.style.left === this.handlerViewFrom.handler.style.left) {
-        this.areHandlersInOnePoint = true;
-        this.mousedownClientX = event.clientX;
-        this.isHandlerFrom = false;
-        this.isHandlerTo = false;
-      } else {
-        this.areHandlersInOnePoint = false;
+        return this.handlerViewTo.handler.style.bottom
+          === this.handlerViewFrom.handler.style.bottom;
       }
-    } else {
-      this.areHandlersInOnePoint = false;
+      return this.handlerViewTo.handler.style.left
+        === this.handlerViewFrom.handler.style.left;
     }
+    return false;
+  }
+
+  private setProperties(event: MouseEvent): void {
+    this.areHandlersInOnePoint = true;
+    this.isHandlerFrom = false;
+    this.isHandlerTo = false;
+    this.mousedownClientY = event.clientY;
+    this.mousedownClientX = event.clientX;
   }
 
   private isVertical(): boolean {
@@ -213,7 +208,7 @@ class TrackView extends EventObserver {
     const edge: number = this.getEdge(this.leadHandler);
     const checkedNewPos = this.checkNewPos(newPos);
     const relPosition = checkedNewPos / edge;
-    const isFromValueChanging = this.leadHandler.handler.classList.contains('adslider__handler_type_from');
+    const isFromValueChanging = this.leadHandler === this.handlerViewFrom;
     const options = {
       relPosition, isFromValueChanging,
     };
@@ -305,8 +300,6 @@ class TrackView extends EventObserver {
         limits,
       });
       this.handlerViewFrom.setPos(true);
-      this.handlerViewFrom.calcValueNotePos();
-      this.handlerViewFrom.setValueNotePos();
       this.handlerViewFrom.setValueForNote(from);
       this.handlerViewFrom.showValueNote(showValueNote);
       this.barView.setLengthForDouble({
@@ -320,15 +313,15 @@ class TrackView extends EventObserver {
 
   private renderHandlerFrom(): void {
     this.handlerViewFrom = new HandlerView(this.track);
-    this.handlerViewFrom.handler.classList.add('adslider__handler_type_from');
-    this.handlerViewFrom.addClassToValueNoteElement('adslider__note_type_from');
     this.handlerViewFrom.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleMouseDown);
     this.handlerViewFrom.addObserver(EventTypes.HANDLER_MOUSEMOVE_EVENT, this.mouseMove);
   }
 
   private updateObservers(): void {
     if (this.handlerViewFrom) {
-      if (!Object.prototype.hasOwnProperty.call(this.handlerViewFrom.observers, EventTypes.SET_BAR)) {
+      if (!Object.prototype.hasOwnProperty.call(
+        this.handlerViewFrom.observers, EventTypes.SET_BAR,
+      )) {
         this.handlerViewFrom.addObserver(EventTypes.SET_BAR, this.handleSetBar);
       }
     }
@@ -369,7 +362,8 @@ class TrackView extends EventObserver {
 
   private isSmallDistanceBetweenNotes(): boolean {
     if (this.handlerViewFrom) {
-      const distAmongNotes: number = this.handlerViewTo.getValueNotePos() - this.handlerViewFrom.getValueNotePos();
+      const distAmongNotes: number = this.handlerViewTo.getValueNotePos()
+        - this.handlerViewFrom.getValueNotePos();
       return distAmongNotes < this.handlerViewTo.getValueNoteSize();
     }
     return false;
@@ -408,8 +402,7 @@ class TrackView extends EventObserver {
       const leftEdgeOfHandlerFrom = this.handlerViewFrom.getPos();
       const rightEdgeOfHandlerTo = this.handlerViewTo.getPos() + this.handlerViewTo.getLength();
       const distAmongEdgesOfHandlers = rightEdgeOfHandlerTo - leftEdgeOfHandlerFrom;
-      this.valueNoteViewCommon.valueNotePos = leftEdgeOfHandlerFrom + distAmongEdgesOfHandlers / 2;
-      this.valueNoteViewCommon.setPos();
+      this.valueNoteViewCommon.setPos(leftEdgeOfHandlerFrom + distAmongEdgesOfHandlers / 2);
     }
   }
 
@@ -464,6 +457,14 @@ class TrackView extends EventObserver {
         };
         this.mouseMove(data);
       }
+    }
+  }
+
+  private checkIfHandlersInOnePlace(event: MouseEvent): void {
+    if (this.areHandlersInOnePlace()) {
+      this.setProperties(event);
+    } else {
+      this.areHandlersInOnePoint = false;
     }
   }
 

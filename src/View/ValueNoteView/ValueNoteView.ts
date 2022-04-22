@@ -3,8 +3,6 @@ import EventObserver from '../../EventObserver/EventObserver';
 class ValueNoteView extends EventObserver {
   public noteElement!: HTMLElement;
 
-  public valueNotePos!: number;
-
   private valueElement!: HTMLElement;
 
   constructor(parent: HTMLElement) {
@@ -41,24 +39,23 @@ class ValueNoteView extends EventObserver {
     handlerHeight: string,
     handlerLeftPos: string,
     handlerWidth: string,
-  }): void {
+  }): number {
     const {
       handlerBottomPos, handlerHeight, handlerLeftPos, handlerWidth,
     } = options;
     if (this.isVertical()) {
-      this.valueNotePos = parseInt(handlerBottomPos, 10) + parseInt(handlerHeight, 10) / 2;
-    } else {
-      this.valueNotePos = parseInt(handlerLeftPos, 10) + parseInt(handlerWidth, 10) / 2;
+      return parseInt(handlerBottomPos, 10) + parseInt(handlerHeight, 10) / 2;
     }
+    return parseInt(handlerLeftPos, 10) + parseInt(handlerWidth, 10) / 2;
   }
 
-  public setPos(): void {
+  public setPos(value: number): void {
     if (this.noteElement.classList.contains('adslider__note_direction_vertical')) {
       this.noteElement.style.left = '';
-      this.noteElement.style.bottom = `${this.valueNotePos}px`;
+      this.noteElement.style.bottom = `${value}px`;
     } else {
       this.noteElement.style.bottom = '';
-      this.noteElement.style.left = `${this.valueNotePos}px`;
+      this.noteElement.style.left = `${value}px`;
     }
   }
 

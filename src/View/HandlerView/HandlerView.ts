@@ -55,7 +55,6 @@ class HandlerView extends EventObserver {
       this.handler.style.bottom = '';
       this.handler.style.left = `${this.handlerPos}px`;
     }
-    this.calcValueNotePos();
     this.setValueNotePos();
     const data = { handler: this.handler, vertical: this.isVertical(), double: isDouble };
     this.broadcast(EventTypes.SET_BAR, data);
@@ -80,18 +79,15 @@ class HandlerView extends EventObserver {
     this.valueNoteView.showValueNote(isValueShown);
   }
 
-  public calcValueNotePos(): void {
+  public setValueNotePos(): void {
     const options = {
       handlerBottomPos: getComputedStyle(this.handler).bottom,
       handlerHeight: getComputedStyle(this.handler).height,
       handlerLeftPos: getComputedStyle(this.handler).left,
       handlerWidth: getComputedStyle(this.handler).width,
     };
-    this.valueNoteView.calcPos(options);
-  }
-
-  public setValueNotePos(): void {
-    this.valueNoteView.setPos();
+    const valueNoteViewPos = this.valueNoteView.calcPos(options);
+    this.valueNoteView.setPos(valueNoteViewPos);
   }
 
   public getValueNotePos(): number {

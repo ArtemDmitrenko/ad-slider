@@ -34,11 +34,10 @@ class Model extends EventObserver {
   }): void {
     const { relPosition, isFromValueChanging } = data;
     const value = this.calcValueFromHandlerPos(relPosition);
-    const conditionForReturn = this.options.double && this.isValToMovesOverValFrom(value);
-    if (isFromValueChanging && this.isValFromMovesOverValTo(value)) {
-      return;
-    }
-    if (!isFromValueChanging && conditionForReturn) {
+    const isValFromMovesOverValTo = isFromValueChanging && this.isValFromMovesOverValTo(value);
+    const isValToMovesOverValFrom = !isFromValueChanging && this.isValToMovesOverValFrom(value);
+    const conditionForReturn = isValFromMovesOverValTo || isValToMovesOverValFrom;
+    if (conditionForReturn) {
       return;
     }
     this.setValAndBroadcast(value, isFromValueChanging);
@@ -292,7 +291,10 @@ class Model extends EventObserver {
 
   private isValToMovesOverValFrom(value: number): boolean {
     const { from } = this.options;
-    return from || from === 0 ? value < from : false;
+    if (typeof from === 'number' && value < from) {
+      return true;
+    }
+    return false;
   }
 
   private calcValueWithStep(value: number): number {
