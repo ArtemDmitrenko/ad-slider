@@ -714,9 +714,10 @@ var Model1 = /*#__PURE__*/ function(_EventObserver) {
             value: function setValueFromHandlerPos(data) {
                 var relPosition = data.relPosition, isFromValueChanging = data.isFromValueChanging;
                 var value = this.calcValueFromHandlerPos(relPosition);
-                var conditionForReturn = this.options["double"] && this.isValToMovesOverValFrom(value);
-                if (isFromValueChanging && this.isValFromMovesOverValTo(value)) return;
-                if (!isFromValueChanging && conditionForReturn) return;
+                var isValFromMovesOverValTo = isFromValueChanging && this.isValFromMovesOverValTo(value);
+                var isValToMovesOverValFrom = !isFromValueChanging && this.isValToMovesOverValFrom(value);
+                var conditionForReturn = isValFromMovesOverValTo || isValToMovesOverValFrom;
+                if (conditionForReturn) return;
                 this.setValAndBroadcast(value, isFromValueChanging);
                 this.callOnChange();
             }
@@ -775,10 +776,9 @@ var Model1 = /*#__PURE__*/ function(_EventObserver) {
                     this.setMaxValue(options);
                     return;
                 }
-                if (step !== this.options.step) {
-                    var isStepNotValid = step <= 0 || step > max - min;
-                    if (isStepNotValid) return;
-                }
+                var hasStepChanged = step !== this.options.step;
+                var isStepNotValid = step <= 0 || step > max - min;
+                if (hasStepChanged && isStepNotValid) return;
                 if (!_double2) this.setValuesForSingleSlider(options);
                 else this.setValuesForDoubleSlider(options);
                 this.options = _objectSpread(_objectSpread({
@@ -929,7 +929,8 @@ var Model1 = /*#__PURE__*/ function(_EventObserver) {
             key: "isValToMovesOverValFrom",
             value: function isValToMovesOverValFrom(value) {
                 var from = this.options.from;
-                return from || from === 0 ? value < from : false;
+                if (typeof from === 'number' && value < from) return true;
+                return false;
             }
         },
         {
@@ -1264,7 +1265,7 @@ var TrackView1 = /*#__PURE__*/ function(_EventObserver) {
             var edge = _this.getEdge(_this.leadHandler);
             var checkedNewPos = _this.checkNewPos(newPos);
             var relPosition = checkedNewPos / edge;
-            var isFromValueChanging = _this.leadHandler.handler.classList.contains('adslider__handler_type_from');
+            var isFromValueChanging = _this.leadHandler === _this.handlerViewFrom;
             var options = {
                 relPosition: relPosition,
                 isFromValueChanging: isFromValueChanging
@@ -1351,7 +1352,7 @@ var TrackView1 = /*#__PURE__*/ function(_EventObserver) {
         {
             key: "getLength",
             value: function getLength() {
-                return this.track.classList.contains('adslider__track_direction_vertical') ? parseInt(getComputedStyle(this.track).height, 10) : parseInt(getComputedStyle(this.track).width, 10);
+                return this.isVertical() ? parseInt(getComputedStyle(this.track).height, 10) : parseInt(getComputedStyle(this.track).width, 10);
             }
         },
         {
@@ -1377,9 +1378,6 @@ var TrackView1 = /*#__PURE__*/ function(_EventObserver) {
                 this.scaleView = new _ScaleView["default"](this.track);
                 this.handlerViewTo = new _HandlerView["default"](this.track);
                 this.handlerViewFrom = new _HandlerView["default"](this.track);
-                this.handlerViewTo.addClassToValueNoteElement('adslider__note_type_to');
-                this.handlerViewFrom.addClassToValueNoteElement('adslider__handler_type_from');
-                this.handlerViewFrom.handler.classList.add('adslider__handler_type_from');
                 parent.append(this.track);
             }
         },
@@ -1410,23 +1408,23 @@ var TrackView1 = /*#__PURE__*/ function(_EventObserver) {
             }
         },
         {
-            key: "checkIfHandlersInOnePlace",
-            value: function checkIfHandlersInOnePlace(event) {
+            key: "areHandlersInOnePlace",
+            value: function areHandlersInOnePlace() {
                 if (this.handlerViewFrom) {
-                    if (this.isVertical()) {
-                        if (this.handlerViewTo.handler.style.bottom === this.handlerViewFrom.handler.style.bottom) {
-                            this.areHandlersInOnePoint = true;
-                            this.mousedownClientY = event.clientY;
-                            this.isHandlerFrom = false;
-                            this.isHandlerTo = false;
-                        } else this.areHandlersInOnePoint = false;
-                    } else if (this.handlerViewTo.handler.style.left === this.handlerViewFrom.handler.style.left) {
-                        this.areHandlersInOnePoint = true;
-                        this.mousedownClientX = event.clientX;
-                        this.isHandlerFrom = false;
-                        this.isHandlerTo = false;
-                    } else this.areHandlersInOnePoint = false;
-                } else this.areHandlersInOnePoint = false;
+                    if (this.isVertical()) return this.handlerViewTo.handler.style.bottom === this.handlerViewFrom.handler.style.bottom;
+                    return this.handlerViewTo.handler.style.left === this.handlerViewFrom.handler.style.left;
+                }
+                return false;
+            }
+        },
+        {
+            key: "setProperties",
+            value: function setProperties(event) {
+                this.areHandlersInOnePoint = true;
+                this.isHandlerFrom = false;
+                this.isHandlerTo = false;
+                this.mousedownClientY = event.clientY;
+                this.mousedownClientX = event.clientX;
             }
         },
         {
@@ -1492,8 +1490,6 @@ var TrackView1 = /*#__PURE__*/ function(_EventObserver) {
                         limits: limits
                     });
                     this.handlerViewFrom.setPos(true);
-                    this.handlerViewFrom.calcValueNotePos();
-                    this.handlerViewFrom.setValueNotePos();
                     this.handlerViewFrom.setValueForNote(from);
                     this.handlerViewFrom.showValueNote(showValueNote);
                     this.barView.setLengthForDouble({
@@ -1509,8 +1505,6 @@ var TrackView1 = /*#__PURE__*/ function(_EventObserver) {
             key: "renderHandlerFrom",
             value: function renderHandlerFrom() {
                 this.handlerViewFrom = new _HandlerView["default"](this.track);
-                this.handlerViewFrom.handler.classList.add('adslider__handler_type_from');
-                this.handlerViewFrom.addClassToValueNoteElement('adslider__note_type_from');
                 this.handlerViewFrom.addObserver(_eventTypes["default"].HANDLER_MOUSEDOWN_EVENT, this.handleMouseDown);
                 this.handlerViewFrom.addObserver(_eventTypes["default"].HANDLER_MOUSEMOVE_EVENT, this.mouseMove);
             }
@@ -1606,8 +1600,7 @@ var TrackView1 = /*#__PURE__*/ function(_EventObserver) {
                     var leftEdgeOfHandlerFrom = this.handlerViewFrom.getPos();
                     var rightEdgeOfHandlerTo = this.handlerViewTo.getPos() + this.handlerViewTo.getLength();
                     var distAmongEdgesOfHandlers = rightEdgeOfHandlerTo - leftEdgeOfHandlerFrom;
-                    this.valueNoteViewCommon.valueNotePos = leftEdgeOfHandlerFrom + distAmongEdgesOfHandlers / 2;
-                    this.valueNoteViewCommon.setPos();
+                    this.valueNoteViewCommon.setPos(leftEdgeOfHandlerFrom + distAmongEdgesOfHandlers / 2);
                 }
             }
         },
@@ -1646,6 +1639,13 @@ var TrackView1 = /*#__PURE__*/ function(_EventObserver) {
                         this.mouseMove(_data);
                     }
                 }
+            }
+        },
+        {
+            key: "checkIfHandlersInOnePlace",
+            value: function checkIfHandlersInOnePlace(event) {
+                if (this.areHandlersInOnePlace()) this.setProperties(event);
+                else this.areHandlersInOnePoint = false;
             }
         },
         {
@@ -1921,7 +1921,6 @@ var HandlerView1 = /*#__PURE__*/ function(_EventObserver) {
                     this.handler.style.bottom = '';
                     this.handler.style.left = "".concat(this.handlerPos, "px");
                 }
-                this.calcValueNotePos();
                 this.setValueNotePos();
                 var data = {
                     handler: this.handler,
@@ -1957,21 +1956,16 @@ var HandlerView1 = /*#__PURE__*/ function(_EventObserver) {
             }
         },
         {
-            key: "calcValueNotePos",
-            value: function calcValueNotePos() {
+            key: "setValueNotePos",
+            value: function setValueNotePos() {
                 var options = {
                     handlerBottomPos: getComputedStyle(this.handler).bottom,
                     handlerHeight: getComputedStyle(this.handler).height,
                     handlerLeftPos: getComputedStyle(this.handler).left,
                     handlerWidth: getComputedStyle(this.handler).width
                 };
-                this.valueNoteView.calcPos(options);
-            }
-        },
-        {
-            key: "setValueNotePos",
-            value: function setValueNotePos() {
-                this.valueNoteView.setPos();
+                var valueNoteViewPos = this.valueNoteView.calcPos(options);
+                this.valueNoteView.setPos(valueNoteViewPos);
             }
         },
         {
@@ -2101,7 +2095,6 @@ var ValueNoteView1 = /*#__PURE__*/ function(_EventObserver) {
         _classCallCheck2["default"](this, ValueNoteView2);
         _this = _super.call(this);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "noteElement", void 0);
-        _defineProperty2["default"](_assertThisInitialized2["default"](_this), "valueNotePos", void 0);
         _defineProperty2["default"](_assertThisInitialized2["default"](_this), "valueElement", void 0);
         _this.render(parent);
         return _this;
@@ -2143,19 +2136,19 @@ var ValueNoteView1 = /*#__PURE__*/ function(_EventObserver) {
             key: "calcPos",
             value: function calcPos(options) {
                 var handlerBottomPos = options.handlerBottomPos, handlerHeight = options.handlerHeight, handlerLeftPos = options.handlerLeftPos, handlerWidth = options.handlerWidth;
-                if (this.isVertical()) this.valueNotePos = parseInt(handlerBottomPos, 10) + parseInt(handlerHeight, 10) / 2;
-                else this.valueNotePos = parseInt(handlerLeftPos, 10) + parseInt(handlerWidth, 10) / 2;
+                if (this.isVertical()) return parseInt(handlerBottomPos, 10) + parseInt(handlerHeight, 10) / 2;
+                return parseInt(handlerLeftPos, 10) + parseInt(handlerWidth, 10) / 2;
             }
         },
         {
             key: "setPos",
-            value: function setPos() {
+            value: function setPos(value) {
                 if (this.noteElement.classList.contains('adslider__note_direction_vertical')) {
                     this.noteElement.style.left = '';
-                    this.noteElement.style.bottom = "".concat(this.valueNotePos, "px");
+                    this.noteElement.style.bottom = "".concat(value, "px");
                 } else {
                     this.noteElement.style.bottom = '';
-                    this.noteElement.style.left = "".concat(this.valueNotePos, "px");
+                    this.noteElement.style.left = "".concat(value, "px");
                 }
             }
         },
