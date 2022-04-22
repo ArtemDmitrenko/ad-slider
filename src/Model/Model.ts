@@ -111,11 +111,10 @@ class Model extends EventObserver {
       this.setMaxValue(options);
       return;
     }
-    if (step !== this.options.step) {
-      const isStepNotValid = step <= 0 || step > max - min;
-      if (isStepNotValid) {
-        return;
-      }
+    const hasStepChanged = step !== this.options.step;
+    const isStepNotValid = step <= 0 || step > max - min;
+    if (hasStepChanged && isStepNotValid) {
+      return;
     }
     if (!double) {
       this.setValuesForSingleSlider(options);
