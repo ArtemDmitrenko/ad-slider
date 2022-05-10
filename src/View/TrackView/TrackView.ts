@@ -417,15 +417,7 @@ class TrackView extends EventObserver {
 
   private handleChangePos = (e: MouseEvent): void => {
     if (this.isDouble()) {
-      if (
-        this.handlerViewTo.handler.classList.contains(
-          'adslider__handler_direction_horizontal',
-        )
-      ) {
-        this.changeHandlerPosForDoubleHorizontal(e);
-      } else {
-        this.changeHandlerPosForDoubleVertical(e);
-      }
+      this.changeHandlerPosForDouble(e);
     } else {
       const data = {
         shift: this.handlerViewTo.getLength() / 2,
@@ -436,27 +428,31 @@ class TrackView extends EventObserver {
     }
   }
 
-  private changeHandlerPosForDoubleVertical(e: MouseEvent): void {
+  private changeHandlerPosForDouble(e: MouseEvent): void {
+    const isHorizontalView = this.handlerViewTo.handler.classList.contains(
+      'adslider__handler_direction_horizontal',
+    );
     if (this.handlerViewFrom) {
-      const handlerFromPos = this.handlerViewFrom.handler.getBoundingClientRect().top;
-      const handlerToPos = this.handlerViewTo.handler.getBoundingClientRect().top;
+      const handlerFromPos = isHorizontalView
+        ? this.handlerViewFrom.handler.getBoundingClientRect().left
+        : this.handlerViewFrom.handler.getBoundingClientRect().top;
+      const handlerToPos = isHorizontalView
+        ? this.handlerViewTo.handler.getBoundingClientRect().left
+        : this.handlerViewTo.handler.getBoundingClientRect().top;
       const oddToFrom: number = handlerToPos - handlerFromPos;
       const middlePos = oddToFrom / 2 + handlerFromPos + this.handlerViewTo.getLength() / 2;
-      if (e.clientY >= middlePos) {
-        const data = {
-          shift: this.handlerViewFrom.getLength() / 2,
-          e,
-          handler: this.handlerViewFrom,
-        };
-        this.mouseMove(data);
-      } else {
-        const data = {
-          shift: this.handlerViewTo.getLength() / 2,
-          e,
-          handler: this.handlerViewTo,
-        };
-        this.mouseMove(data);
-      }
+      this.checkIfHandlersInOnePlace(e);
+      const isHandlerFromChanging = e.clientX <= middlePos || e.clientY >= middlePos;
+      const data = {
+        shift: isHandlerFromChanging
+          ? this.handlerViewFrom.getLength() / 2
+          : this.handlerViewTo.getLength() / 2,
+        e,
+        handler: isHandlerFromChanging
+          ? this.handlerViewFrom
+          : this.handlerViewTo,
+      };
+      this.mouseMove(data);
     }
   }
 
@@ -465,31 +461,6 @@ class TrackView extends EventObserver {
       this.setProperties(event);
     } else {
       this.areHandlersInOnePoint = false;
-    }
-  }
-
-  private changeHandlerPosForDoubleHorizontal(e: MouseEvent): void {
-    if (this.handlerViewFrom) {
-      const handlerFromPos = this.handlerViewFrom.handler.getBoundingClientRect().left;
-      const handlerToPos = this.handlerViewTo.handler.getBoundingClientRect().left;
-      const oddToFrom: number = handlerToPos - handlerFromPos;
-      const middlePos = oddToFrom / 2 + handlerFromPos + this.handlerViewTo.getLength() / 2;
-      this.checkIfHandlersInOnePlace(e);
-      if (e.clientX <= middlePos) {
-        const data = {
-          shift: this.handlerViewFrom.getLength() / 2,
-          e,
-          handler: this.handlerViewFrom,
-        };
-        this.mouseMove(data);
-      } else {
-        const data = {
-          shift: this.handlerViewTo.getLength() / 2,
-          e,
-          handler: this.handlerViewTo,
-        };
-        this.mouseMove(data);
-      }
     }
   }
 
