@@ -18,20 +18,14 @@ class ScaleView extends EventObserver {
   }
 
   public drawScale(options: IConfig, handler: HTMLElement): void {
-    if (options.vertical) {
-      this.scale.classList.remove('adslider__scale_direction_horizontal');
-      this.scale.classList.add('adslider__scale_direction_vertical');
-    } else {
-      this.scale.classList.remove('adslider__scale_direction_vertical');
-      this.scale.classList.add('adslider__scale_direction_horizontal');
-    }
     const {
       step,
       limits: { min, max },
+      vertical,
     } = options;
     const odd: number = max - min;
     this.calcNumberOfLines(step, odd);
-    this.setScalePos(handler);
+    this.setScalePos(handler, vertical);
     this.createListOfScaleLines(options);
     this.renderScaleSign(options);
   }
@@ -43,14 +37,10 @@ class ScaleView extends EventObserver {
     this.parent.append(this.scale);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   private renderScaleLine(): HTMLElement {
     const line: HTMLElement = document.createElement('div');
     line.classList.add('adslider__scale-line');
-    if (this.isVertical()) {
-      line.classList.add('adslider__scale-line_direction_vertical');
-    } else {
-      line.classList.add('adslider__scale-line_direction_horizontal');
-    }
     return line;
   }
 
@@ -58,8 +48,8 @@ class ScaleView extends EventObserver {
     this.numberOfLines = odd % step === 0 ? odd / step + 1 : Math.floor(odd / step + 2);
   }
 
-  private setScalePos(handler: HTMLElement): void {
-    if (this.isVertical()) {
+  private setScalePos(handler: HTMLElement, vertical: boolean): void {
+    if (vertical) {
       this.scale.style.width = '';
       this.scale.style.left = '';
       const handlerLength = parseInt(getComputedStyle(handler).height, 10);
@@ -82,6 +72,7 @@ class ScaleView extends EventObserver {
     const {
       step,
       limits: { min, max },
+      vertical,
     } = options;
     this.scale.innerHTML = '';
     const stepPercentage = (step / (max - min)) * 100;
@@ -89,7 +80,7 @@ class ScaleView extends EventObserver {
       const line = this.renderScaleLine();
       this.scale.append(line);
       const position = i * stepPercentage > 100 ? 100 : i * stepPercentage;
-      if (this.isVertical()) {
+      if (vertical) {
         line.style.bottom = `${position}%`;
       } else {
         line.style.left = `${position}%`;
@@ -98,30 +89,26 @@ class ScaleView extends EventObserver {
   }
 
   private renderScaleSign(options: IConfig): void {
+    const { vertical } = options;
     const listOfLines = this.scale.querySelectorAll('.adslider__scale-line');
     listOfLines.forEach((line, index) => {
       const value: number = this.calcSigns(index, options);
       const text = document.createElement('div');
       text.classList.add('adslider__scale-text');
-      if (this.isVertical()) {
-        text.classList.add('adslider__scale-text_direction_vertical');
-      } else {
-        text.classList.add('adslider__scale-text_direction_horizontal');
-      }
       text.innerText = `${value}`;
       line.append(text);
       this.lineArray.push(line);
       this.signArray.push(text);
     });
-    this.capacityCheckForSign();
+    this.capacityCheckForSign(vertical);
   }
 
-  private capacityCheckForSign(): void {
-    const isSmallDistanceBetweenSigns = this.isVertical()
+  private capacityCheckForSign(vertical: boolean): void {
+    const isSmallDistanceBetweenSigns = vertical
       ? this.isSmallDistanceBetweenVerticalSigns()
       : this.isSmallDistanceBetweenHorizontalSigns();
     if (isSmallDistanceBetweenSigns) {
-      this.hideSigns();
+      this.hideSigns(vertical);
     }
     this.lineArray = [];
     this.signArray = [];
@@ -153,18 +140,18 @@ class ScaleView extends EventObserver {
     });
   }
 
-  private hideSigns(): void {
+  private hideSigns(vertical: boolean): void {
     this.lineArray.forEach((line, index, array) => {
       if (index % 2 !== 0 && index !== array.length - 1) {
         line.classList.add('adslider__scale-line_hidden');
       }
     });
-    this.setPenultimateSignView();
-    this.capacityCheckForSign();
+    this.setPenultimateSignView(vertical);
+    this.capacityCheckForSign(vertical);
   }
 
-  private setPenultimateSignView() {
-    const distanceBetweenLastSigns = this.isVertical()
+  private setPenultimateSignView(vertical: boolean) {
+    const distanceBetweenLastSigns = vertical
       ? this.calcDistanceBetweenLastVerticalSigns()
       : this.calcDistanceBetweenLastHorizontalSigns();
     if (distanceBetweenLastSigns < 0) {
@@ -207,10 +194,6 @@ class ScaleView extends EventObserver {
       return Math.round(max);
     }
     return Math.round(index * step + min);
-  }
-
-  private isVertical(): boolean {
-    return this.scale.classList.contains('adslider__scale_direction_vertical');
   }
 }
 

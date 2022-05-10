@@ -10,31 +10,21 @@ class BarView extends EventObserver {
     this.render(parent);
   }
 
-  public setVerticalView(verticalView: boolean): void {
-    if (verticalView) {
-      this.bar.classList.remove('adslider__bar_direction_horizontal');
-      this.bar.classList.add('adslider__bar_direction_vertical');
-    } else {
-      this.bar.classList.remove('adslider__bar_direction_vertical');
-      this.bar.classList.add('adslider__bar_direction_horizontal');
-    }
-  }
-
-  public setLength(handler: HTMLElement): void {
+  public setLength(handler: HTMLElement, vertical: boolean): void {
     this.bar.style.bottom = '';
     this.bar.style.left = '';
-    if (this.bar.classList.contains('adslider__bar_direction_horizontal')) {
-      this.bar.style.height = '';
-      const handlerPos = parseInt(getComputedStyle(handler).left, 10);
-      const handlerLength = parseInt(getComputedStyle(handler).width, 10);
-      this.calcBarPosForSingle(handlerPos, handlerLength);
-      this.bar.style.width = `${this.barPos}px`;
-    } else {
+    if (vertical) {
       this.bar.style.width = '';
       const handlerPos = parseInt(getComputedStyle(handler).bottom, 10);
       const handlerLength = parseInt(getComputedStyle(handler).height, 10);
       this.calcBarPosForSingle(handlerPos, handlerLength);
       this.bar.style.height = `${this.barPos}px`;
+    } else {
+      this.bar.style.height = '';
+      const handlerPos = parseInt(getComputedStyle(handler).left, 10);
+      const handlerLength = parseInt(getComputedStyle(handler).width, 10);
+      this.calcBarPosForSingle(handlerPos, handlerLength);
+      this.bar.style.width = `${this.barPos}px`;
     }
   }
 
@@ -42,8 +32,9 @@ class BarView extends EventObserver {
     valueFrom: number;
     valueTo: number;
     handler: HTMLElement;
+    vertical: boolean
   }): void {
-    const { valueFrom, valueTo, handler } = options;
+    const { valueFrom, valueTo, handler, vertical } = options;
     const handlerLength: number = parseInt(
       getComputedStyle(handler).width,
       10,
@@ -51,18 +42,18 @@ class BarView extends EventObserver {
     const barRightEdge: number = valueTo + handlerLength / 2;
     const barLeftEdge: number = valueFrom + handlerLength / 2;
     const barLength: number = Math.abs(barRightEdge - barLeftEdge);
-    if (this.bar.classList.contains('adslider__bar_direction_horizontal')) {
-      this.bar.style.height = '';
-      this.bar.style.bottom = '';
-      this.bar.style.width = `${barLength}px`;
-      this.calcBarPosForDouble(valueFrom, valueTo, handlerLength);
-      this.bar.style.left = `${this.barPos}px`;
-    } else {
+    if (vertical) {
       this.bar.style.width = '';
       this.bar.style.left = '';
       this.bar.style.height = `${barLength}px`;
       this.calcBarPosForDouble(valueFrom, valueTo, handlerLength);
       this.bar.style.bottom = `${this.barPos}px`;
+    } else {
+      this.bar.style.height = '';
+      this.bar.style.bottom = '';
+      this.bar.style.width = `${barLength}px`;
+      this.calcBarPosForDouble(valueFrom, valueTo, handlerLength);
+      this.bar.style.left = `${this.barPos}px`;
     }
   }
 

@@ -50,7 +50,7 @@ class Presenter {
   private handleSetPos = (options: {
     isDouble: boolean,
     isFromValueChanging: boolean,
-    showValueNote: boolean
+    showValueNote: boolean,
   }) => {
     this.view.setPos(options);
   }

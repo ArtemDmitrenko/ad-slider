@@ -40,7 +40,7 @@ class View extends EventObserver {
   public setPos(options: {
     isDouble: boolean,
     isFromValueChanging: boolean,
-    showValueNote: boolean
+    showValueNote: boolean,
   }): void {
     this.trackView.setHandlerPos(options);
   }
@@ -61,7 +61,6 @@ class View extends EventObserver {
       this.adslider.classList.remove('adslider_direction_vertical');
       this.adslider.classList.add('adslider_direction_horizontal');
     }
-    this.trackView.setVerticalView(vertical);
   }
 
   private addObservers(): void {

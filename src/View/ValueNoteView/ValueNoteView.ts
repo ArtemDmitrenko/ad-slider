@@ -34,23 +34,25 @@ class ValueNoteView extends EventObserver {
     }
   }
 
+  // eslint-disable-next-line class-methods-use-this
   public calcPos(options: {
     handlerBottomPos: string,
     handlerHeight: string,
     handlerLeftPos: string,
     handlerWidth: string,
+    vertical: boolean
   }): number {
     const {
-      handlerBottomPos, handlerHeight, handlerLeftPos, handlerWidth,
+      handlerBottomPos, handlerHeight, handlerLeftPos, handlerWidth, vertical,
     } = options;
-    if (this.isVertical()) {
+    if (vertical) {
       return parseInt(handlerBottomPos, 10) + parseInt(handlerHeight, 10) / 2;
     }
     return parseInt(handlerLeftPos, 10) + parseInt(handlerWidth, 10) / 2;
   }
 
-  public setPos(value: number): void {
-    if (this.noteElement.classList.contains('adslider__note_direction_vertical')) {
+  public setPos(value: number, vertical: boolean): void {
+    if (vertical) {
       this.noteElement.style.left = '';
       this.noteElement.style.bottom = `${value}px`;
     } else {
@@ -59,22 +61,16 @@ class ValueNoteView extends EventObserver {
     }
   }
 
-  public setVerticalView(verticalView: boolean): void {
-    if (verticalView) {
-      this.noteElement.classList.remove('adslider__note_direction_horizontal');
-      this.noteElement.classList.add('adslider__note_direction_vertical');
-    } else {
-      this.noteElement.classList.remove('adslider__note_direction_vertical');
-      this.noteElement.classList.add('adslider__note_direction_horizontal');
-    }
+  public getSize(vertical: boolean): number {
+    return vertical
+      ? parseInt(getComputedStyle(this.noteElement).height, 10)
+      : parseInt(getComputedStyle(this.noteElement).width, 10);
   }
 
-  public getSize(): number {
-    return this.noteElement.classList.contains('adslider__note_direction_vertical') ? parseInt(getComputedStyle(this.noteElement).height, 10) : parseInt(getComputedStyle(this.noteElement).width, 10);
-  }
-
-  public getPos(): number {
-    return this.noteElement.classList.contains('adslider__note_direction_vertical') ? parseInt(getComputedStyle(this.noteElement).bottom, 10) : parseInt(getComputedStyle(this.noteElement).left, 10);
+  public getPos(vertical: boolean): number {
+    return vertical
+      ? parseInt(getComputedStyle(this.noteElement).bottom, 10)
+      : parseInt(getComputedStyle(this.noteElement).left, 10);
   }
 
   public addClassToNoteElement(className: string): void {
@@ -88,10 +84,6 @@ class ValueNoteView extends EventObserver {
     this.valueElement.classList.add('adslider__value');
     this.noteElement.append(this.valueElement);
     parent.append(this.noteElement);
-  }
-
-  private isVertical(): boolean {
-    return this.noteElement.classList.contains('adslider__note_direction_vertical');
   }
 }
 

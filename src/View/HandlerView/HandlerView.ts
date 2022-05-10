@@ -22,14 +22,14 @@ class HandlerView extends EventObserver {
     this.handleMouseUp = this.mouseUp.bind(this);
   }
 
-  public getLength(): number {
-    return this.isVertical()
+  public getLength(vertical: boolean): number {
+    return vertical
       ? parseInt(getComputedStyle(this.handler).height, 10)
       : parseInt(getComputedStyle(this.handler).width, 10);
   }
 
-  public getPos(): number {
-    return this.isVertical()
+  public getPos(vertical: boolean): number {
+    return vertical
       ? parseInt(getComputedStyle(this.handler).bottom, 10)
       : parseInt(getComputedStyle(this.handler).left, 10);
   }
@@ -47,28 +47,17 @@ class HandlerView extends EventObserver {
     }
   }
 
-  public setPos(isDouble: boolean): void {
-    if (this.isVertical()) {
+  public setPos(isDouble: boolean, vertical: boolean): void {
+    if (vertical) {
       this.handler.style.left = '';
       this.handler.style.bottom = `${this.handlerPos}px`;
     } else {
       this.handler.style.bottom = '';
       this.handler.style.left = `${this.handlerPos}px`;
     }
-    this.setValueNotePos();
-    const data = { handler: this.handler, vertical: this.isVertical(), double: isDouble };
+    this.setValueNotePos(vertical);
+    const data = { handler: this.handler, vertical, double: isDouble };
     this.broadcast(EventTypes.SET_BAR, data);
-  }
-
-  public setVerticalView(verticalView: boolean): void {
-    if (verticalView) {
-      this.handler.classList.remove('adslider__handler_direction_horizontal');
-      this.handler.classList.add('adslider__handler_direction_vertical');
-    } else {
-      this.handler.classList.remove('adslider__handler_direction_vertical');
-      this.handler.classList.add('adslider__handler_direction_horizontal');
-    }
-    this.valueNoteView.setVerticalView(verticalView);
   }
 
   public setValueForNote(value: number | null | undefined): void {
@@ -79,23 +68,24 @@ class HandlerView extends EventObserver {
     this.valueNoteView.showValueNote(isValueShown);
   }
 
-  public setValueNotePos(): void {
+  public setValueNotePos(vertical: boolean): void {
     const options = {
       handlerBottomPos: getComputedStyle(this.handler).bottom,
       handlerHeight: getComputedStyle(this.handler).height,
       handlerLeftPos: getComputedStyle(this.handler).left,
       handlerWidth: getComputedStyle(this.handler).width,
+      vertical,
     };
     const valueNoteViewPos = this.valueNoteView.calcPos(options);
-    this.valueNoteView.setPos(valueNoteViewPos);
+    this.valueNoteView.setPos(valueNoteViewPos, vertical);
   }
 
-  public getValueNotePos(): number {
-    return this.valueNoteView.getPos();
+  public getValueNotePos(vertical: boolean): number {
+    return this.valueNoteView.getPos(vertical);
   }
 
-  public getValueNoteSize(): number {
-    return this.valueNoteView.getSize();
+  public getValueNoteSize(vertical: boolean): number {
+    return this.valueNoteView.getSize(vertical);
   }
 
   public getValueOfNote(): number {
@@ -109,10 +99,6 @@ class HandlerView extends EventObserver {
   public deleteInstance(): void {
     this.handler.remove();
     this.valueNoteView.noteElement.remove();
-  }
-
-  private isVertical(): boolean {
-    return this.handler.classList.contains('adslider__handler_direction_vertical');
   }
 
   private render(parent: HTMLElement): void {
