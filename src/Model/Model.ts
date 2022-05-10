@@ -291,10 +291,7 @@ class Model extends EventObserver {
 
   private isValToMovesOverValFrom(value: number): boolean {
     const { from } = this.options;
-    if (typeof from === 'number' && value < from) {
-      return true;
-    }
-    return false;
+    return typeof from === 'number' && value < from;
   }
 
   private calcValueWithStep(value: number): number {
