@@ -39,9 +39,9 @@ class BarView extends EventObserver {
       getComputedStyle(handler).width,
       10,
     );
-    const barRightEdge: number = valueTo + handlerLength / 2;
-    const barLeftEdge: number = valueFrom + handlerLength / 2;
-    const barLength: number = Math.abs(barRightEdge - barLeftEdge);
+    const barToEdge: number = valueTo + handlerLength / 2;
+    const barFromEdge: number = valueFrom + handlerLength / 2;
+    const barLength: number = Math.abs(barToEdge - barFromEdge);
     if (vertical) {
       this.bar.style.width = '';
       this.bar.style.left = '';

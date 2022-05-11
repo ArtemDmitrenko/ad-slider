@@ -379,10 +379,10 @@ class TrackView extends EventObserver {
       const valueTo = this.handlerViewTo.getValueOfNote();
       const valueFrom = this.handlerViewFrom.getValueOfNote();
       this.valueNoteViewCommon.setValueForTwo(valueFrom, valueTo);
-      const leftEdgeOfHandlerFrom = this.handlerViewFrom.getPos(vertical);
-      const rightEdgeOfHandlerTo = this.handlerViewTo.getPos(vertical) + this.handlerViewTo.getLength(vertical);
-      const distAmongEdgesOfHandlers = rightEdgeOfHandlerTo - leftEdgeOfHandlerFrom;
-      this.valueNoteViewCommon.setPos(leftEdgeOfHandlerFrom + distAmongEdgesOfHandlers / 2, vertical);
+      const edgeOfHandlerFrom = this.handlerViewFrom.getPos(vertical);
+      const edgeOfHandlerTo = this.handlerViewTo.getPos(vertical) + this.handlerViewTo.getLength(vertical);
+      const distAmongEdgesOfHandlers = edgeOfHandlerTo - edgeOfHandlerFrom;
+      this.valueNoteViewCommon.setPos(edgeOfHandlerFrom + distAmongEdgesOfHandlers / 2, vertical);
     }
   }
 
