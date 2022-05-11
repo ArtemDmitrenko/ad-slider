@@ -28,10 +28,6 @@ class TrackView extends EventObserver {
 
   private leadHandler!: HandlerView;
 
-  private isHandlerTo!: boolean;
-
-  private isHandlerFrom!: boolean;
-
   private isVertical!: boolean;
 
   constructor(parent: HTMLElement) {
@@ -173,8 +169,6 @@ class TrackView extends EventObserver {
 
   private setProperties(event: MouseEvent): void {
     this.areHandlersInOnePoint = true;
-    this.isHandlerFrom = false;
-    this.isHandlerTo = false;
     this.mousedownClientY = event.clientY;
     this.mousedownClientX = event.clientX;
   }
@@ -209,22 +203,9 @@ class TrackView extends EventObserver {
       ? e.clientY < this.mousedownClientY
       : e.clientX > this.mousedownClientX;
     if (isValueIncrease) {
-      const isHandlerFromLeader = !this.isHandlerTo && this.isHandlerFrom;
-      if (isHandlerFromLeader && this.handlerViewFrom) {
-        this.leadHandler = this.handlerViewFrom;
-      } else {
-        this.leadHandler = this.handlerViewTo;
-        this.isHandlerTo = true;
-        this.isHandlerFrom = false;
-      }
-    } else if (isValueDecrease) {
-      if (this.isHandlerTo && !this.isHandlerFrom) {
-        this.leadHandler = this.handlerViewTo;
-      } else if (this.handlerViewFrom) {
-        this.leadHandler = this.handlerViewFrom;
-        this.isHandlerFrom = true;
-        this.isHandlerTo = false;
-      }
+      this.leadHandler = this.handlerViewTo;
+    } else if (isValueDecrease && this.handlerViewFrom) {
+      this.leadHandler = this.handlerViewFrom;
     } else {
       this.leadHandler = handler;
     }
