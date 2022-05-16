@@ -6,10 +6,10 @@ interface IConfig {
     min: number;
     max: number;
   };
-  showValueNote: boolean;
+  hasValueNote: boolean;
   step: number;
-  vertical: boolean;
-  double: boolean;
+  isVertical: boolean;
+  isDouble: boolean;
   from?: number | null;
   to: number;
   onChange?: (data: IConfig) => void;
@@ -51,10 +51,10 @@ class Model extends EventObserver {
   private validateValues(options: IConfig) {
     const {
       limits: { min, max },
-      showValueNote,
+      hasValueNote,
       step,
-      vertical,
-      double,
+      isVertical,
+      isDouble,
       from,
       to,
       onChange,
@@ -65,10 +65,10 @@ class Model extends EventObserver {
     };
     this.options = {
       limits: defaultLimits,
-      showValueNote: typeof showValueNote === 'boolean' ? showValueNote : true,
+      hasValueNote: typeof hasValueNote === 'boolean' ? hasValueNote : true,
       step: typeof step === 'number' ? step : 5,
-      vertical: typeof vertical === 'boolean' ? vertical : false,
-      double: typeof double === 'boolean' ? double : false,
+      isVertical: typeof isVertical === 'boolean' ? isVertical : false,
+      isDouble: typeof isDouble === 'boolean' ? isDouble : false,
       from: typeof from === 'number' ? from : -20,
       to: typeof to === 'number' ? to : 0,
       onChange,
@@ -92,10 +92,10 @@ class Model extends EventObserver {
       limits: { min, max },
       from,
       to,
-      double,
+      isDouble,
       step,
-      vertical,
-      showValueNote,
+      isVertical,
+      hasValueNote,
     } = options;
     const isMinMaxNaN = Number.isNaN(min) || Number.isNaN(max);
     const isFromValueChangingToNaN = Number.isNaN(from) || Number.isNaN(to) || Number.isNaN(step);
@@ -115,7 +115,7 @@ class Model extends EventObserver {
     if (hasStepChanged && isStepNotValid) {
       return;
     }
-    if (!double) {
+    if (!isDouble) {
       this.setValuesForSingleSlider(options);
     } else {
       this.setValuesForDoubleSlider(options);
@@ -123,19 +123,19 @@ class Model extends EventObserver {
     this.options = {
       ...this.options,
       limits: { min, max },
-      double,
-      vertical,
-      showValueNote,
+      isDouble,
+      isVertical,
+      hasValueNote,
       step,
     };
   }
 
   private setMinValue(options: IConfig): void {
     const {
-      limits: { min, max }, double, from, to,
+      limits: { min, max }, isDouble, from, to,
     } = options;
     this.options.step = max - min;
-    if (!double) {
+    if (!isDouble) {
       this.options.to = min;
       this.options.limits.min = min;
     } else if (from && from < min) {
@@ -146,8 +146,8 @@ class Model extends EventObserver {
   }
 
   private setMaxValue(options: IConfig): void {
-    const { limits: { min, max }, double, from } = options;
-    const isDoubleWithFrom = double && from;
+    const { limits: { min, max }, isDouble, from } = options;
+    const isDoubleWithFrom = isDouble && from;
     if (isDoubleWithFrom && max < from) {
       this.options.from = max;
     }
@@ -265,8 +265,8 @@ class Model extends EventObserver {
   }
 
   private setValAndBroadcast(value: number, isFromValueChanging: boolean): void {
-    const { limits, double, showValueNote } = this.options;
-    const data = { isDouble: double, isFromValueChanging, showValueNote };
+    const { limits, isDouble, hasValueNote } = this.options;
+    const data = { isDouble, isFromValueChanging, hasValueNote };
     const options = {
       limits,
       isFromValueChanging,

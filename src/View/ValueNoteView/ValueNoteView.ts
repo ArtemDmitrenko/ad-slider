@@ -40,19 +40,19 @@ class ValueNoteView extends EventObserver {
     handlerHeight: string,
     handlerLeftPos: string,
     handlerWidth: string,
-    vertical: boolean
+    isVertical: boolean
   }): number {
     const {
-      handlerBottomPos, handlerHeight, handlerLeftPos, handlerWidth, vertical,
+      handlerBottomPos, handlerHeight, handlerLeftPos, handlerWidth, isVertical,
     } = options;
-    if (vertical) {
+    if (isVertical) {
       return parseInt(handlerBottomPos, 10) + parseInt(handlerHeight, 10) / 2;
     }
     return parseInt(handlerLeftPos, 10) + parseInt(handlerWidth, 10) / 2;
   }
 
-  public setPos(value: number, vertical: boolean): void {
-    if (vertical) {
+  public setPos(value: number, isVertical: boolean): void {
+    if (isVertical) {
       this.noteElement.style.left = '';
       this.noteElement.style.bottom = `${value}px`;
     } else {
@@ -61,14 +61,14 @@ class ValueNoteView extends EventObserver {
     }
   }
 
-  public getSize(vertical: boolean): number {
-    return vertical
+  public getSize(isVertical: boolean): number {
+    return isVertical
       ? parseInt(getComputedStyle(this.noteElement).height, 10)
       : parseInt(getComputedStyle(this.noteElement).width, 10);
   }
 
-  public getPos(vertical: boolean): number {
-    return vertical
+  public getPos(isVertical: boolean): number {
+    return isVertical
       ? parseInt(getComputedStyle(this.noteElement).bottom, 10)
       : parseInt(getComputedStyle(this.noteElement).left, 10);
   }

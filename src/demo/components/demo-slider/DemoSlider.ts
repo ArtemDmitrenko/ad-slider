@@ -6,10 +6,10 @@ type Config = {
     min: number;
     max: number;
   };
-  showValueNote: boolean;
+  hasValueNote: boolean;
   step: number;
-  vertical: boolean;
-  double: boolean;
+  isVertical: boolean;
+  isDouble: boolean;
   from?: number | null;
   to: number;
   onChange?: (data: Config) => void;
@@ -105,10 +105,10 @@ class DemoSlider {
         min: this.minValueInstance.getValue(),
         max: this.maxValueInstance.getValue(),
       },
-      showValueNote: this.noteValueInstance.isChecked(),
+      hasValueNote: this.noteValueInstance.isChecked(),
       step: this.stepInstance.getValue(),
-      vertical: this.verticalInstance.isChecked(),
-      double: this.doubleInstance.isChecked(),
+      isVertical: this.verticalInstance.isChecked(),
+      isDouble: this.doubleInstance.isChecked(),
       from: this.fromInstance.getValue(),
       to: this.toInstance.getValue(),
       onChange: this.handleOnChange,
@@ -136,22 +136,22 @@ class DemoSlider {
       step,
       from,
       to,
-      showValueNote,
-      vertical,
-      double,
+      hasValueNote,
+      isVertical,
+      isDouble,
     } = this.options;
     this.toInstance.setValue(to);
     this.currentValueInstance.setValue(to);
     this.minValueInstance.setValue(min);
     this.maxValueInstance.setValue(max);
     this.stepInstance.setValue(step);
-    if (showValueNote) {
+    if (hasValueNote) {
       this.noteValueInstance.setChecked();
     }
-    if (vertical) {
+    if (isVertical) {
       this.verticalInstance.setChecked();
     }
-    if (double) {
+    if (isDouble) {
       this.doubleInstance.setChecked();
     }
     this.fromInstance.setValue(typeof from === 'number' ? from : min);
@@ -165,9 +165,9 @@ class DemoSlider {
         max: this.maxValueInstance.getValue(),
       },
       step: this.stepInstance.getValue(),
-      showValueNote: this.noteValueInstance.isChecked(),
-      vertical: this.verticalInstance.isChecked(),
-      double: this.doubleInstance.isChecked(),
+      hasValueNote: this.noteValueInstance.isChecked(),
+      isVertical: this.verticalInstance.isChecked(),
+      isDouble: this.doubleInstance.isChecked(),
       from: this.fromInstance.getValue(),
       to: this.doubleInstance.isChecked() ? this.toInstance.getValue() : this.currentValueInstance.getValue(),
       onChange: this.options.onChange,

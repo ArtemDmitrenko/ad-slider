@@ -16,16 +16,16 @@ class View extends EventObserver {
   }
 
   public updateView(options: {
-    vertical: boolean;
+    isVertical: boolean;
     limits: { max: number; min: number };
-    showValueNote: boolean;
-    double: boolean;
+    hasValueNote: boolean;
+    isDouble: boolean;
     from?: number | null;
     to: number;
     step: number;
   }): void {
-    const { vertical } = options;
-    this.setVerticalViewForSingle(vertical);
+    const { isVertical } = options;
+    this.setVerticalViewForSingle(isVertical);
     this.trackView.updateTrackView(options);
   }
 
@@ -39,7 +39,7 @@ class View extends EventObserver {
 
   public setPos(options: {
     isFromValueChanging: boolean,
-    showValueNote: boolean,
+    hasValueNote: boolean,
   }): void {
     this.trackView.setHandlerPos(options);
   }
@@ -52,8 +52,8 @@ class View extends EventObserver {
     this.trackView = new TrackView(this.adslider);
   }
 
-  private setVerticalViewForSingle(vertical: boolean): void {
-    if (vertical) {
+  private setVerticalViewForSingle(isVertical: boolean): void {
+    if (isVertical) {
       this.adslider.classList.remove('adslider_direction_horizontal');
       this.adslider.classList.add('adslider_direction_vertical');
     } else {

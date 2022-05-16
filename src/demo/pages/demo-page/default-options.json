@@ -3,36 +3,36 @@
     {
       "limits": { "min": -100, "max": 100 },
       "to": 0,
-      "showValueNote": true,
+      "hasValueNote": true,
       "step": 30,
-      "vertical": false,
-      "double": false
+      "isVertical": false,
+      "isDouble": false
     },
     {
       "limits": { "min": -100, "max": 100 },
-      "showValueNote": true,
+      "hasValueNote": true,
       "step": 20,
-      "double": true,
+      "isDouble": true,
       "from": 40,
       "to": 90,
-      "vertical": false
+      "isVertical": false
     },
     {
       "limits": { "min": 0, "max": 1000 },
       "to": 500,
-      "showValueNote": true,
+      "hasValueNote": true,
       "step": 100,
-      "vertical": true,
-      "double": false
+      "isVertical": true,
+      "isDouble": false
     },
     {
       "limits": { "min": 0, "max": 100 },
-      "showValueNote": true,
+      "hasValueNote": true,
       "step": 15,
-      "double": true,
+      "isDouble": true,
       "from": 40,
       "to": 90,
-      "vertical": true
+      "isVertical": true
     }
   ]
 }

@@ -16,14 +16,14 @@ class HandlerView extends EventObserver {
     this.render(parent);
   }
 
-  public getLength(vertical: boolean): number {
-    return vertical
+  public getLength(isVertical: boolean): number {
+    return isVertical
       ? parseInt(getComputedStyle(this.handler).height, 10)
       : parseInt(getComputedStyle(this.handler).width, 10);
   }
 
-  public getPos(vertical: boolean): number {
-    return vertical
+  public getPos(isVertical: boolean): number {
+    return isVertical
       ? parseInt(getComputedStyle(this.handler).bottom, 10)
       : parseInt(getComputedStyle(this.handler).left, 10);
   }
@@ -45,15 +45,15 @@ class HandlerView extends EventObserver {
     }
   }
 
-  public setPos(vertical: boolean): void {
-    if (vertical) {
+  public setPos(isVertical: boolean): void {
+    if (isVertical) {
       this.handler.style.left = '';
       this.handler.style.bottom = `${this.handlerPos}px`;
     } else {
       this.handler.style.bottom = '';
       this.handler.style.left = `${this.handlerPos}px`;
     }
-    this.setValueNotePos(vertical);
+    this.setValueNotePos(isVertical);
   }
 
   public setValueForNote(value: number | null | undefined): void {
@@ -64,24 +64,24 @@ class HandlerView extends EventObserver {
     this.valueNoteView.showValueNote(isValueShown);
   }
 
-  public setValueNotePos(vertical: boolean): void {
+  public setValueNotePos(isVertical: boolean): void {
     const options = {
       handlerBottomPos: getComputedStyle(this.handler).bottom,
       handlerHeight: getComputedStyle(this.handler).height,
       handlerLeftPos: getComputedStyle(this.handler).left,
       handlerWidth: getComputedStyle(this.handler).width,
-      vertical,
+      isVertical,
     };
     const valueNoteViewPos = this.valueNoteView.calcPos(options);
-    this.valueNoteView.setPos(valueNoteViewPos, vertical);
+    this.valueNoteView.setPos(valueNoteViewPos, isVertical);
   }
 
-  public getValueNotePos(vertical: boolean): number {
-    return this.valueNoteView.getPos(vertical);
+  public getValueNotePos(isVertical: boolean): number {
+    return this.valueNoteView.getPos(isVertical);
   }
 
-  public getValueNoteSize(vertical: boolean): number {
-    return this.valueNoteView.getSize(vertical);
+  public getValueNoteSize(isVertical: boolean): number {
+    return this.valueNoteView.getSize(isVertical);
   }
 
   public getValueOfNote(): number {

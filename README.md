@@ -14,12 +14,12 @@
 ```javascript
 $('selector').adslider({
   limits: { min: 0, max: 100 },
-  showValueNote: true,
+  hasValueNote: true,
   step: 15,
-  double: true,
+  isDouble: true,
   from: 40,
   to: 90,
-  vertical: true,
+  isVertical: true,
 });
 ```
 ## API
@@ -27,23 +27,23 @@ $('selector').adslider({
 |:-------|:-----|:-------------|
 |limits  |object|Данный объект устанавливает 2 значения: min и max, в которых указываются соответственно минимальное и максимальное значения бегунка слайдера
  curValue|number|Устанавливает текущее значение бегунка для одиночного слайдера
- showValueNote|boolean|Включает/отключает элемент над бегунком, который показывает текущее значение бегунка
+ hasValueNote|boolean|Включает/отключает элемент над бегунком, который показывает текущее значение бегунка
  step|number|Устанавливает шаг бегунка
- double|boolean|Включает/отключает диапазонный вид слайдера
+ isDouble|boolean|Включает/отключает диапазонный вид слайдера
  from|number|Устанавливает значение "от" в диапазонном слайдере
  to|number|Устанавливает значение "до" в диапазонном слайдере
- vertical|boolean|Включает/отключает вертикальный вид слайдера
+ isVertical|boolean|Включает/отключает вертикальный вид слайдера
 ## Публичные методы плагина
 ### 1. Метод обновления плагина Update
 ```javascript
 $('selector').adslider('update', {
   limits: { min: 10, max: 90 },
-  showValueNote: true,
+  hasValueNote: true,
   step: 10,
-  double: true,
+  isDouble: true,
   from: 30,
   to: 80,
-  vertical: true,
+  isVertical: true,
 });
 ```
 ### 2. Метод получения данных getOptions

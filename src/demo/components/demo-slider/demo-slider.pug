@@ -6,10 +6,10 @@ mixin demo-slider(options = {})
     const defaultLimits = { min: -100, max: 100 } 
     const { 
       limits = defaultLimits, 
-      showValueNote = true,
+      hasValueNote = true,
       step = 5,
-      vertical = false,
-      double = false,
+      isVertical = false,
+      isDouble = false,
       from = null,
       to = 0
     } = options;
@@ -24,13 +24,13 @@ mixin demo-slider(options = {})
       .demo-slider__minimum-value.js-demo-slider__current-value
         +input({ title: 'Текущее значение:', defaultValue: typeof to === 'number' ? to : 0 })
       .demo-slider__note-value.js-demo-slider__note-value
-        +checkbox({ title: 'Показать значение', defaultValue: typeof showValueNote === 'boolean' ? showValueNote : true })
+        +checkbox({ title: 'Показать значение', defaultValue: typeof hasValueNote === 'boolean' ? hasValueNote : true })
       .demo-slider__step.js-demo-slider__step
         +input({ title: 'Шаг:', defaultValue: typeof step === 'number' ? step : 5 })
       .demo-slider__vertical-view.js-demo-slider__vertical-view
-        +checkbox({ title: 'Вертикальный вид', defaultValue: typeof vertical === 'boolean' ? vertical : false })
+        +checkbox({ title: 'Вертикальный вид', defaultValue: typeof isVertical === 'boolean' ? isVertical : false })
       .demo-slider__double.js-demo-slider__double
-        +checkbox({ title: 'Диапазон', defaultValue: typeof double === 'boolean' ? double : false })
+        +checkbox({ title: 'Диапазон', defaultValue: typeof isDouble === 'boolean' ? isDouble : false })
       .demo-slider__from.js-demo-slider__from
         +input({ title: 'От:', defaultValue: typeof from === 'number' ? from : -20 })
       .demo-slider__to.js-demo-slider__to

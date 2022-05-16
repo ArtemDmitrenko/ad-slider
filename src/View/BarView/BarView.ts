@@ -10,10 +10,10 @@ class BarView extends EventObserver {
     this.render(parent);
   }
 
-  public setLength(handler: HTMLElement, vertical: boolean): void {
+  public setLength(handler: HTMLElement, isVertical: boolean): void {
     this.bar.style.bottom = '';
     this.bar.style.left = '';
-    if (vertical) {
+    if (isVertical) {
       this.bar.style.width = '';
       const handlerPos = parseInt(getComputedStyle(handler).bottom, 10);
       const handlerLength = parseInt(getComputedStyle(handler).height, 10);
@@ -32,9 +32,9 @@ class BarView extends EventObserver {
     valueFrom: number;
     valueTo: number;
     handler: HTMLElement;
-    vertical: boolean
+    isVertical: boolean
   }): void {
-    const { valueFrom, valueTo, handler, vertical } = options;
+    const { valueFrom, valueTo, handler, isVertical } = options;
     const handlerLength: number = parseInt(
       getComputedStyle(handler).width,
       10,
@@ -42,7 +42,7 @@ class BarView extends EventObserver {
     const barToEdge: number = valueTo + handlerLength / 2;
     const barFromEdge: number = valueFrom + handlerLength / 2;
     const barLength: number = Math.abs(barToEdge - barFromEdge);
-    if (vertical) {
+    if (isVertical) {
       this.bar.style.width = '';
       this.bar.style.left = '';
       this.bar.style.height = `${barLength}px`;
