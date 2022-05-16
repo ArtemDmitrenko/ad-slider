@@ -11,15 +11,9 @@ class HandlerView extends EventObserver {
 
   private valueNoteView!: ValueNoteView;
 
-  private handleMouseMove!: (e: MouseEvent) => void;
-
-  private handleMouseUp!: (e: MouseEvent) => void;
-
   constructor(parent: HTMLElement) {
     super();
     this.render(parent);
-    this.handleMouseMove = this.mouseMove.bind(this);
-    this.handleMouseUp = this.mouseUp.bind(this);
   }
 
   public getLength(vertical: boolean): number {
@@ -35,11 +29,15 @@ class HandlerView extends EventObserver {
   }
 
   public calcPos(options: {
-    edge: number,
-    value: number | null | undefined,
-    limits: { min: number; max: number },
+    edge: number;
+    value: number | null | undefined;
+    limits: { min: number; max: number };
   }): void {
-    const { edge, value, limits: { min, max } } = options;
+    const {
+      edge,
+      value,
+      limits: { min, max },
+    } = options;
     if (value !== null && value !== undefined) {
       const oddValMin: number = value - min;
       const oddMaxMin: number = max - min;
@@ -47,7 +45,7 @@ class HandlerView extends EventObserver {
     }
   }
 
-  public setPos(isDouble: boolean, vertical: boolean): void {
+  public setPos(vertical: boolean): void {
     if (vertical) {
       this.handler.style.left = '';
       this.handler.style.bottom = `${this.handlerPos}px`;
@@ -56,8 +54,6 @@ class HandlerView extends EventObserver {
       this.handler.style.left = `${this.handlerPos}px`;
     }
     this.setValueNotePos(vertical);
-    const data = { handler: this.handler, vertical, double: isDouble };
-    this.broadcast(EventTypes.SET_BAR, data);
   }
 
   public setValueForNote(value: number | null | undefined): void {
@@ -115,24 +111,22 @@ class HandlerView extends EventObserver {
     event.stopPropagation();
     const data = { event, handler: this.handler };
     this.broadcast(EventTypes.HANDLER_MOUSEDOWN_EVENT, data);
-    this.bindMousemove(event);
+    this.bindMousemove();
+  };
+
+  private bindMousemove(): void {
+    document.addEventListener('mousemove', this.handleHandlerMouseMove);
+    document.addEventListener('mouseup', this.handleHandlerMouseUp);
   }
 
-  private bindMousemove(event: MouseEvent): void {
-    if (event.type === 'mousedown') {
-      document.addEventListener('mousemove', this.handleMouseMove);
-      document.addEventListener('mouseup', this.handleMouseUp);
-    }
-  }
-
-  private mouseMove(e: MouseEvent): void {
+  private handleHandlerMouseMove = (e: MouseEvent) => {
     const data = { shift: null, e, handler: this };
     this.broadcast(EventTypes.HANDLER_MOUSEMOVE_EVENT, data);
   }
 
-  private mouseUp(): void {
-    document.removeEventListener('mouseup', this.handleMouseUp);
-    document.removeEventListener('mousemove', this.handleMouseMove);
+  private handleHandlerMouseUp = () => {
+    document.removeEventListener('mouseup', this.handleHandlerMouseUp);
+    document.removeEventListener('mousemove', this.handleHandlerMouseMove);
   }
 }
 

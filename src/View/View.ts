@@ -38,7 +38,6 @@ class View extends EventObserver {
   }
 
   public setPos(options: {
-    isDouble: boolean,
     isFromValueChanging: boolean,
     showValueNote: boolean,
   }): void {
@@ -64,10 +63,10 @@ class View extends EventObserver {
   }
 
   private addObservers(): void {
-    this.trackView.addObserver(EventTypes.CHANGE_POSITION, this.handleChangePos);
+    this.trackView.addObserver(EventTypes.CHANGE_POSITION, this.handleHandlerChangePosition);
   }
 
-  private handleChangePos = (data: {
+  private handleHandlerChangePosition = (data: {
     relPosition: number,
     isFromValueChanging: boolean
   }): void => {

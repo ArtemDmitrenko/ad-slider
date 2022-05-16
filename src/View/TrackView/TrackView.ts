@@ -55,7 +55,12 @@ class TrackView extends EventObserver {
       value: to,
       limits,
     });
-    this.handlerViewTo.setPos(double, vertical);
+    this.handlerViewTo.setPos(vertical);
+    this.setBar({
+      handler: this.handlerViewTo.handler,
+      vertical,
+      double,
+    });
     this.handlerViewTo.setValueForNote(to);
     this.handlerViewTo.showValueNote(showValueNote);
     this.scaleView.drawScale(options, this.handlerViewTo.handler);
@@ -94,15 +99,14 @@ class TrackView extends EventObserver {
   }
 
   public setHandlerPos(options: {
-    isDouble: boolean,
     isFromValueChanging: boolean,
     showValueNote: boolean,
   }): void {
-    const { isDouble, isFromValueChanging, showValueNote } = options;
+    const { isFromValueChanging, showValueNote } = options;
     if (isFromValueChanging && this.handlerViewFrom) {
-      this.handlerViewFrom.setPos(isDouble, this.isVertical);
+      this.handlerViewFrom.setPos(this.isVertical);
     } else {
-      this.handlerViewTo.setPos(isDouble, this.isVertical);
+      this.handlerViewTo.setPos(this.isVertical);
     }
     this.setViewOfOneNote(showValueNote, this.isVertical);
   }
@@ -128,21 +132,28 @@ class TrackView extends EventObserver {
   }
 
   private handleTrackMouseDown = (event: MouseEvent): void => {
-    this.broadcast(EventTypes.HANDLER_MOUSEDOWN_EVENT, event);
+    if (this.isDouble()) {
+      this.changeHandlerPosForDouble(event);
+    } else {
+      const data = {
+        shift: this.handlerViewTo.getLength(this.isVertical) / 2,
+        e: event,
+        handler: this.handlerViewTo,
+      };
+      this.changeHandlerPosition(data);
+    }
   }
 
   private addObservers(): void {
-    this.handlerViewTo.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleMouseDown);
-    this.handlerViewTo.addObserver(EventTypes.HANDLER_MOUSEMOVE_EVENT, this.mouseMove);
+    this.handlerViewTo.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleHandlerMouseDown);
+    this.handlerViewTo.addObserver(EventTypes.HANDLER_MOUSEMOVE_EVENT, this.handleHandlerMouseMove);
     if (this.handlerViewFrom) {
-      this.handlerViewFrom.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleMouseDown);
-      this.handlerViewFrom.addObserver(EventTypes.HANDLER_MOUSEMOVE_EVENT, this.mouseMove);
+      this.handlerViewFrom.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleHandlerMouseDown);
+      this.handlerViewFrom.addObserver(EventTypes.HANDLER_MOUSEMOVE_EVENT, this.handleHandlerMouseMove);
     }
-    this.handlerViewTo.addObserver(EventTypes.SET_BAR, this.handleSetBar);
-    this.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleChangePos);
   }
 
-  private handleMouseDown = (data: { event: MouseEvent; handler: HTMLElement }): void => {
+  private handleHandlerMouseDown = (data: { event: MouseEvent; handler: HTMLElement }): void => {
     const { event, handler } = data;
     this.calcShift(event, handler);
     this.checkIfHandlersInOnePlace(event);
@@ -173,7 +184,15 @@ class TrackView extends EventObserver {
     this.mousedownClientX = event.clientX;
   }
 
-  private mouseMove = (data: {
+  private handleHandlerMouseMove = (data: {
+    shift: number,
+    e: MouseEvent,
+    handler: HandlerView
+  }): void => {
+    this.changeHandlerPosition(data);
+  }
+
+  private changeHandlerPosition = (data: {
     shift: number,
     e: MouseEvent,
     handler: HandlerView
@@ -193,6 +212,8 @@ class TrackView extends EventObserver {
       relPosition, isFromValueChanging,
     };
     this.broadcast(EventTypes.CHANGE_POSITION, options);
+    const propsForBar = { handler: handler.handler, vertical: this.isVertical, double: this.isDouble() };
+    this.setBar(propsForBar);
   }
 
   private findLeadHandler(e: MouseEvent, handler: HandlerView): void {
@@ -232,7 +253,7 @@ class TrackView extends EventObserver {
     return newPos;
   }
 
-  private handleSetBar = (data: {
+  private setBar = (data: {
     handler: HTMLElement,
     vertical: boolean,
     double: boolean
@@ -259,14 +280,13 @@ class TrackView extends EventObserver {
     if (!this.handlerViewFrom) {
       this.renderHandlerFrom();
     }
-    this.updateObservers();
     if (this.handlerViewFrom) {
       this.handlerViewFrom.calcPos({
         edge: this.getEdge(this.handlerViewFrom),
         value: from,
         limits,
       });
-      this.handlerViewFrom.setPos(true, this.isVertical);
+      this.handlerViewFrom.setPos(this.isVertical);
       this.handlerViewFrom.setValueForNote(from);
       this.handlerViewFrom.showValueNote(showValueNote);
       this.barView.setLengthForDouble({
@@ -281,18 +301,8 @@ class TrackView extends EventObserver {
 
   private renderHandlerFrom(): void {
     this.handlerViewFrom = new HandlerView(this.track);
-    this.handlerViewFrom.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleMouseDown);
-    this.handlerViewFrom.addObserver(EventTypes.HANDLER_MOUSEMOVE_EVENT, this.mouseMove);
-  }
-
-  private updateObservers(): void {
-    if (this.handlerViewFrom) {
-      if (!Object.prototype.hasOwnProperty.call(
-        this.handlerViewFrom.observers, EventTypes.SET_BAR,
-      )) {
-        this.handlerViewFrom.addObserver(EventTypes.SET_BAR, this.handleSetBar);
-      }
-    }
+    this.handlerViewFrom.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleHandlerMouseDown);
+    this.handlerViewFrom.addObserver(EventTypes.HANDLER_MOUSEMOVE_EVENT, this.handleHandlerMouseMove);
   }
 
   private deleteHandlerFrom(): void {
@@ -376,19 +386,6 @@ class TrackView extends EventObserver {
     }
   }
 
-  private handleChangePos = (e: MouseEvent): void => {
-    if (this.isDouble()) {
-      this.changeHandlerPosForDouble(e);
-    } else {
-      const data = {
-        shift: this.handlerViewTo.getLength(this.isVertical) / 2,
-        e,
-        handler: this.handlerViewTo,
-      };
-      this.mouseMove(data);
-    }
-  }
-
   private changeHandlerPosForDouble(e: MouseEvent): void {
     if (this.handlerViewFrom) {
       const handlerFromPos = this.isVertical
@@ -410,7 +407,7 @@ class TrackView extends EventObserver {
           ? this.handlerViewFrom
           : this.handlerViewTo,
       };
-      this.mouseMove(data);
+      this.changeHandlerPosition(data);
     }
   }
 
