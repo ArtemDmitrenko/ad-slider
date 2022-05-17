@@ -50,19 +50,19 @@ class ScaleView extends EventObserver {
 
   private setScalePos(handler: HTMLElement, isVertical: boolean): void {
     if (isVertical) {
-      this.scale.style.width = '';
-      this.scale.style.left = '';
       const handlerLength = parseInt(getComputedStyle(handler).height, 10);
       const trackLength = parseInt(getComputedStyle(this.parent).height, 10);
       const scaleLength = trackLength - handlerLength;
+      this.scale.style.width = '';
+      this.scale.style.left = '';
       this.scale.style.height = `${scaleLength}px`;
       this.scale.style.top = `${handlerLength / 2}px`;
     } else {
-      this.scale.style.height = '';
-      this.scale.style.top = '';
       const handlerLength = parseInt(getComputedStyle(handler).width, 10);
       const trackLength = parseInt(getComputedStyle(this.parent).width, 10);
       const scaleLength = trackLength - handlerLength;
+      this.scale.style.height = '';
+      this.scale.style.top = '';
       this.scale.style.width = `${scaleLength}px`;
       this.scale.style.left = `${handlerLength / 2}px`;
     }
@@ -117,11 +117,7 @@ class ScaleView extends EventObserver {
   private isSmallDistanceBetweenVerticalSigns(): boolean {
     return this.signArray.some((item, i, array) => {
       if (i > 0) {
-        return (
-          array[i - 1].getBoundingClientRect().top
-            - item.getBoundingClientRect().bottom
-          < 0
-        );
+        return (array[i - 1].getBoundingClientRect().top - item.getBoundingClientRect().bottom < 0);
       }
       return false;
     });
@@ -130,11 +126,7 @@ class ScaleView extends EventObserver {
   private isSmallDistanceBetweenHorizontalSigns(): boolean {
     return this.signArray.some((item, i, array) => {
       if (i > 0) {
-        return (
-          item.getBoundingClientRect().left
-            - array[i - 1].getBoundingClientRect().right
-          < 0
-        );
+        return (item.getBoundingClientRect().left - array[i - 1].getBoundingClientRect().right < 0);
       }
       return false;
     });
@@ -159,10 +151,18 @@ class ScaleView extends EventObserver {
         'adslider__scale-line_hidden',
       );
       this.lineArray = this.lineArray.filter(
-        (_el, i, array) => (!(i % 2) && i !== array.length - 2) || i === array.length - 1,
+        (_el, i, array) => {
+          const isOddElement = !(i % 2) && i !== array.length - 2;
+          const isLastElement = i === array.length - 1;
+          return isOddElement || isLastElement;
+        },
       );
       this.signArray = this.signArray.filter(
-        (_el, i, array) => (!(i % 2) && i !== array.length - 2) || i === array.length - 1,
+        (_el, i, array) => {
+          const isOddElement = !(i % 2) && i !== array.length - 2;
+          const isLastElement = i === array.length - 1;
+          return isOddElement || isLastElement;
+        },
       );
     } else {
       this.lineArray = this.lineArray.filter((_el, i) => !(i % 2));

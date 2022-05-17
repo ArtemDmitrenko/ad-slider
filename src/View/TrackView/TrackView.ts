@@ -173,11 +173,9 @@ class TrackView extends EventObserver {
   private areHandlersInOnePlace(): boolean {
     if (this.handlerViewFrom) {
       if (this.isVertical) {
-        return this.handlerViewTo.handler.style.bottom
-          === this.handlerViewFrom.handler.style.bottom;
+        return this.handlerViewTo.handler.style.bottom === this.handlerViewFrom.handler.style.bottom;
       }
-      return this.handlerViewTo.handler.style.left
-        === this.handlerViewFrom.handler.style.left;
+      return this.handlerViewTo.handler.style.left === this.handlerViewFrom.handler.style.left;
     }
     return false;
   }
@@ -346,8 +344,7 @@ class TrackView extends EventObserver {
 
   private isSmallDistanceBetweenNotes(isVertical: boolean): boolean {
     if (this.handlerViewFrom) {
-      const distAmongNotes: number = this.handlerViewTo.getValueNotePos(isVertical)
-        - this.handlerViewFrom.getValueNotePos(isVertical);
+      const distAmongNotes: number = this.handlerViewTo.getValueNotePos(isVertical) - this.handlerViewFrom.getValueNotePos(isVertical);
       return distAmongNotes < this.handlerViewTo.getValueNoteSize(isVertical);
     }
     return false;
