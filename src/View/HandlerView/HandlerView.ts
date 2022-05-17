@@ -107,9 +107,13 @@ class HandlerView extends EventObserver {
   }
 
   private handleHandlerMouseDown = (event: MouseEvent): void => {
+    const { clientX, clientY } = event;
     event.preventDefault();
     event.stopPropagation();
-    const data = { event, handler: this.handler };
+    const data = {
+      eventProps: { clientX, clientY },
+      handler: this.handler,
+    };
     this.broadcast(EventTypes.HANDLER_MOUSEDOWN_EVENT, data);
     this.bindMousemove();
   };
@@ -120,7 +124,12 @@ class HandlerView extends EventObserver {
   }
 
   private handleHandlerMouseMove = (e: MouseEvent) => {
-    const data = { shift: null, e, handler: this };
+    const { clientX, clientY, type } = e;
+    const data = {
+      shift: null,
+      eventProps: { clientX, clientY, type },
+      handler: this,
+    };
     this.broadcast(EventTypes.HANDLER_MOUSEMOVE_EVENT, data);
   }
 

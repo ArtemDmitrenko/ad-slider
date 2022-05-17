@@ -132,12 +132,13 @@ class TrackView extends EventObserver {
   }
 
   private handleTrackMouseDown = (event: MouseEvent): void => {
+    const { clientX, clientY, type } = event;
     if (this.isDouble()) {
-      this.changeHandlerPosForDouble(event);
+      this.changeHandlerPosForDouble(clientX, clientY, type);
     } else {
       const data = {
         shift: this.handlerViewTo.getLength(this.isVertical) / 2,
-        e: event,
+        eventProps: { clientX, clientY, type },
         handler: this.handlerViewTo,
       };
       this.changeHandlerPosition(data);
@@ -153,16 +154,19 @@ class TrackView extends EventObserver {
     }
   }
 
-  private handleHandlerMouseDown = (data: { event: MouseEvent; handler: HTMLElement }): void => {
-    const { event, handler } = data;
-    this.calcShift(event, handler);
-    this.checkIfHandlersInOnePlace(event);
+  private handleHandlerMouseDown = (data: {
+    eventProps: { clientX: number, clientY: number };
+    handler: HTMLElement
+  }): void => {
+    const { eventProps: { clientX, clientY }, handler } = data;
+    this.calcShift(clientX, clientY, handler);
+    this.checkIfHandlersInOnePlace(clientX, clientY);
   }
 
-  private calcShift(e: MouseEvent, handler: HTMLElement): void {
+  private calcShift(clientX: number, clientY: number, handler: HTMLElement): void {
     const shift = this.isVertical
-      ? e.clientY - handler.getBoundingClientRect().bottom
-      : e.clientX - handler.getBoundingClientRect().left;
+      ? clientY - handler.getBoundingClientRect().bottom
+      : clientX - handler.getBoundingClientRect().left;
     this.handlerShift = Math.abs(shift);
   }
 
@@ -178,15 +182,19 @@ class TrackView extends EventObserver {
     return false;
   }
 
-  private setProperties(event: MouseEvent): void {
+  private setProperties(clientX: number, clientY: number): void {
     this.areHandlersInOnePoint = true;
-    this.mousedownClientY = event.clientY;
-    this.mousedownClientX = event.clientX;
+    this.mousedownClientY = clientY;
+    this.mousedownClientX = clientX;
   }
 
   private handleHandlerMouseMove = (data: {
     shift: number,
-    e: MouseEvent,
+    eventProps: {
+      clientX: number,
+      clientY: number,
+      type: string
+    },
     handler: HandlerView
   }): void => {
     this.changeHandlerPosition(data);
@@ -194,16 +202,20 @@ class TrackView extends EventObserver {
 
   private changeHandlerPosition = (data: {
     shift: number,
-    e: MouseEvent,
+    eventProps: {
+      clientX: number,
+      clientY: number,
+      type: string
+    },
     handler: HandlerView
   }): void => {
-    const { shift, e, handler } = data;
+    const { shift, eventProps: { clientX, clientY, type }, handler } = data;
     if (this.areHandlersInOnePoint) {
-      this.findLeadHandler(e, handler);
+      this.findLeadHandler(clientX, clientY, handler);
     } else {
       this.leadHandler = handler;
     }
-    const newPos = e.type === 'mousedown' ? this.calcNewPos(shift, e) : this.calcNewPos(this.handlerShift, e);
+    const newPos = type === 'mousedown' ? this.calcNewPos(shift, clientX, clientY) : this.calcNewPos(this.handlerShift, clientX, clientY);
     const edge: number = this.getEdge(this.leadHandler);
     const checkedNewPos = this.checkNewPos(newPos);
     const relPosition = checkedNewPos / edge;
@@ -216,13 +228,13 @@ class TrackView extends EventObserver {
     this.setBar(propsForBar);
   }
 
-  private findLeadHandler(e: MouseEvent, handler: HandlerView): void {
+  private findLeadHandler(clientX: number, clientY: number, handler: HandlerView): void {
     const isValueDecrease = this.isVertical
-      ? e.clientY > this.mousedownClientY
-      : e.clientX < this.mousedownClientX;
+      ? clientY > this.mousedownClientY
+      : clientX < this.mousedownClientX;
     const isValueIncrease = this.isVertical
-      ? e.clientY < this.mousedownClientY
-      : e.clientX > this.mousedownClientX;
+      ? clientY < this.mousedownClientY
+      : clientX > this.mousedownClientX;
     if (isValueIncrease) {
       this.leadHandler = this.handlerViewTo;
     } else if (isValueDecrease && this.handlerViewFrom) {
@@ -232,10 +244,10 @@ class TrackView extends EventObserver {
     }
   }
 
-  private calcNewPos(shift: number, e: MouseEvent): number {
+  private calcNewPos(shift: number, clientX: number, clientY: number): number {
     return this.isVertical
-      ? this.track.getBoundingClientRect().bottom - e.clientY - shift
-      : e.clientX - shift - this.track.getBoundingClientRect().left;
+      ? this.track.getBoundingClientRect().bottom - clientY - shift
+      : clientX - shift - this.track.getBoundingClientRect().left;
   }
 
   private getEdge(handler: HandlerView): number {
@@ -386,7 +398,7 @@ class TrackView extends EventObserver {
     }
   }
 
-  private changeHandlerPosForDouble(e: MouseEvent): void {
+  private changeHandlerPosForDouble(clientX: number, clientY: number, type: string): void {
     if (this.handlerViewFrom) {
       const handlerFromPos = this.isVertical
         ? this.handlerViewFrom.handler.getBoundingClientRect().top
@@ -396,13 +408,13 @@ class TrackView extends EventObserver {
         : this.handlerViewTo.handler.getBoundingClientRect().left;
       const oddToFrom: number = handlerToPos - handlerFromPos;
       const middlePos = oddToFrom / 2 + handlerFromPos + this.handlerViewTo.getLength(this.isVertical) / 2;
-      this.checkIfHandlersInOnePlace(e);
-      const isHandlerFromChanging = e.clientX <= middlePos || e.clientY >= middlePos;
+      this.checkIfHandlersInOnePlace(clientX, clientY);
+      const isHandlerFromChanging = clientX <= middlePos || clientY >= middlePos;
       const data = {
         shift: isHandlerFromChanging
           ? this.handlerViewFrom.getLength(this.isVertical) / 2
           : this.handlerViewTo.getLength(this.isVertical) / 2,
-        e,
+        eventProps: { clientX, clientY, type },
         handler: isHandlerFromChanging
           ? this.handlerViewFrom
           : this.handlerViewTo,
@@ -411,9 +423,9 @@ class TrackView extends EventObserver {
     }
   }
 
-  private checkIfHandlersInOnePlace(event: MouseEvent): void {
+  private checkIfHandlersInOnePlace(clientX: number, clientY: number): void {
     if (this.areHandlersInOnePlace()) {
-      this.setProperties(event);
+      this.setProperties(clientX, clientY);
     } else {
       this.areHandlersInOnePoint = false;
     }
