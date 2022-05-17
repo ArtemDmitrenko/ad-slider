@@ -8,9 +8,7 @@ class ScaleView extends EventObserver {
 
   private numberOfLines!: number;
 
-  private lineArray: Array<Element> = [];
-
-  private signArray: Array<HTMLDivElement> = [];
+  private signArray: Array<HTMLElement> = [];
 
   constructor(parent: HTMLElement) {
     super();
@@ -27,7 +25,8 @@ class ScaleView extends EventObserver {
     this.calcNumberOfLines(step, odd);
     this.setScalePos(handler, isVertical);
     this.createListOfScaleLines(options);
-    this.renderScaleSign(options);
+    this.capacityCheckForCommonSigns(isVertical);
+    this.capacityCheckForPreLastSign(isVertical);
   }
 
   private render(parent: HTMLElement): void {
@@ -75,6 +74,7 @@ class ScaleView extends EventObserver {
       isVertical,
     } = options;
     this.scale.innerHTML = '';
+    this.signArray = [];
     const stepPercentage = (step / (max - min)) * 100;
     for (let i = 0; i < this.numberOfLines; i += 1) {
       const line = this.renderScaleLine();
@@ -85,47 +85,42 @@ class ScaleView extends EventObserver {
       } else {
         line.style.left = `${position}%`;
       }
+      const value: number = this.calcSigns(i, step, min, max);
+      const textElement = this.renderScaleSign(value);
+      line.append(textElement);
+      this.signArray.push(textElement);
     }
   }
 
-  private renderScaleSign(options: IConfig): void {
-    const { isVertical } = options;
-    const listOfLines = this.scale.querySelectorAll('.adslider__scale-line');
-    listOfLines.forEach((line, index) => {
-      const value: number = this.calcSigns(index, options);
-      const text = document.createElement('div');
-      text.classList.add('adslider__scale-text');
-      text.innerText = `${value}`;
-      line.append(text);
-      this.lineArray.push(line);
-      this.signArray.push(text);
-    });
-    this.capacityCheckForSign(isVertical);
+  // eslint-disable-next-line class-methods-use-this
+  private renderScaleSign(value: number): HTMLElement {
+    const text = document.createElement('div');
+    text.classList.add('adslider__scale-text');
+    text.innerText = `${value}`;
+    return text;
   }
 
-  private capacityCheckForSign(isVertical: boolean): void {
-    const isSmallDistanceBetweenSigns = isVertical
-      ? this.isSmallDistanceBetweenVerticalSigns()
-      : this.isSmallDistanceBetweenHorizontalSigns();
-    if (isSmallDistanceBetweenSigns) {
+  private capacityCheckForCommonSigns(isVertical: boolean): void {
+    const isSmallDistanceBetweenCommonSigns = isVertical
+      ? this.isSmallDistanceBetweenCommonVerticalSigns()
+      : this.isSmallDistanceBetweenCommonHorizontalSigns();
+    if (isSmallDistanceBetweenCommonSigns) {
       this.hideSigns(isVertical);
     }
-    this.lineArray = [];
-    this.signArray = [];
   }
 
-  private isSmallDistanceBetweenVerticalSigns(): boolean {
+  private isSmallDistanceBetweenCommonVerticalSigns(): boolean {
     return this.signArray.some((item, i, array) => {
-      if (i > 0) {
+      if (i > 0 && i !== array.length - 1) {
         return (array[i - 1].getBoundingClientRect().top - item.getBoundingClientRect().bottom < 0);
       }
       return false;
     });
   }
 
-  private isSmallDistanceBetweenHorizontalSigns(): boolean {
+  private isSmallDistanceBetweenCommonHorizontalSigns(): boolean {
     return this.signArray.some((item, i, array) => {
-      if (i > 0) {
+      if (i > 0 && i !== array.length - 1) {
         return (item.getBoundingClientRect().left - array[i - 1].getBoundingClientRect().right < 0);
       }
       return false;
@@ -133,30 +128,27 @@ class ScaleView extends EventObserver {
   }
 
   private hideSigns(isVertical: boolean): void {
-    this.lineArray.forEach((line, index, array) => {
+    this.signArray.forEach((sign, index, array) => {
       if (index % 2 !== 0 && index !== array.length - 1) {
-        line.classList.add('adslider__scale-line_hidden');
+        const line = sign.closest('.adslider__scale-line');
+        if (line) {
+          line.classList.add('adslider__scale-line_hidden');
+        }
       }
     });
-    this.setPenultimateSignView(isVertical);
-    this.capacityCheckForSign(isVertical);
+    this.signArray = this.signArray.filter((_el, i, array) => !(i % 2) || i === array.length - 1);
+    this.capacityCheckForCommonSigns(isVertical);
   }
 
-  private setPenultimateSignView(isVertical: boolean) {
+  private capacityCheckForPreLastSign(isVertical: boolean) {
     const distanceBetweenLastSigns = isVertical
       ? this.calcDistanceBetweenLastVerticalSigns()
       : this.calcDistanceBetweenLastHorizontalSigns();
     if (distanceBetweenLastSigns < 0) {
-      this.lineArray[this.lineArray.length - 2].classList.add(
-        'adslider__scale-line_hidden',
-      );
-      this.lineArray = this.lineArray.filter(
-        (_el, i, array) => {
-          const isOddElement = !(i % 2) && i !== array.length - 2;
-          const isLastElement = i === array.length - 1;
-          return isOddElement || isLastElement;
-        },
-      );
+      const line = this.signArray[this.signArray.length - 2].closest('.adslider__scale-line');
+      if (line) {
+        line.classList.add('adslider__scale-line_hidden');
+      }
       this.signArray = this.signArray.filter(
         (_el, i, array) => {
           const isOddElement = !(i % 2) && i !== array.length - 2;
@@ -165,28 +157,23 @@ class ScaleView extends EventObserver {
         },
       );
     } else {
-      this.lineArray = this.lineArray.filter((_el, i) => !(i % 2));
       this.signArray = this.signArray.filter((_el, i) => !(i % 2));
     }
   }
 
   private calcDistanceBetweenLastVerticalSigns(): number {
-    const lastSignPos = this.signArray[this.signArray.length - 1].getBoundingClientRect().top;
-    const preLastSignPos = this.signArray[this.signArray.length - 2].getBoundingClientRect().bottom;
-    return lastSignPos - preLastSignPos;
+    const lastSignPos = this.signArray[this.signArray.length - 1].getBoundingClientRect().bottom;
+    const preLastSignPos = this.signArray[this.signArray.length - 2].getBoundingClientRect().top;
+    return preLastSignPos - lastSignPos;
   }
 
   private calcDistanceBetweenLastHorizontalSigns(): number {
     const lastSignPos = this.signArray[this.signArray.length - 1].getBoundingClientRect().left;
     const preLastSignPos = this.signArray[this.signArray.length - 2].getBoundingClientRect().right;
-    return preLastSignPos - lastSignPos;
+    return lastSignPos - preLastSignPos;
   }
 
-  private calcSigns(index: number, options: IConfig): number {
-    const {
-      step,
-      limits: { min, max },
-    } = options;
+  private calcSigns(index: number, step: number, min: number, max: number): number {
     if (index === 0) {
       return Math.round(min);
     }
