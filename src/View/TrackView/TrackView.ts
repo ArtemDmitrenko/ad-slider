@@ -12,9 +12,9 @@ class TrackView extends EventObserver {
 
   private scaleView!: ScaleView;
 
-  private handlerViewTo!: HandlerView;
+  public handlerViewTo!: HandlerView;
 
-  private handlerViewFrom?: HandlerView;
+  public handlerViewFrom?: HandlerView;
 
   private valueNoteViewCommon?: ValueNoteView;
 

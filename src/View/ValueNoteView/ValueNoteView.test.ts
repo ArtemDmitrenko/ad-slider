@@ -10,8 +10,8 @@ describe('valueNoteView', () => {
   });
 
   test('Function render: should create note element', () => {
-    expect(valueNoteView.note).not.toBeNull();
-    expect(valueNoteView.note.tagName).toBe('DIV');
+    expect(valueNoteView.noteElement).not.toBeNull();
+    expect(valueNoteView.noteElement.tagName).toBe('DIV');
   });
 
   test('Function render: should create value element', () => {
@@ -22,7 +22,7 @@ describe('valueNoteView', () => {
   });
 
   test('Function render: should add css-class to note element', () => {
-    expect(valueNoteView.note.classList.contains('adslider__note')).toBe(true);
+    expect(valueNoteView.noteElement.classList.contains('adslider__note')).toBe(true);
   });
 
   test('Function render: should add css-class to value element', () => {
@@ -33,12 +33,12 @@ describe('valueNoteView', () => {
 
   test('Function render: should append value to note', () => {
     if (parent.firstElementChild && parent.firstElementChild.firstElementChild) {
-      expect(parent.firstElementChild.firstElementChild.parentElement).toBe(valueNoteView.note);
+      expect(parent.firstElementChild.firstElementChild.parentElement).toBe(valueNoteView.noteElement);
     }
   });
 
   test('Function render: should append note to parent-element', () => {
-    expect(valueNoteView.note.parentElement).toBe(parent);
+    expect(valueNoteView.noteElement.parentElement).toBe(parent);
   });
 
   test('Function setValue: should set value to note', () => {
@@ -55,51 +55,47 @@ describe('valueNoteView', () => {
     }
   });
 
-  test('Function setPos: should set position of valueNote', () => {
-    const handler: HTMLElement = document.createElement('div');
-    handler.style.left = '50px';
-    handler.style.width = '30px';
-    valueNoteView.calcPos(handler);
-    valueNoteView.setPos();
-    expect(window.getComputedStyle(valueNoteView.note).left).toBe('65px');
-    valueNoteView.setVerticalView(true);
-    handler.style.bottom = '60px';
-    handler.style.height = '20px';
-    valueNoteView.calcPos(handler);
-    valueNoteView.setPos();
-    expect(window.getComputedStyle(valueNoteView.note).bottom).toBe('70px');
+  test('Function setPos: should set position of valueNote for vertical view', () => {
+    valueNoteView.setPos(50, true);
+    expect(window.getComputedStyle(valueNoteView.noteElement).bottom).toBe('50px');
+    expect(window.getComputedStyle(valueNoteView.noteElement).left).toBe('');
   });
 
-  test('Function showValueNote: should have classes if showValueNote is true and back', () => {
+  test('Function setPos: should set position of valueNote for horizontal view', () => {
+    valueNoteView.setPos(40, false);
+    expect(window.getComputedStyle(valueNoteView.noteElement).left).toBe('40px');
+    expect(window.getComputedStyle(valueNoteView.noteElement).bottom).toBe('');
+  });
+
+  test('Function showValueNote: should have classes if showValueNote is true', () => {
     valueNoteView.showValueNote(true);
-    expect(valueNoteView.note.classList.contains('adslider__note_hide')).toBe(false);
-    expect(valueNoteView.note.classList.contains('adslider__note_show')).toBe(true);
+    expect(valueNoteView.noteElement.classList.contains('adslider__note_hide')).toBe(false);
+    expect(valueNoteView.noteElement.classList.contains('adslider__note_show')).toBe(true);
+  });
+
+  test('Function showValueNote: should have classes if showValueNote is false', () => {
     valueNoteView.showValueNote(false);
-    expect(valueNoteView.note.classList.contains('adslider__note_hide')).toBe(true);
-    expect(valueNoteView.note.classList.contains('adslider__note_show')).toBe(false);
+    expect(valueNoteView.noteElement.classList.contains('adslider__note_hide')).toBe(true);
+    expect(valueNoteView.noteElement.classList.contains('adslider__note_show')).toBe(false);
   });
 
-  test('Function setVerticalView: should set vertical or horizontal view of note', () => {
-    valueNoteView.setVerticalView(false);
-    expect(valueNoteView.note.classList.contains('adslider__note_direction_horizontal')).toBe(true);
-    valueNoteView.setVerticalView(true);
-    expect(valueNoteView.note.classList.contains('adslider__note_direction_vertical')).toBe(true);
+  test('Function getPos: return pos of note for vertical view', () => {
+    valueNoteView.noteElement.style.bottom = '30px';
+    expect(valueNoteView.getPos(true)).toBe(30);
   });
 
-  test('Function getPos: return pos of note', () => {
-    valueNoteView.note.style.left = '30px';
-    expect(valueNoteView.getPos()).toBe(30);
-    valueNoteView.setVerticalView(true);
-    valueNoteView.note.style.bottom = '40px';
-    expect(valueNoteView.getPos()).toBe(40);
+  test('Function getPos: return pos of note for horizontal view', () => {
+    valueNoteView.noteElement.style.left = '40px';
+    expect(valueNoteView.getPos(false)).toBe(40);
   });
 
-  test('Function getSize: return size of note', () => {
-    valueNoteView.note.style.width = '30px';
-    expect(valueNoteView.getSize()).toBe(30);
-    valueNoteView.setVerticalView(true);
-    valueNoteView.note.style.height = '40px';
-    expect(valueNoteView.getSize()).toBe(40);
+  test('Function getSize: return size of note for vertical view', () => {
+    valueNoteView.noteElement.style.height = '30px';
+    expect(valueNoteView.getSize(true)).toBe(30);
+  });
+  test('Function getSize: return size of note for horizontal view', () => {
+    valueNoteView.noteElement.style.width = '30px';
+    expect(valueNoteView.getSize(false)).toBe(30);
   });
 
   test('Function getValue: return value of note', () => {
@@ -107,5 +103,37 @@ describe('valueNoteView', () => {
       parent.firstElementChild.firstElementChild.textContent = '50';
     }
     expect(valueNoteView.getValue()).toBe(50);
+  });
+
+  test('Function addClassToNoteElement: should check if noteElement contains class', () => {
+    valueNoteView.addClassToNoteElement('test');
+    expect(valueNoteView.noteElement.classList.contains('test')).toBe(true);
+  });
+
+  test('Function calcPos: should return center of handler position for vertical view', () => {
+    const options = {
+      handlerBottomPos: '20px',
+      handlerHeight: '30px',
+      handlerLeftPos: '40px',
+      handlerWidth: '50px',
+      isVertical: true,
+    };
+    expect(valueNoteView.calcPos(options)).toBe(35);
+  });
+
+  test('Function calcPos: should return center of handler position for horizontal view', () => {
+    const options = {
+      handlerBottomPos: '20px',
+      handlerHeight: '30px',
+      handlerLeftPos: '40px',
+      handlerWidth: '50px',
+      isVertical: false,
+    };
+    expect(valueNoteView.calcPos(options)).toBe(65);
+  });
+
+  test('Function removeNoteElement: should remove noteElement', () => {
+    valueNoteView.removeNoteElement();
+    expect(parent.querySelector('adslider__note')).toBe(null);
   });
 });

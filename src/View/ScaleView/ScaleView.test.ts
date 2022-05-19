@@ -17,26 +17,67 @@ describe('scaleView', () => {
     expect((parent.firstElementChild as HTMLElement).parentElement).toBe(parent);
   });
 
-  test('Function drawScale: should draw scale depending on input data', () => {
-    const handler: HTMLElement = document.createElement('div');
-    handler.style.height = '30px';
-    parent.style.height = '400px';
-    const options = {
-      limits: { min: 0, max: 120 },
-      curValue: 85,
-      showValueNote: true,
-      step: 15,
-      double: true,
-      from: 40,
-      to: 90,
-      vertical: true,
-    };
-    scaleView.drawScale(options, handler);
-    expect((parent.firstElementChild as HTMLElement).classList.contains('adslider__scale_direction_vertical')).toBe(true);
-    expect(window.getComputedStyle((parent.firstElementChild as HTMLElement)).width).toBe('');
-    expect(window.getComputedStyle((parent.firstElementChild as HTMLElement)).left).toBe('');
-    expect(window.getComputedStyle((parent.firstElementChild as HTMLElement)).height).toBe('370px');
-    expect(window.getComputedStyle((parent.firstElementChild as HTMLElement)).top).toBe('15px');
-    expect((parent.firstElementChild as HTMLElement).children.length).toBe(9);
+  describe('Function drawScale for vertical view', () => {
+    beforeEach(() => {
+      const handler: HTMLElement = document.createElement('div');
+      handler.style.height = '30px';
+      parent.style.height = '400px';
+      const options = {
+        limits: { min: 0, max: 120 },
+        hasValueNote: true,
+        step: 15,
+        isDouble: true,
+        from: 40,
+        to: 90,
+        isVertical: true,
+      };
+      scaleView.drawScale(options, handler);
+    });
+
+    test('should set empty width and left properties', () => {
+      expect(window.getComputedStyle((parent.firstElementChild as HTMLElement)).width).toBe('');
+      expect(window.getComputedStyle((parent.firstElementChild as HTMLElement)).left).toBe('');
+    });
+
+    test('should set height and top properties', () => {
+      expect(window.getComputedStyle((parent.firstElementChild as HTMLElement)).height).toBe('370px');
+      expect(window.getComputedStyle((parent.firstElementChild as HTMLElement)).top).toBe('15px');
+    });
+
+    test('should set amount of scale lines', () => {
+      expect((parent.firstElementChild as HTMLElement).children.length).toBe(9);
+    });
+  });
+
+  describe('Function drawScale for horizontal view', () => {
+    beforeEach(() => {
+      const handler: HTMLElement = document.createElement('div');
+      handler.style.width = '30px';
+      parent.style.width = '400px';
+      const options = {
+        limits: { min: 0, max: 120 },
+        hasValueNote: true,
+        step: 15,
+        isDouble: true,
+        from: 40,
+        to: 90,
+        isVertical: false,
+      };
+      scaleView.drawScale(options, handler);
+    });
+
+    test('should set empty height and bottom properties', () => {
+      expect(window.getComputedStyle((parent.firstElementChild as HTMLElement)).height).toBe('');
+      expect(window.getComputedStyle((parent.firstElementChild as HTMLElement)).bottom).toBe('');
+    });
+
+    test('should set width and left properties', () => {
+      expect(window.getComputedStyle((parent.firstElementChild as HTMLElement)).width).toBe('370px');
+      expect(window.getComputedStyle((parent.firstElementChild as HTMLElement)).left).toBe('15px');
+    });
+
+    test('should set amount of scale lines', () => {
+      expect((parent.firstElementChild as HTMLElement).children.length).toBe(9);
+    });
   });
 });

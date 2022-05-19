@@ -15,10 +15,27 @@ interface IConfig {
   onChange?: (data: IConfig) => void;
 }
 
+type Any = number | string | boolean;
+
+interface IUsersConfig {
+
+  limits?: {
+    min?: Any;
+    max?: Any;
+  };
+  hasValueNote?: Any;
+  step?: Any;
+  isVertical?: Any;
+  isDouble?: Any;
+  from?: Any | null;
+  to?: Any;
+  onChange?: (data: IConfig) => void;
+}
+
 class Model extends EventObserver {
   public options!: IConfig;
 
-  constructor(options: IConfig) {
+  constructor(options: IUsersConfig) {
     super();
     this.validateValues(options);
     this.init(this.options);
@@ -48,9 +65,9 @@ class Model extends EventObserver {
     return { ...this.options };
   }
 
-  private validateValues(options: IConfig) {
+  private validateValues(options: IUsersConfig) {
     const {
-      limits: { min, max },
+      limits,
       hasValueNote,
       step,
       isVertical,
@@ -60,8 +77,8 @@ class Model extends EventObserver {
       onChange,
     } = options;
     const defaultLimits = {
-      min: typeof min === 'number' ? min : -100,
-      max: typeof max === 'number' ? max : 100,
+      min: limits && typeof limits.min === 'number' ? limits.min : -100,
+      max: limits && typeof limits.max === 'number' ? limits.max : 100,
     };
     this.options = {
       limits: defaultLimits,

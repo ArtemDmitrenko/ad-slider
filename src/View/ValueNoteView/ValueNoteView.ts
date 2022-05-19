@@ -77,6 +77,10 @@ class ValueNoteView extends EventObserver {
     this.noteElement.classList.add(className);
   }
 
+  public removeNoteElement(): void {
+    this.noteElement.remove();
+  }
+
   private render(parent: HTMLElement): void {
     this.noteElement = document.createElement('div');
     this.valueElement = document.createElement('p');

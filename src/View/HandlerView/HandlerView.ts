@@ -94,7 +94,7 @@ class HandlerView extends EventObserver {
 
   public deleteInstance(): void {
     this.handler.remove();
-    this.valueNoteView.noteElement.remove();
+    this.valueNoteView.removeNoteElement();
   }
 
   private render(parent: HTMLElement): void {
