@@ -14,15 +14,15 @@ class BarView extends EventObserver {
     this.bar.style.bottom = '';
     this.bar.style.left = '';
     if (isVertical) {
-      this.bar.style.width = '';
       const handlerPos = parseInt(getComputedStyle(handler).bottom, 10);
       const handlerLength = parseInt(getComputedStyle(handler).height, 10);
+      this.bar.style.width = '';
       this.calcBarPosForSingle(handlerPos, handlerLength);
       this.bar.style.height = `${this.barPos}px`;
     } else {
-      this.bar.style.height = '';
       const handlerPos = parseInt(getComputedStyle(handler).left, 10);
       const handlerLength = parseInt(getComputedStyle(handler).width, 10);
+      this.bar.style.height = '';
       this.calcBarPosForSingle(handlerPos, handlerLength);
       this.bar.style.width = `${this.barPos}px`;
     }
