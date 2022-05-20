@@ -76,9 +76,9 @@ class ScaleView extends EventObserver {
     this.scale.innerHTML = '';
     this.signArray = [];
     const stepPercentage = (step / (max - min)) * 100;
+    const fragment = document.createDocumentFragment();
     for (let i = 0; i < this.numberOfLines; i += 1) {
       const line = this.renderScaleLine();
-      this.scale.append(line);
       const position = i * stepPercentage > 100 ? 100 : i * stepPercentage;
       if (isVertical) {
         line.style.bottom = `${position}%`;
@@ -88,8 +88,10 @@ class ScaleView extends EventObserver {
       const value: number = this.calcSigns(i, step, min, max);
       const textElement = this.renderScaleSign(value);
       line.append(textElement);
+      fragment.append(line);
       this.signArray.push(textElement);
     }
+    this.scale.append(fragment);
   }
 
   // eslint-disable-next-line class-methods-use-this
