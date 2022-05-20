@@ -64,7 +64,7 @@ class TrackView extends EventObserver {
     this.handlerViewTo.setValueForNote(to);
     this.handlerViewTo.showValueNote(hasValueNote);
     this.scaleView.drawScale(options, this.handlerViewTo.getHandler());
-    if (isDouble) {
+    if (isDouble && typeof from === 'number') {
       this.updateViewForDouble(
         from,
         limits,
@@ -285,7 +285,7 @@ class TrackView extends EventObserver {
   }
 
   private updateViewForDouble(
-    from: number | null | undefined,
+    from: number,
     limits: { max: number; min: number },
     hasValueNote: boolean,
   ): void {

@@ -10,7 +10,7 @@ class ValueNoteView extends EventObserver {
     this.render(parent);
   }
 
-  public setValue(value: number | null | undefined): void {
+  public setValue(value: number): void {
     this.valueElement.textContent = String(value);
   }
 

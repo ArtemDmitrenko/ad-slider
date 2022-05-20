@@ -60,7 +60,7 @@ class HandlerView extends EventObserver {
     this.setValueNotePos(isVertical);
   }
 
-  public setValueForNote(value: number | null | undefined): void {
+  public setValueForNote(value: number): void {
     this.valueNoteView.setValue(value);
   }
 
