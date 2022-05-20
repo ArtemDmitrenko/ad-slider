@@ -3,7 +3,7 @@ import EventTypes from '../../EventObserver/eventTypes';
 import ValueNoteView from '../ValueNoteView/ValueNoteView';
 
 class HandlerView extends EventObserver {
-  public handler!: HTMLElement;
+  private handler!: HTMLElement;
 
   private parent!: HTMLElement;
 
@@ -20,6 +20,10 @@ class HandlerView extends EventObserver {
     return isVertical
       ? parseInt(getComputedStyle(this.handler).height, 10)
       : parseInt(getComputedStyle(this.handler).width, 10);
+  }
+
+  public getHandler(): HTMLElement {
+    return this.handler;
   }
 
   public getPos(isVertical: boolean): number {
@@ -115,10 +119,10 @@ class HandlerView extends EventObserver {
       handler: this.handler,
     };
     this.broadcast(EventTypes.HANDLER_MOUSEDOWN_EVENT, data);
-    this.bindMousemove();
+    this.bindMouseMove();
   };
 
-  private bindMousemove(): void {
+  private bindMouseMove(): void {
     document.addEventListener('mousemove', this.handleHandlerMouseMove);
     document.addEventListener('mouseup', this.handleHandlerMouseUp);
   }
