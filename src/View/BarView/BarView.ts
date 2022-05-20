@@ -3,8 +3,6 @@ import EventObserver from '../../EventObserver/EventObserver';
 class BarView extends EventObserver {
   private bar!: HTMLElement;
 
-  private barPos!: number;
-
   constructor(parent: HTMLElement) {
     super();
     this.render(parent);
@@ -13,18 +11,15 @@ class BarView extends EventObserver {
   public setLength(handler: HTMLElement, isVertical: boolean): void {
     this.bar.style.bottom = '';
     this.bar.style.left = '';
+    const handlerPos = isVertical ? parseInt(getComputedStyle(handler).bottom, 10) : parseInt(getComputedStyle(handler).left, 10);
+    const handlerLength = isVertical ? parseInt(getComputedStyle(handler).height, 10) : parseInt(getComputedStyle(handler).width, 10);
+    const barPosition = this.calcBarPosForSingle(handlerPos, handlerLength);
     if (isVertical) {
-      const handlerPos = parseInt(getComputedStyle(handler).bottom, 10);
-      const handlerLength = parseInt(getComputedStyle(handler).height, 10);
       this.bar.style.width = '';
-      this.calcBarPosForSingle(handlerPos, handlerLength);
-      this.bar.style.height = `${this.barPos}px`;
+      this.bar.style.height = `${barPosition}px`;
     } else {
-      const handlerPos = parseInt(getComputedStyle(handler).left, 10);
-      const handlerLength = parseInt(getComputedStyle(handler).width, 10);
       this.bar.style.height = '';
-      this.calcBarPosForSingle(handlerPos, handlerLength);
-      this.bar.style.width = `${this.barPos}px`;
+      this.bar.style.width = `${barPosition}px`;
     }
   }
 
@@ -42,18 +37,17 @@ class BarView extends EventObserver {
     const barToEdge: number = valueTo + handlerLength / 2;
     const barFromEdge: number = valueFrom + handlerLength / 2;
     const barLength: number = Math.abs(barToEdge - barFromEdge);
+    const barPosition = this.calcBarPosForDouble(valueFrom, valueTo, handlerLength);
     if (isVertical) {
       this.bar.style.width = '';
       this.bar.style.left = '';
       this.bar.style.height = `${barLength}px`;
-      this.calcBarPosForDouble(valueFrom, valueTo, handlerLength);
-      this.bar.style.bottom = `${this.barPos}px`;
+      this.bar.style.bottom = `${barPosition}px`;
     } else {
       this.bar.style.height = '';
       this.bar.style.bottom = '';
       this.bar.style.width = `${barLength}px`;
-      this.calcBarPosForDouble(valueFrom, valueTo, handlerLength);
-      this.bar.style.left = `${this.barPos}px`;
+      this.bar.style.left = `${barPosition}px`;
     }
   }
 
@@ -63,16 +57,18 @@ class BarView extends EventObserver {
     parent.append(this.bar);
   }
 
-  private calcBarPosForSingle(handlerPos: number, handlerLength: number): void {
-    this.barPos = handlerPos + handlerLength / 2;
+  // eslint-disable-next-line class-methods-use-this
+  private calcBarPosForSingle(handlerPos: number, handlerLength: number): number {
+    return handlerPos + handlerLength / 2;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   private calcBarPosForDouble(
     handlerPosFrom: number,
     handlerPosTo: number,
     handlerLength: number,
-  ): void {
-    this.barPos = handlerPosFrom < handlerPosTo
+  ): number {
+    return handlerPosFrom < handlerPosTo
       ? handlerPosFrom + handlerLength / 2
       : handlerPosTo + handlerLength / 2;
   }

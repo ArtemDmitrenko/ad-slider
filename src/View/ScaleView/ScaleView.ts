@@ -6,8 +6,6 @@ class ScaleView extends EventObserver {
 
   private scale!: HTMLElement;
 
-  private numberOfLines!: number;
-
   private signArray: Array<HTMLElement> = [];
 
   constructor(parent: HTMLElement) {
@@ -21,10 +19,8 @@ class ScaleView extends EventObserver {
       limits: { min, max },
       isVertical,
     } = options;
-    const odd: number = max - min;
-    this.calcNumberOfLines(step, odd);
     this.setScalePos(handler, isVertical);
-    this.createListOfScaleLines(options);
+    this.createListOfScaleLines(step, min, max, isVertical);
     this.capacityCheckForCommonSigns(isVertical);
     this.capacityCheckForPreLastSign(isVertical);
   }
@@ -43,8 +39,9 @@ class ScaleView extends EventObserver {
     return line;
   }
 
-  private calcNumberOfLines(step: number, odd: number): void {
-    this.numberOfLines = odd % step === 0 ? odd / step + 1 : Math.floor(odd / step + 2);
+  // eslint-disable-next-line class-methods-use-this
+  private calcNumberOfLines(step: number, odd: number): number {
+    return odd % step === 0 ? odd / step + 1 : Math.floor(odd / step + 2);
   }
 
   private setScalePos(handler: HTMLElement, isVertical: boolean): void {
@@ -67,17 +64,14 @@ class ScaleView extends EventObserver {
     }
   }
 
-  private createListOfScaleLines(options: IConfig): void {
-    const {
-      step,
-      limits: { min, max },
-      isVertical,
-    } = options;
+  private createListOfScaleLines(step: number, min: number, max: number, isVertical: boolean): void {
     this.scale.innerHTML = '';
     this.signArray = [];
     const stepPercentage = (step / (max - min)) * 100;
+    const odd: number = max - min;
+    const numberOfLines = this.calcNumberOfLines(step, odd);
     const fragment = document.createDocumentFragment();
-    for (let i = 0; i < this.numberOfLines; i += 1) {
+    for (let i = 0; i < numberOfLines; i += 1) {
       const line = this.renderScaleLine();
       const position = i * stepPercentage > 100 ? 100 : i * stepPercentage;
       if (isVertical) {
@@ -85,7 +79,7 @@ class ScaleView extends EventObserver {
       } else {
         line.style.left = `${position}%`;
       }
-      const value: number = this.calcSigns(i, step, min, max);
+      const value: number = this.calcSigns(i, step, min, max, numberOfLines);
       const textElement = this.renderScaleSign(value);
       line.append(textElement);
       fragment.append(line);
@@ -175,11 +169,18 @@ class ScaleView extends EventObserver {
     return lastSignPos - preLastSignPos;
   }
 
-  private calcSigns(index: number, step: number, min: number, max: number): number {
+  // eslint-disable-next-line class-methods-use-this
+  private calcSigns(
+    index: number,
+    step: number,
+    min: number,
+    max: number,
+    numberOfLines: number,
+  ): number {
     if (index === 0) {
       return Math.round(min);
     }
-    if (index === this.numberOfLines - 1) {
+    if (index === numberOfLines - 1) {
       return Math.round(max);
     }
     return Math.round(index * step + min);

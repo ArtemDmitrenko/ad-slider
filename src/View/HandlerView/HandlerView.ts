@@ -34,7 +34,7 @@ class HandlerView extends EventObserver {
 
   public calcPos(options: {
     edge: number;
-    value: number | null | undefined;
+    value: number;
     limits: { min: number; max: number };
   }): void {
     const {
@@ -42,11 +42,9 @@ class HandlerView extends EventObserver {
       value,
       limits: { min, max },
     } = options;
-    if (value !== null && value !== undefined) {
-      const oddValMin: number = value - min;
-      const oddMaxMin: number = max - min;
-      this.handlerPos = edge * (oddValMin / oddMaxMin);
-    }
+    const oddValMin: number = value - min;
+    const oddMaxMin: number = max - min;
+    this.handlerPos = edge * (oddValMin / oddMaxMin);
   }
 
   public setPos(isVertical: boolean): void {
