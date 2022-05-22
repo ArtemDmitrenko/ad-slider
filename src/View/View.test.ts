@@ -77,7 +77,7 @@ describe('view', () => {
 
   describe('Function calcPosition', () => {
     beforeEach(() => {
-      TrackView.mockClear();
+      (TrackView as jest.Mock<TrackView>).mockClear();
       container = document.createElement('div');
       document.body.innerHTML = '';
       document.body.appendChild(container);
@@ -91,7 +91,7 @@ describe('view', () => {
         isFromValueChanging: false,
       };
       view.calcPos(props);
-      const mockTrackViewInstance = TrackView.mock.instances[0];
+      const mockTrackViewInstance = (TrackView as jest.Mock<TrackView>).mock.instances[0];
       const mockCalcHandlerPos = mockTrackViewInstance.calcHandlerPos;
       expect(mockCalcHandlerPos).toHaveBeenCalledWith(props);
     });
@@ -102,7 +102,7 @@ describe('view', () => {
         isFromValueChanging: false,
       };
       view.setPos(props);
-      const mockTrackViewInstance = TrackView.mock.instances[0];
+      const mockTrackViewInstance = (TrackView as jest.Mock<TrackView>).mock.instances[0];
       const mockSetHandlerPos = mockTrackViewInstance.setHandlerPos;
       expect(mockSetHandlerPos).toHaveBeenCalledWith(props);
     });

@@ -9,22 +9,22 @@ describe('handlerViewTo', () => {
   let handlerViewTo: HandlerView;
 
   beforeEach(() => {
-    ValueNoteView.mockClear();
+    (ValueNoteView as jest.Mock<ValueNoteView>).mockClear();
     parent = document.createElement('div');
     handlerViewTo = new HandlerView(parent);
   });
 
   test('Function render: should create element', () => {
-    expect(handlerViewTo.handler).not.toBeNull();
-    expect(handlerViewTo.handler.tagName).toBe('DIV');
+    expect(handlerViewTo.getHandler()).not.toBeNull();
+    expect(handlerViewTo.getHandler().tagName).toBe('DIV');
   });
 
   test('Function render: should add css-class', () => {
-    expect(handlerViewTo.handler.classList.contains('adslider__handler')).toBe(true);
+    expect(handlerViewTo.getHandler().classList.contains('adslider__handler')).toBe(true);
   });
 
   test('Function render: should append track to parent-element', () => {
-    expect(handlerViewTo.handler.parentElement).toBe(parent);
+    expect(handlerViewTo.getHandler().parentElement).toBe(parent);
   });
 
   test('Function render: should create instance of valueNoteView', () => {
@@ -32,12 +32,12 @@ describe('handlerViewTo', () => {
   });
 
   test('Function getLength: should get length of handler for vertical view', () => {
-    handlerViewTo.handler.style.height = '20px';
+    handlerViewTo.getHandler().style.height = '20px';
     expect(handlerViewTo.getLength(true)).toBe(20);
   });
 
   test('Function getLength: should get length of handler', () => {
-    handlerViewTo.handler.style.width = '10px';
+    handlerViewTo.getHandler().style.width = '10px';
     expect(handlerViewTo.getLength(false)).toBe(10);
   });
 
@@ -45,31 +45,31 @@ describe('handlerViewTo', () => {
     const options = { edge: 370, value: 10, limits: { min: 0, max: 100 } };
     handlerViewTo.calcPos(options);
     handlerViewTo.setPos(false);
-    expect(window.getComputedStyle(handlerViewTo.handler).left).toBe('37px');
-    expect(window.getComputedStyle(handlerViewTo.handler).bottom).toBe('');
+    expect(window.getComputedStyle(handlerViewTo.getHandler()).left).toBe('37px');
+    expect(window.getComputedStyle(handlerViewTo.getHandler()).bottom).toBe('');
   });
 
   test('Function setPos: should calc and set pos of handler', () => {
     const options = { edge: 370, value: 10, limits: { min: 0, max: 100 } };
     handlerViewTo.calcPos(options);
     handlerViewTo.setPos(true);
-    expect(window.getComputedStyle(handlerViewTo.handler).left).toBe('');
-    expect(window.getComputedStyle(handlerViewTo.handler).bottom).toBe('37px');
+    expect(window.getComputedStyle(handlerViewTo.getHandler()).left).toBe('');
+    expect(window.getComputedStyle(handlerViewTo.getHandler()).bottom).toBe('37px');
   });
 
   test('Function getPos: should get position of handler for horizontal view', () => {
-    handlerViewTo.handler.style.left = '15px';
+    handlerViewTo.getHandler().style.left = '15px';
     expect(handlerViewTo.getPos(false)).toBe(15);
   });
 
   test('Function getPos: should get position of handler for vertical view', () => {
-    handlerViewTo.handler.style.bottom = '25px';
+    handlerViewTo.getHandler().style.bottom = '25px';
     expect(handlerViewTo.getPos(true)).toBe(25);
   });
 
   test('Function setValueForNote: should call method setValue of valueNoteView with parameter', () => {
     handlerViewTo.setValueForNote(10);
-    const mockValueNoteViewInstance = ValueNoteView.mock.instances[0];
+    const mockValueNoteViewInstance = (ValueNoteView as jest.Mock<ValueNoteView>).mock.instances[0];
     const mockSetValue = mockValueNoteViewInstance.setValue;
     expect(mockSetValue).toHaveBeenCalledWith(10);
     expect(mockSetValue).toHaveBeenCalledTimes(1);
@@ -77,7 +77,7 @@ describe('handlerViewTo', () => {
 
   test('Function showValueNote: should call method showValueNote of valueNoteView with parameter', () => {
     handlerViewTo.showValueNote(true);
-    const mockValueNoteViewInstance = ValueNoteView.mock.instances[0];
+    const mockValueNoteViewInstance = (ValueNoteView as jest.Mock<ValueNoteView>).mock.instances[0];
     const mockShowValueNote = mockValueNoteViewInstance.showValueNote;
     expect(mockShowValueNote).toHaveBeenCalledWith(true);
     expect(mockShowValueNote).toHaveBeenCalledTimes(1);
@@ -85,7 +85,7 @@ describe('handlerViewTo', () => {
 
   test('Function getValueNotePos: should call method getPos of valueNoteView with parameter', () => {
     handlerViewTo.getValueNotePos(true);
-    const mockValueNoteViewInstance = ValueNoteView.mock.instances[0];
+    const mockValueNoteViewInstance = (ValueNoteView as jest.Mock<ValueNoteView>).mock.instances[0];
     const mockGetPos = mockValueNoteViewInstance.getPos;
     expect(mockGetPos).toHaveBeenCalledWith(true);
     expect(mockGetPos).toHaveBeenCalledTimes(1);
@@ -93,7 +93,7 @@ describe('handlerViewTo', () => {
 
   test('Function getValueNoteSize: should call method getSize of valueNoteView with parameter', () => {
     handlerViewTo.getValueNoteSize(true);
-    const mockValueNoteViewInstance = ValueNoteView.mock.instances[0];
+    const mockValueNoteViewInstance = (ValueNoteView as jest.Mock<ValueNoteView>).mock.instances[0];
     const mockGetSize = mockValueNoteViewInstance.getSize;
     expect(mockGetSize).toHaveBeenCalledWith(true);
     expect(mockGetSize).toHaveBeenCalledTimes(1);
@@ -101,14 +101,14 @@ describe('handlerViewTo', () => {
 
   test('Function getValueOfNote: should call method getSize of valueNoteView', () => {
     handlerViewTo.getValueOfNote();
-    const mockValueNoteViewInstance = ValueNoteView.mock.instances[0];
+    const mockValueNoteViewInstance = (ValueNoteView as jest.Mock<ValueNoteView>).mock.instances[0];
     const mockGetValue = mockValueNoteViewInstance.getValue;
     expect(mockGetValue).toHaveBeenCalledTimes(1);
   });
 
   test('Function addClassToValueNoteElement: should call method addClassToNoteElement of valueNoteView with parameter', () => {
     handlerViewTo.addClassToValueNoteElement('test-class');
-    const mockValueNoteViewInstance = ValueNoteView.mock.instances[0];
+    const mockValueNoteViewInstance = (ValueNoteView as jest.Mock<ValueNoteView>).mock.instances[0];
     const mockAddClassToNoteElement = mockValueNoteViewInstance.addClassToNoteElement;
     expect(mockAddClassToNoteElement).toHaveBeenCalledWith('test-class');
     expect(mockAddClassToNoteElement).toHaveBeenCalledTimes(1);
@@ -116,14 +116,14 @@ describe('handlerViewTo', () => {
 
   test('Function deleteInstance: should delete noteElement of ValueNoteView', () => {
     handlerViewTo.deleteInstance();
-    const mockValueNoteViewInstance = ValueNoteView.mock.instances[0];
+    const mockValueNoteViewInstance = (ValueNoteView as jest.Mock<ValueNoteView>).mock.instances[0];
     const mockRemoveNoteElement = mockValueNoteViewInstance.removeNoteElement;
     expect(mockRemoveNoteElement).toHaveBeenCalledTimes(1);
   });
 
   test('Mousedown on handler should call handleHandlerMouseDown and handleHandlerMouseMove callbacks with exact parameters', () => {
-    handlerViewTo.handler.style.width = '30px';
-    handlerViewTo.handler.getBoundingClientRect = jest.fn(() => ({
+    handlerViewTo.getHandler().style.width = '30px';
+    handlerViewTo.getHandler().getBoundingClientRect = jest.fn(() => ({
       bottom: 0,
       height: 0,
       left: 170,
@@ -143,7 +143,7 @@ describe('handlerViewTo', () => {
     const mouseMove = new MouseEvent('mousemove', { clientX: 144, clientY: 134 });
     const mouseUp = new MouseEvent('mouseup', { bubbles: true });
 
-    handlerViewTo.handler.dispatchEvent(mouseDown);
+    handlerViewTo.getHandler().dispatchEvent(mouseDown);
     document.dispatchEvent(mouseMove);
     document.dispatchEvent(mouseUp);
 
@@ -152,7 +152,7 @@ describe('handlerViewTo', () => {
         clientX: 185,
         clientY: 175,
       },
-      handler: handlerViewTo.handler,
+      handler: handlerViewTo.getHandler(),
     });
 
     expect(mockHandleHandlerMousemove).toHaveBeenCalledWith({
