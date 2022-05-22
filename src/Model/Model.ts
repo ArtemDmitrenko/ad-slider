@@ -240,7 +240,6 @@ class Model extends EventObserver {
     );
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private calcRoundedValue(
     value: number,
     step: number,

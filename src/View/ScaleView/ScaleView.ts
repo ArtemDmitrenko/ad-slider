@@ -32,14 +32,12 @@ class ScaleView extends EventObserver {
     this.parent.append(this.scale);
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private renderScaleLine(): HTMLElement {
     const line: HTMLElement = document.createElement('div');
     line.classList.add('adslider__scale-line');
     return line;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private calcNumberOfLines(step: number, odd: number): number {
     return odd % step === 0 ? odd / step + 1 : Math.floor(odd / step + 2);
   }
@@ -93,7 +91,6 @@ class ScaleView extends EventObserver {
     this.scale.append(fragment);
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private renderScaleSign(value: number): HTMLElement {
     const text = document.createElement('div');
     text.classList.add('adslider__scale-text');
@@ -174,7 +171,6 @@ class ScaleView extends EventObserver {
     return lastSignPos - preLastSignPos;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private calcSigns(
     index: number,
     step: number,

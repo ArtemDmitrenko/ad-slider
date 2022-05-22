@@ -34,7 +34,6 @@ class ValueNoteView extends EventObserver {
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this
   public calcPos(options: {
     handlerBottomPos: string,
     handlerHeight: string,

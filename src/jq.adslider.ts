@@ -2,6 +2,7 @@ import './main.scss';
 import { IConfig } from './Model/Model';
 import Presenter from './Presenter/Presenter';
 
+// eslint-disable-next-line func-names
 (function ($) {
   type SliderMethods = {
     init(container: HTMLElement, options: IConfig): void,
@@ -34,6 +35,7 @@ import Presenter from './Presenter/Presenter';
   function adslider(this: typeof $, methodName: keyof SliderMethods, options: IConfig): void;
   function adslider(this: typeof $, methodName: keyof SliderMethods): IConfig;
 
+  // eslint-disable-next-line consistent-return
   function adslider(
     this: typeof $,
     arg1: keyof SliderMethods | IConfig,
@@ -52,5 +54,6 @@ import Presenter from './Presenter/Presenter';
     }
     $.error(`Method ${arg1} does not exist on jQuery.tooltip`);
   }
+  // eslint-disable-next-line no-param-reassign
   $.fn.adslider = adslider;
 }(jQuery));

@@ -66,12 +66,10 @@ class BarView extends EventObserver {
     parent.append(this.bar);
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private calcBarPosForSingle(handlerPos: number, handlerLength: number): number {
     return handlerPos + handlerLength / 2;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private calcBarPosForDouble(
     handlerPosFrom: number,
     handlerPosTo: number,
