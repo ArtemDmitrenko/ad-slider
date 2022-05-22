@@ -139,13 +139,13 @@ describe('handlerViewTo', () => {
     handlerViewTo.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, mockHandleHandlerMousedown);
     handlerViewTo.addObserver(EventTypes.HANDLER_MOUSEMOVE_EVENT, mockHandleHandlerMousemove);
 
-    const mousedown = new MouseEvent('mousedown', { clientX: 185, clientY: 175 });
-    const mousemove = new MouseEvent('mousemove', { clientX: 144, clientY: 134 });
-    const mouseup = new MouseEvent('mouseup', { bubbles: true });
+    const mouseDown = new MouseEvent('mousedown', { clientX: 185, clientY: 175 });
+    const mouseMove = new MouseEvent('mousemove', { clientX: 144, clientY: 134 });
+    const mouseUp = new MouseEvent('mouseup', { bubbles: true });
 
-    handlerViewTo.handler.dispatchEvent(mousedown);
-    document.dispatchEvent(mousemove);
-    document.dispatchEvent(mouseup);
+    handlerViewTo.handler.dispatchEvent(mouseDown);
+    document.dispatchEvent(mouseMove);
+    document.dispatchEvent(mouseUp);
 
     expect(mockHandleHandlerMousedown).toHaveBeenCalledWith({
       eventProps: {

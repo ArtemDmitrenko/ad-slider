@@ -22,9 +22,9 @@ class TrackView extends EventObserver {
 
   private areHandlersInOnePoint!: boolean;
 
-  private mousedownClientX!: number;
+  private mouseDownClientX!: number;
 
-  private mousedownClientY!: number;
+  private mouseDownClientY!: number;
 
   private leadHandler!: HandlerView;
 
@@ -190,8 +190,8 @@ class TrackView extends EventObserver {
 
   private setProperties(clientX: number, clientY: number): void {
     this.areHandlersInOnePoint = true;
-    this.mousedownClientY = clientY;
-    this.mousedownClientX = clientX;
+    this.mouseDownClientY = clientY;
+    this.mouseDownClientX = clientX;
   }
 
   private handleHandlerMouseMove = (data: {
@@ -240,11 +240,11 @@ class TrackView extends EventObserver {
 
   private findLeadHandler(clientX: number, clientY: number, handler: HandlerView): void {
     const isValueDecrease = this.isVertical
-      ? clientY > this.mousedownClientY
-      : clientX < this.mousedownClientX;
+      ? clientY > this.mouseDownClientY
+      : clientX < this.mouseDownClientX;
     const isValueIncrease = this.isVertical
-      ? clientY < this.mousedownClientY
-      : clientX > this.mousedownClientX;
+      ? clientY < this.mouseDownClientY
+      : clientX > this.mouseDownClientX;
     if (isValueIncrease) {
       this.leadHandler = this.handlerViewTo;
     } else if (isValueDecrease && this.handlerViewFrom) {

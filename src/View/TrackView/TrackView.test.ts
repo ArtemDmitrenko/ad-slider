@@ -24,8 +24,8 @@ describe('view', () => {
       const mockHandleTrackMouseDown = jest.fn();
       const trackElement = parent.firstElementChild as HTMLElement;
       trackElement.addEventListener('mousedown', mockHandleTrackMouseDown);
-      const mousedown = new MouseEvent('mousedown');
-      trackElement.dispatchEvent(mousedown);
+      const mouseDown = new MouseEvent('mousedown');
+      trackElement.dispatchEvent(mouseDown);
       expect(mockHandleTrackMouseDown).toHaveBeenCalledTimes(1);
     });
 
@@ -49,8 +49,8 @@ describe('view', () => {
       const mockHandleHandlerChangePosition = jest.fn();
       track.addObserver(EventTypes.CHANGE_POSITION, mockHandleHandlerChangePosition);
 
-      const mousedown = new MouseEvent('mousedown', { clientX: 150 });
-      trackElement.dispatchEvent(mousedown);
+      const mouseDown = new MouseEvent('mousedown', { clientX: 150 });
+      trackElement.dispatchEvent(mouseDown);
       expect(mockHandleHandlerChangePosition).toHaveBeenCalledWith({
         relPosition: 0.36486486486486486,
         isFromValueChanging: false,
