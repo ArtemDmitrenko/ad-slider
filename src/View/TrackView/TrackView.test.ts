@@ -1,357 +1,403 @@
 import TrackView from './TrackView';
 import { IConfig } from '../../Model/Model';
-import HandlerView from '../HandlerView/HandlerView';
-import ScaleView from '../ScaleView/ScaleView';
-import BarView from '../BarView/BarView';
-import ValueNoteView from '../ValueNoteView/ValueNoteView';
 import EventTypes from '../../EventObserver/eventTypes';
 
-jest.mock('../HandlerView/HandlerView');
-jest.mock('../ScaleView/ScaleView');
-jest.mock('../BarView/BarView');
-jest.mock('../ValueNoteView/ValueNoteView');
-
 describe('view', () => {
-  const parent: HTMLElement = document.createElement('div');
-  let track: TrackView;
-
   describe('Function render', () => {
-    track = new TrackView(parent);
-
-    test('Function render: creating track', () => {
-      expect(track).toBeTruthy();
-    });
-  });
-
-  describe('Function updateTrackView', () => {
-    describe('For single slider with horizontal view', () => {
-      let options: IConfig;
-
-      beforeEach(() => {
-        HandlerView.mockClear();
-        ScaleView.mockClear();
-        BarView.mockClear();
-
-        options = {
-          limits: { min: 0, max: 100 },
-          hasValueNote: true,
-          isVertical: false,
-          isDouble: false,
-          from: 20,
-          to: 50,
-          step: 1,
-        };
-        const returnOfGetHandler = document.createElement('div');
-        const mockGetHandler = jest.fn();
-        HandlerView.prototype.getHandler = mockGetHandler;
-        mockGetHandler.mockReturnValue(returnOfGetHandler);
-
-        track = new TrackView(parent);
-        track.updateTrackView(options);
-      });
-
-      test('should call method of HandlerView calcPos', () => {
-        const mockHandlerViewInstance = HandlerView.mock.instances[0];
-        const mockCalcPos = mockHandlerViewInstance.calcPos;
-        expect(mockCalcPos).toHaveBeenCalledTimes(1);
-      });
-
-      test('should call method of HandlerView setPos', () => {
-        const mockHandlerViewInstance = HandlerView.mock.instances[0];
-        const mockSetPos = mockHandlerViewInstance.setPos;
-        expect(mockSetPos).toHaveBeenCalledTimes(1);
-      });
-
-      test('should call method of HandlerView setValueForNote', () => {
-        const mockHandlerViewInstance = HandlerView.mock.instances[0];
-        const mockSetValueForNote = mockHandlerViewInstance.setValueForNote;
-        expect(mockSetValueForNote).toHaveBeenCalledTimes(1);
-      });
-
-      test('should call method of HandlerView showValueNote', () => {
-        const mockHandlerViewInstance = HandlerView.mock.instances[0];
-        const mockShowValueNote = mockHandlerViewInstance.showValueNote;
-        expect(mockShowValueNote).toHaveBeenCalledTimes(1);
-      });
-
-      test('should call method of ScaleView drawScale', () => {
-        const mockScaleViewInstance = ScaleView.mock.instances[0];
-        const mockDrawScale = mockScaleViewInstance.drawScale;
-        expect(mockDrawScale).toHaveBeenCalledTimes(1);
-      });
-
-      test('should call method of BarView setBar', () => {
-        const mockBarViewInstance = BarView.mock.instances[0];
-        const mockSetLength = mockBarViewInstance.setLength;
-        expect(mockSetLength).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    describe('For double slider with horizontal view', () => {
-      let options: IConfig;
-
-      beforeEach(() => {
-        HandlerView.mockClear();
-        ScaleView.mockClear();
-        BarView.mockClear();
-
-        options = {
-          limits: { min: 0, max: 100 },
-          hasValueNote: true,
-          isVertical: false,
-          isDouble: true,
-          from: 20,
-          to: 50,
-          step: 1,
-        };
-        const returnOfGetHandler = document.createElement('div');
-        const mockGetHandler = jest.fn();
-        HandlerView.prototype.getHandler = mockGetHandler;
-        mockGetHandler.mockReturnValue(returnOfGetHandler);
-
-        track = new TrackView(parent);
-        track.updateTrackView(options);
-      });
-
-      test('should call method of HandlerView calcPos', () => {
-        const mockHandlerViewInstance = HandlerView.mock.instances[0];
-        const mockCalcPos = mockHandlerViewInstance.calcPos;
-        expect(mockCalcPos).toHaveBeenCalledTimes(1);
-      });
-
-      test('should call method of HandlerView setPos', () => {
-        const mockHandlerViewInstance = HandlerView.mock.instances[0];
-        const mockSetPos = mockHandlerViewInstance.setPos;
-        expect(mockSetPos).toHaveBeenCalledTimes(1);
-      });
-
-      test('should call method of HandlerView setValueForNote', () => {
-        const mockHandlerViewInstance = HandlerView.mock.instances[0];
-        const mockSetValueForNote = mockHandlerViewInstance.setValueForNote;
-        expect(mockSetValueForNote).toHaveBeenCalledTimes(1);
-      });
-
-      test('should call method of HandlerView showValueNote', () => {
-        const mockHandlerViewInstance = HandlerView.mock.instances[0];
-        const mockShowValueNote = mockHandlerViewInstance.showValueNote;
-        expect(mockShowValueNote).toHaveBeenCalledTimes(1);
-      });
-
-      test('should call method of ScaleView drawScale', () => {
-        const mockScaleViewInstance = ScaleView.mock.instances[0];
-        const mockDrawScale = mockScaleViewInstance.drawScale;
-        expect(mockDrawScale).toHaveBeenCalledTimes(1);
-      });
-
-      test('should call method of BarView setLengthForDouble', () => {
-        const mockBarViewInstance = BarView.mock.instances[0];
-        const mockSetLengthForDouble = mockBarViewInstance.setLengthForDouble;
-        expect(mockSetLengthForDouble).toBeCalled();
-      });
-    });
-
-    describe('For double slider with common note of horizontal view', () => {
-      let options: IConfig;
-
-      beforeEach(() => {
-        HandlerView.mockClear();
-        ValueNoteView.mockClear();
-
-        options = {
-          limits: { min: 0, max: 100 },
-          hasValueNote: true,
-          isVertical: false,
-          isDouble: true,
-          from: 48,
-          to: 50,
-          step: 1,
-        };
-        const returnOfGetHandler = document.createElement('div');
-        const mockGetHandler = jest.fn();
-        HandlerView.prototype.getHandler = mockGetHandler;
-        mockGetHandler.mockReturnValue(returnOfGetHandler);
-      });
-
-      test('should call methods of TrackView removeClassToNoteElement', () => {
-        const myIsSmallDistanceBetweenNotes = jest.spyOn(TrackView.prototype as any, 'isSmallDistanceBetweenNotes');
-        myIsSmallDistanceBetweenNotes.mockReturnValue(true);
-        track = new TrackView(parent);
-        track.updateTrackView(options);
-
-
-        const mockValueNoteViewInstance = ValueNoteView.mock.instances[0];
-        const mockRemoveClassToNoteElement = mockValueNoteViewInstance.removeClassToNoteElement;
-        expect(mockRemoveClassToNoteElement).toBeCalled();
-      });
-
-      test('should call methods of TrackView addClassToNoteElement', () => {
-        const myIsSmallDistanceBetweenNotes = jest.spyOn(TrackView.prototype as any, 'isSmallDistanceBetweenNotes');
-        myIsSmallDistanceBetweenNotes.mockReturnValue(true);
-        track = new TrackView(parent);
-        track.updateTrackView(options);
-
-
-        const mockValueNoteViewInstance = ValueNoteView.mock.instances[0];
-        const mockAddClassToNoteElement = mockValueNoteViewInstance.addClassToNoteElement;
-        expect(mockAddClassToNoteElement).toBeCalled();
-      });
-
-      test('should call methods of TrackView addClassToNoteElement', () => {
-        const myIsSmallDistanceBetweenNotes = jest.spyOn(TrackView.prototype as any, 'isSmallDistanceBetweenNotes');
-        myIsSmallDistanceBetweenNotes.mockReturnValue(true);
-        track = new TrackView(parent);
-        track.updateTrackView(options);
-        myIsSmallDistanceBetweenNotes.mockReturnValue(false);
-        track.updateTrackView(options);
-        const mockHandlerViewInstance = HandlerView.mock.instances[0];
-        const mockShowValueNote = mockHandlerViewInstance.showValueNote;
-        expect(mockShowValueNote).toBeCalled();
-      });
-    });
-  });
-
-  describe('Function calcHandlerPos', () => {
-    let options: IConfig;
-    beforeEach(() => {
-      HandlerView.mockClear();
-      ScaleView.mockClear();
-      BarView.mockClear();
-
-      options = {
-        limits: { min: 0, max: 100 },
-        hasValueNote: true,
-        isVertical: false,
-        isDouble: false,
-        from: 20,
-        to: 50,
-        step: 1,
-      };
-      const returnOfGetHandler = document.createElement('div');
-      const mockGetHandler = jest.fn();
-      HandlerView.prototype.getHandler = mockGetHandler;
-      mockGetHandler.mockReturnValue(returnOfGetHandler);
-
-      track = new TrackView(parent);
-      track.updateTrackView(options);
-
-      const data = {
-        limits: { min: 0, max: 100 },
-        value: 50,
-        isFromValueChanging: false,
-      };
-      track.calcHandlerPos(data);
-    });
-
-    test('should call method of HandlerView calcPos', () => {
-      const mockHandlerViewInstance = HandlerView.mock.instances[0];
-      const mockCalcPos = mockHandlerViewInstance.calcPos;
-      expect(mockCalcPos).toBeCalled();
-    });
-
-    test('should call method of HandlerView setPos', () => {
-      const mockHandlerViewInstance = HandlerView.mock.instances[0];
-      const mockSetPos = mockHandlerViewInstance.setPos;
-      expect(mockSetPos).toBeCalled();
-    });
-  });
-
-  describe('Function setHandlerPos', () => {
-    let options: IConfig;
-    beforeEach(() => {
-      HandlerView.mockClear();
-      ScaleView.mockClear();
-      BarView.mockClear();
-
-      options = {
-        limits: { min: 0, max: 100 },
-        hasValueNote: true,
-        isVertical: false,
-        isDouble: false,
-        from: 20,
-        to: 50,
-        step: 1,
-      };
-
-      const returnOfGetHandler = document.createElement('div');
-      const mockGetHandler = jest.fn();
-      HandlerView.prototype.getHandler = mockGetHandler;
-      mockGetHandler.mockReturnValue(returnOfGetHandler);
-
-      track = new TrackView(parent);
-      track.updateTrackView(options);
-
-      const data = {
-        hasValueNote: true,
-        isFromValueChanging: true,
-      };
-      track.setHandlerPos(data);
-    });
-
-    test('should call method of HandlerView setPos', () => {
-      const mockHandlerViewInstance = HandlerView.mock.instances[0];
-      const mockSetPos = mockHandlerViewInstance.setPos;
-      expect(mockSetPos).toBeCalled();
+    test('creating track HTML element with class "adslider__track"', () => {
+      const parent: HTMLElement = document.createElement('div');
+      new TrackView(parent);
+      if (parent.firstElementChild) {
+        expect(parent.firstElementChild.classList.contains('adslider__track')).toBe(true);
+      }
     });
   });
 
   describe('Function addListeners', () => {
-    describe('For single slider', () => {
-      let options: IConfig;
-      let callback: () => void;
-      let mousedown: MouseEvent;
-      let mousemove: MouseEvent;
-      let mouseup: MouseEvent;
-      let trackElement: HTMLElement;
-      beforeEach(() => {
-        HandlerView.mockClear();
-        ScaleView.mockClear();
-        BarView.mockClear();
-  
-        options = {
-          limits: { min: 0, max: 100 },
-          hasValueNote: true,
-          isVertical: false,
-          isDouble: true,
-          from: 20,
-          to: 50,
-          step: 1,
-        };
-        const returnOfGetHandler = document.createElement('div');
-        // returnOfGetHandler.style.left = '50px';
-        // returnOfGetHandler.style.top = '50px';
+    test('should call handleTrackMouseDown after click on track', () => {
+      const parent: HTMLElement = document.createElement('div');
+      const track = new TrackView(parent);
 
-        const mockGetHandler = jest.fn();
-        HandlerView.prototype.getHandler = mockGetHandler;
-        mockGetHandler.mockReturnValue(returnOfGetHandler);
-        
-        track = new TrackView(parent);
-        // track.updateTrackView(options);
-        trackElement = parent.querySelector('.adslider__track') as HTMLElement;
-        trackElement.style.width = '400px';
-        trackElement.getBoundingClientRect = jest.fn(() => ({
-          bottom: 0,
-          height: 0,
-          left: 74,
-          right: 0,
-          top: 0,
-          width: 400,
-          x: 0,
-          y: 0,
-          toJSON: jest.fn,
-        }));
-        callback = jest.fn();
-        track.addObserver(EventTypes.CHANGE_POSITION, callback);
+      const mockHandleHandlerChangePosition = jest.fn();
+      track.addObserver(EventTypes.CHANGE_POSITION, mockHandleHandlerChangePosition);
 
-        mousedown = new MouseEvent('mousedown', { clientX: 184, clientY: 50 });
-        // mousemove = new MouseEvent('mousemove', { clientX: 184 });
-        // mouseup = new MouseEvent('mouseup', { bubbles: true });
+      const mockHandleTrackMouseDown = jest.fn();
+      const trackElement = parent.firstElementChild as HTMLElement;
+      trackElement.addEventListener('mousedown', mockHandleTrackMouseDown);
+      const mousedown = new MouseEvent('mousedown');
+      trackElement.dispatchEvent(mousedown);
+      expect(mockHandleTrackMouseDown).toHaveBeenCalledTimes(1);
+    });
 
-        trackElement.dispatchEvent(mousedown);
+    test('should broadcast event CHANGE_POSITION with exact parameters when click on track', () => {
+      const parent: HTMLElement = document.createElement('div');
+      const track = new TrackView(parent);
+      const handlerTo = parent.querySelector('.adslider__handler') as HTMLElement;
+      handlerTo.style.width = '30px';
+      const trackElement = parent.firstElementChild as HTMLElement;
+      trackElement.style.width = '400px';
+      const options: IConfig = {
+        limits: { min: 0, max: 100 },
+        hasValueNote: true,
+        isVertical: false,
+        isDouble: false,
+        from: 20,
+        to: 50,
+        step: 1,
+      };
+      track.updateTrackView(options);
+      const mockHandleHandlerChangePosition = jest.fn();
+      track.addObserver(EventTypes.CHANGE_POSITION, mockHandleHandlerChangePosition);
+
+      const mousedown = new MouseEvent('mousedown', { clientX: 150 });
+      trackElement.dispatchEvent(mousedown);
+      expect(mockHandleHandlerChangePosition).toHaveBeenCalledWith({
+        relPosition: 0.36486486486486486,
+        isFromValueChanging: false,
       });
+    });
 
-      // test('Should call function mouseMove when event mousemove happens on handler', () => {
-      //   expect(callback).toBeCalled();
-      // });
+    test('horizontal view single slider: should broadcast event CHANGE_POSITION with exact parameters when drag&drop handler', () => {
+      const parent: HTMLElement = document.createElement('div');
+      const track = new TrackView(parent);
+      const options: IConfig = {
+        limits: { min: 0, max: 100 },
+        hasValueNote: true,
+        isVertical: false,
+        isDouble: false,
+        from: 20,
+        to: 50,
+        step: 1,
+      };
+      track.updateTrackView(options);
+
+      const mockHandleHandlerChangePosition = jest.fn();
+      track.addObserver(EventTypes.CHANGE_POSITION, mockHandleHandlerChangePosition);
+      const handlerTo = parent.querySelector('.adslider__handler') as HTMLElement;
+      handlerTo.style.width = '30px';
+      const trackElement = parent.firstElementChild as HTMLElement;
+      trackElement.style.width = '400px';
+      const mouseDown = new MouseEvent('mousedown');
+      const mouseMove = new MouseEvent('mousemove', { clientX: 100 });
+      handlerTo.dispatchEvent(mouseDown);
+      document.dispatchEvent(mouseMove);
+      expect(mockHandleHandlerChangePosition).toHaveBeenCalledWith({
+        relPosition: 0.2702702702702703,
+        isFromValueChanging: false,
+      });
+    });
+
+    test('vertical view single slider: should broadcast event CHANGE_POSITION with exact parameters when drag&drop handler', () => {
+      const parent: HTMLElement = document.createElement('div');
+      const track = new TrackView(parent);
+      const options: IConfig = {
+        limits: { min: 0, max: 100 },
+        hasValueNote: true,
+        isVertical: true,
+        isDouble: false,
+        from: 20,
+        to: 50,
+        step: 1,
+      };
+      track.updateTrackView(options);
+
+      const mockHandleHandlerChangePosition = jest.fn();
+      track.addObserver(EventTypes.CHANGE_POSITION, mockHandleHandlerChangePosition);
+      const handlerTo = parent.querySelector('.adslider__handler') as HTMLElement;
+      handlerTo.style.height = '30px';
+      const trackElement = parent.firstElementChild as HTMLElement;
+      trackElement.style.height = '400px';
+      const mouseDown = new MouseEvent('mousedown');
+      const mouseMove = new MouseEvent('mousemove', { clientY: 200 });
+      handlerTo.dispatchEvent(mouseDown);
+      document.dispatchEvent(mouseMove);
+      expect(mockHandleHandlerChangePosition).toHaveBeenCalledWith({
+        relPosition: 0, isFromValueChanging: false,
+      });
+    });
+  });
+
+  describe('Function updateTrackView for single slider', () => {
+    let handlerTo: HTMLElement;
+    let parent: HTMLElement;
+    let track: TrackView;
+
+    beforeEach(() => {
+      parent = document.createElement('div');
+      track = new TrackView(parent);
+      const options: IConfig = {
+        limits: { min: 0, max: 100 },
+        hasValueNote: true,
+        isVertical: false,
+        isDouble: false,
+        from: 20,
+        to: 50,
+        step: 1,
+      };
+      handlerTo = parent.querySelector('.adslider__handler') as HTMLElement;
+      handlerTo.style.width = '30px';
+      handlerTo.style.left = '100px';
+      const trackElement = parent.firstElementChild as HTMLElement;
+      trackElement.style.width = '400px';
+      track.updateTrackView(options);
+    });
+
+    test('should set position of handler', () => {
+      expect(handlerTo.style.left).toBe('185px');
+    });
+
+    test('should set width of bar', () => {
+      const bar = parent.querySelector('.adslider__bar') as HTMLElement;
+      expect(bar.style.width).toBe('200px');
+    });
+
+    test('should set value of note', () => {
+      const value = parent.querySelector('.adslider__value') as HTMLElement;
+      expect(value.textContent).toBe('50');
+    });
+
+    test('should render handlerFrom when update slider to double', () => {
+      const options: IConfig = {
+        limits: { min: 0, max: 100 },
+        hasValueNote: true,
+        isVertical: false,
+        isDouble: true,
+        from: 20,
+        to: 50,
+        step: 1,
+      };
+      track.updateTrackView(options);
+      handlerTo = parent.querySelectorAll('.adslider__handler')[0] as HTMLElement;
+      const handlerFrom = parent.querySelectorAll('.adslider__handler')[1] as HTMLElement;
+      expect(handlerTo).toBeTruthy();
+      expect(handlerFrom).toBeTruthy();
+    });
+  });
+
+  describe('Function updateTrackView for double slider in case of small distance between notes', () => {
+    let handlerTo: HTMLElement;
+    let parent: HTMLElement;
+    let valueNoteCommon: HTMLElement;
+    let track: TrackView;
+    beforeEach(() => {
+      parent = document.createElement('div');
+      track = new TrackView(parent);
+      const options: IConfig = {
+        limits: { min: 0, max: 100 },
+        hasValueNote: true,
+        isVertical: false,
+        isDouble: true,
+        from: 49,
+        to: 50,
+        step: 1,
+      };
+      handlerTo = parent.querySelectorAll('.adslider__handler')[0] as HTMLElement;
+      const handlerFrom = parent.querySelectorAll('.adslider__handler')[1] as HTMLElement;
+      handlerTo.style.width = '30px';
+      handlerFrom.style.width = '30px';
+      handlerTo.style.left = '50px';
+      handlerFrom.style.left = '50px';
+      const trackElement = parent.firstElementChild as HTMLElement;
+      trackElement.style.width = '400px';
+      const valueNoteTo = parent.querySelectorAll('.adslider__note')[0] as HTMLElement;
+      const valueNoteFrom = parent.querySelectorAll('.adslider__note')[1] as HTMLElement;
+      valueNoteTo.style.width = '32px';
+      valueNoteFrom.style.width = '32px';
+
+      track.updateTrackView(options);
+      valueNoteCommon = parent.querySelector('.adslider__note_common') as HTMLElement;
+    });
+
+    test('should set value of common note', () => {
+      expect(valueNoteCommon.textContent).toBe('49 - 50');
+    });
+
+    test('should delete common note when changing values', () => {
+      const options: IConfig = {
+        limits: { min: 0, max: 100 },
+        hasValueNote: true,
+        isVertical: false,
+        isDouble: true,
+        from: 20,
+        to: 50,
+        step: 1,
+      };
+      track.updateTrackView(options);
+      valueNoteCommon = parent.querySelector('.adslider__note_common') as HTMLElement;
+      expect(valueNoteCommon).toBeNull();
+    });
+
+    test('should delete common note when changes from double slider to single', () => {
+      const options: IConfig = {
+        limits: { min: 0, max: 100 },
+        hasValueNote: true,
+        isVertical: false,
+        isDouble: false,
+        from: 20,
+        to: 50,
+        step: 1,
+      };
+      track.updateTrackView(options);
+      valueNoteCommon = parent.querySelector('.adslider__note_common') as HTMLElement;
+      const handlerFrom = parent.querySelectorAll('.adslider__handler')[1] as HTMLElement;
+
+      expect(valueNoteCommon).toBeNull();
+      expect(handlerFrom).toBeUndefined();
+    });
+
+    test('should hide common note when update slider', () => {
+      const options: IConfig = {
+        limits: { min: 0, max: 100 },
+        hasValueNote: false,
+        isVertical: false,
+        isDouble: true,
+        from: 49,
+        to: 50,
+        step: 1,
+      };
+      track.updateTrackView(options);
+      valueNoteCommon = parent.querySelector('.adslider__note_common') as HTMLElement;
+      expect(valueNoteCommon.classList.contains('adslider__note_hide')).toBe(true);
+    });
+  });
+
+  describe('Function calcHandlerPos', () => {
+    let handlerTo: HTMLElement;
+    let handlerFrom: HTMLElement;
+    let parent: HTMLElement;
+    let track: TrackView;
+    beforeEach(() => {
+      parent = document.createElement('div');
+      track = new TrackView(parent);
+      const options: IConfig = {
+        limits: { min: 0, max: 100 },
+        hasValueNote: true,
+        isVertical: false,
+        isDouble: true,
+        from: 20,
+        to: 50,
+        step: 1,
+      };
+      handlerTo = parent.querySelectorAll('.adslider__handler')[0] as HTMLElement;
+      handlerFrom = parent.querySelectorAll('.adslider__handler')[1] as HTMLElement;
+      handlerTo.style.width = '30px';
+      handlerFrom.style.width = '30px';
+      handlerTo.style.left = '50px';
+      handlerFrom.style.left = '50px';
+      const trackElement = parent.firstElementChild as HTMLElement;
+      trackElement.style.width = '400px';
+      const valueNoteTo = parent.querySelectorAll('.adslider__note')[0] as HTMLElement;
+      const valueNoteFrom = parent.querySelectorAll('.adslider__note')[1] as HTMLElement;
+      valueNoteTo.style.width = '32px';
+      valueNoteFrom.style.width = '32px';
+
+      track.updateTrackView(options);
+    });
+
+    test('should set position of handlerFrom', () => {
+      track.calcHandlerPos({
+        value: 10,
+        limits: { min: 0, max: 100 },
+        isFromValueChanging: true,
+      });
+      expect(handlerFrom.style.left).toBe('74px');
+    });
+
+    test('should set value of handlerFrom', () => {
+      track.calcHandlerPos({
+        value: 10,
+        limits: { min: 0, max: 100 },
+        isFromValueChanging: true,
+      });
+      const valueFrom = parent.querySelectorAll('.adslider__value')[1] as HTMLElement;
+      expect(valueFrom.textContent).toBe('10');
+    });
+
+    test('should set position of handlerTo', () => {
+      track.calcHandlerPos({
+        value: 90,
+        limits: { min: 0, max: 100 },
+        isFromValueChanging: false,
+      });
+      expect(handlerTo.style.left).toBe('185px');
+    });
+
+    test('should set value of handlerTo', () => {
+      track.calcHandlerPos({
+        value: 90,
+        limits: { min: 0, max: 100 },
+        isFromValueChanging: false,
+      });
+      const valueTo = parent.querySelectorAll('.adslider__value')[0] as HTMLElement;
+      expect(valueTo.textContent).toBe('90');
+    });
+  });
+
+  describe('Function setHandlerPos', () => {
+    let handlerTo: HTMLElement;
+    let handlerFrom: HTMLElement;
+    let parent: HTMLElement;
+    let track: TrackView;
+    beforeEach(() => {
+      parent = document.createElement('div');
+      track = new TrackView(parent);
+      const options: IConfig = {
+        limits: { min: 0, max: 100 },
+        hasValueNote: true,
+        isVertical: false,
+        isDouble: true,
+        from: 30,
+        to: 50,
+        step: 1,
+      };
+      handlerTo = parent.querySelectorAll('.adslider__handler')[0] as HTMLElement;
+      handlerFrom = parent.querySelectorAll('.adslider__handler')[1] as HTMLElement;
+      handlerTo.style.width = '30px';
+      handlerFrom.style.width = '30px';
+      handlerTo.style.left = '50px';
+      handlerFrom.style.left = '50px';
+      const trackElement = parent.firstElementChild as HTMLElement;
+      trackElement.style.width = '400px';
+      const valueNoteTo = parent.querySelectorAll('.adslider__note')[0] as HTMLElement;
+      const valueNoteFrom = parent.querySelectorAll('.adslider__note')[1] as HTMLElement;
+      valueNoteTo.style.width = '32px';
+      valueNoteFrom.style.width = '32px';
+
+      track.updateTrackView(options);
+    });
+
+    test('should set position of handlerFrom', () => {
+      track.setHandlerPos({
+        hasValueNote: true,
+        isFromValueChanging: true,
+      });
+      expect(handlerFrom.style.left).toBe('111px');
+    });
+
+    test('should set value of handlerFrom', () => {
+      track.setHandlerPos({
+        hasValueNote: true,
+        isFromValueChanging: true,
+      });
+      const valueFrom = parent.querySelectorAll('.adslider__value')[1] as HTMLElement;
+      expect(valueFrom.textContent).toBe('30');
+    });
+
+    test('should set position of handlerTo', () => {
+      track.setHandlerPos({
+        hasValueNote: true,
+        isFromValueChanging: false,
+      });
+      expect(handlerTo.style.left).toBe('185px');
+    });
+
+    test('should set value of handlerTo', () => {
+      track.setHandlerPos({
+        hasValueNote: true,
+        isFromValueChanging: false,
+      });
+      const valueTo = parent.querySelectorAll('.adslider__value')[0] as HTMLElement;
+      expect(valueTo.textContent).toBe('50');
     });
   });
 });

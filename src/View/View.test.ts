@@ -22,7 +22,6 @@ describe('view', () => {
     });
   });
 
-
   describe('Function updateView', () => {
     describe('For single slider with horizontal view', () => {
       let options: IConfig;

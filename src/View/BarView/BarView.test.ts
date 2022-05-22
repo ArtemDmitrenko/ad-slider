@@ -72,7 +72,12 @@ describe('barView', () => {
           const handler: HTMLElement = document.createElement('div');
           handler.style.left = '300px';
           handler.style.width = '30px';
-          bar.setLengthForDouble({ valueFrom: 302, valueTo: 453, handler, isVertical: false });
+          bar.setLengthForDouble({
+            valueFrom: 302,
+            valueTo: 453,
+            handler,
+            isVertical: false,
+          });
           if (parent.firstElementChild) {
             expect(window.getComputedStyle(parent.firstElementChild).width).toBe('151px');
             expect(window.getComputedStyle(parent.firstElementChild).left).toBe('317px');
@@ -96,7 +101,12 @@ describe('barView', () => {
           const handler: HTMLElement = document.createElement('div');
           handler.style.left = '300px';
           handler.style.width = '30px';
-          bar.setLengthForDouble({ valueFrom: 450, valueTo: 350, handler, isVertical: true });
+          bar.setLengthForDouble({
+            valueFrom: 450,
+            valueTo: 350,
+            handler,
+            isVertical: true,
+          });
           if (parent.firstElementChild) {
             expect(window.getComputedStyle(parent.firstElementChild).height).toBe('100px');
             expect(window.getComputedStyle(parent.firstElementChild).bottom).toBe('365px');

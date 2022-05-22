@@ -128,12 +128,10 @@ class TrackView extends EventObserver {
   }
 
   private addListeners(): void {
-    console.log(this.handlerViewFrom?.getHandler())
     this.track.addEventListener('mousedown', this.handleTrackMouseDown);
   }
 
   private handleTrackMouseDown = (event: MouseEvent): void => {
-    console.log(this.handlerViewTo.getHandler())
     const { clientX, clientY, type } = event;
     if (this.isDouble()) {
       this.changeHandlerPosForDouble(clientX, clientY, type);
@@ -151,8 +149,14 @@ class TrackView extends EventObserver {
     this.handlerViewTo.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleHandlerMouseDown);
     this.handlerViewTo.addObserver(EventTypes.HANDLER_MOUSEMOVE_EVENT, this.handleHandlerMouseMove);
     if (this.handlerViewFrom) {
-      this.handlerViewFrom.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleHandlerMouseDown);
-      this.handlerViewFrom.addObserver(EventTypes.HANDLER_MOUSEMOVE_EVENT, this.handleHandlerMouseMove);
+      this.handlerViewFrom.addObserver(
+        EventTypes.HANDLER_MOUSEDOWN_EVENT,
+        this.handleHandlerMouseDown,
+      );
+      this.handlerViewFrom.addObserver(
+        EventTypes.HANDLER_MOUSEMOVE_EVENT,
+        this.handleHandlerMouseMove,
+      );
     }
   }
 
@@ -174,10 +178,12 @@ class TrackView extends EventObserver {
 
   private areHandlersInOnePlace(): boolean {
     if (this.handlerViewFrom) {
+      const handlerViewToElement = this.handlerViewTo.getHandler();
+      const handlerViewFrom = this.handlerViewFrom.getHandler();
       if (this.isVertical) {
-        return this.handlerViewTo.getHandler().style.bottom === this.handlerViewFrom.getHandler().style.bottom;
+        return handlerViewToElement.style.bottom === handlerViewFrom.style.bottom;
       }
-      return this.handlerViewTo.getHandler().style.left === this.handlerViewFrom.getHandler().style.left;
+      return handlerViewToElement.style.left === handlerViewFrom.style.left;
     }
     return false;
   }
@@ -224,7 +230,11 @@ class TrackView extends EventObserver {
       relPosition, isFromValueChanging,
     };
     this.broadcast(EventTypes.CHANGE_POSITION, options);
-    const propsForBar = { handler: handler.getHandler(), isVertical: this.isVertical, isDouble: this.isDouble() };
+    const propsForBar = {
+      handler: handler.getHandler(),
+      isVertical: this.isVertical,
+      isDouble: this.isDouble(),
+    };
     this.setBar(propsForBar);
   }
 
@@ -313,8 +323,14 @@ class TrackView extends EventObserver {
 
   private renderHandlerFrom(): void {
     this.handlerViewFrom = new HandlerView(this.track);
-    this.handlerViewFrom.addObserver(EventTypes.HANDLER_MOUSEDOWN_EVENT, this.handleHandlerMouseDown);
-    this.handlerViewFrom.addObserver(EventTypes.HANDLER_MOUSEMOVE_EVENT, this.handleHandlerMouseMove);
+    this.handlerViewFrom.addObserver(
+      EventTypes.HANDLER_MOUSEDOWN_EVENT,
+      this.handleHandlerMouseDown,
+    );
+    this.handlerViewFrom.addObserver(
+      EventTypes.HANDLER_MOUSEMOVE_EVENT,
+      this.handleHandlerMouseMove,
+    );
   }
 
   private deleteHandlerFrom(): void {
@@ -346,7 +362,9 @@ class TrackView extends EventObserver {
 
   private isSmallDistanceBetweenNotes(isVertical: boolean): boolean {
     if (this.handlerViewFrom) {
-      const distAmongNotes: number = this.handlerViewTo.getValueNotePos(isVertical) - this.handlerViewFrom.getValueNotePos(isVertical);
+      const valueNoteToPos = this.handlerViewTo.getValueNotePos(isVertical);
+      const valueNoteFromPos = this.handlerViewFrom.getValueNotePos(isVertical);
+      const distAmongNotes: number = valueNoteToPos - valueNoteFromPos;
       return distAmongNotes < this.handlerViewTo.getValueNoteSize(isVertical);
     }
     return false;
@@ -382,7 +400,8 @@ class TrackView extends EventObserver {
       const valueFrom = this.handlerViewFrom.getValueOfNote();
       this.valueNoteViewCommon.setValueForTwo(valueFrom, valueTo);
       const edgeOfHandlerFrom = this.handlerViewFrom.getPos(isVertical);
-      const edgeOfHandlerTo = this.handlerViewTo.getPos(isVertical) + this.handlerViewTo.getLength(isVertical);
+      const handlerViewToLength = this.handlerViewTo.getLength(isVertical);
+      const edgeOfHandlerTo = this.handlerViewTo.getPos(isVertical) + handlerViewToLength;
       const distAmongEdgesOfHandlers = edgeOfHandlerTo - edgeOfHandlerFrom;
       this.valueNoteViewCommon.setPos(edgeOfHandlerFrom + distAmongEdgesOfHandlers / 2, isVertical);
     }
@@ -399,7 +418,6 @@ class TrackView extends EventObserver {
 
   private changeHandlerPosForDouble(clientX: number, clientY: number, type: string): void {
     if (this.handlerViewFrom) {
-      console.log(this.handlerViewFrom.getHandler())
       const handlerFromPos = this.isVertical
         ? this.handlerViewFrom.getHandler().getBoundingClientRect().top
         : this.handlerViewFrom.getHandler().getBoundingClientRect().left;
@@ -407,7 +425,8 @@ class TrackView extends EventObserver {
         ? this.handlerViewTo.getHandler().getBoundingClientRect().top
         : this.handlerViewTo.getHandler().getBoundingClientRect().left;
       const oddToFrom: number = handlerToPos - handlerFromPos;
-      const middlePos = oddToFrom / 2 + handlerFromPos + this.handlerViewTo.getLength(this.isVertical) / 2;
+      const handlerViewToLength = this.handlerViewTo.getLength(this.isVertical);
+      const middlePos = oddToFrom / 2 + handlerFromPos + handlerViewToLength / 2;
       this.checkIfHandlersInOnePlace(clientX, clientY);
       const isHandlerFromChanging = clientX <= middlePos || clientY >= middlePos;
       const data = {

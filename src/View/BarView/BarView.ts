@@ -11,8 +11,12 @@ class BarView extends EventObserver {
   public setLength(handler: HTMLElement, isVertical: boolean): void {
     this.bar.style.bottom = '';
     this.bar.style.left = '';
-    const handlerPos = isVertical ? parseInt(getComputedStyle(handler).bottom, 10) : parseInt(getComputedStyle(handler).left, 10);
-    const handlerLength = isVertical ? parseInt(getComputedStyle(handler).height, 10) : parseInt(getComputedStyle(handler).width, 10);
+    const handlerPos = isVertical
+      ? parseInt(getComputedStyle(handler).bottom, 10)
+      : parseInt(getComputedStyle(handler).left, 10);
+    const handlerLength = isVertical
+      ? parseInt(getComputedStyle(handler).height, 10)
+      : parseInt(getComputedStyle(handler).width, 10);
     const barPosition = this.calcBarPosForSingle(handlerPos, handlerLength);
     if (isVertical) {
       this.bar.style.width = '';
@@ -29,7 +33,12 @@ class BarView extends EventObserver {
     handler: HTMLElement;
     isVertical: boolean
   }): void {
-    const { valueFrom, valueTo, handler, isVertical } = options;
+    const {
+      valueFrom,
+      valueTo,
+      handler,
+      isVertical,
+    } = options;
     const handlerLength: number = parseInt(
       getComputedStyle(handler).width,
       10,

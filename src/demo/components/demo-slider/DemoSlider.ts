@@ -169,7 +169,9 @@ class DemoSlider {
       isVertical: this.verticalInstance.isChecked(),
       isDouble: this.doubleInstance.isChecked(),
       from: this.fromInstance.getValue(),
-      to: this.doubleInstance.isChecked() ? this.toInstance.getValue() : this.currentValueInstance.getValue(),
+      to: this.doubleInstance.isChecked()
+        ? this.toInstance.getValue()
+        : this.currentValueInstance.getValue(),
       onChange: this.options.onChange,
     };
     $('.js-demo-slider__adslider', this.parent).adslider(

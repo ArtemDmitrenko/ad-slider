@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-shadow
 enum EventTypes {
   CHANGE_POSITION = 'CHANGE_POSITION',
   CALC_POSITION = 'CALC_POSITION',

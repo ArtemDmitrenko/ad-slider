@@ -32,8 +32,9 @@ describe('valueNoteView', () => {
   });
 
   test('Function render: should append value to note', () => {
-    if (parent.firstElementChild && parent.firstElementChild.firstElementChild) {
-      expect(parent.firstElementChild.firstElementChild.parentElement).toBe(valueNoteView.noteElement);
+    const noteElement = (parent.firstElementChild as HTMLElement).firstElementChild;
+    if (noteElement) {
+      expect(noteElement.parentElement).toBe(valueNoteView.noteElement);
     }
   });
 

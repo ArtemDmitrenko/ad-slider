@@ -64,7 +64,12 @@ class ScaleView extends EventObserver {
     }
   }
 
-  private createListOfScaleLines(step: number, min: number, max: number, isVertical: boolean): void {
+  private createListOfScaleLines(
+    step: number,
+    min: number,
+    max: number,
+    isVertical: boolean,
+  ): void {
     this.scale.innerHTML = '';
     this.signArray = [];
     const stepPercentage = (step / (max - min)) * 100;
