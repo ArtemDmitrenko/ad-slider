@@ -106,14 +106,6 @@ describe('handlerViewTo', () => {
     expect(mockGetValue).toHaveBeenCalledTimes(1);
   });
 
-  test('Function addClassToValueNoteElement: should call method addClassToNoteElement of valueNoteView with parameter', () => {
-    handlerViewTo.addClassToValueNoteElement('test-class');
-    const mockValueNoteViewInstance = (ValueNoteView as jest.Mock<ValueNoteView>).mock.instances[0];
-    const mockAddClassToNoteElement = mockValueNoteViewInstance.addClassToNoteElement;
-    expect(mockAddClassToNoteElement).toHaveBeenCalledWith('test-class');
-    expect(mockAddClassToNoteElement).toHaveBeenCalledTimes(1);
-  });
-
   test('Function deleteInstance: should delete noteElement of ValueNoteView', () => {
     handlerViewTo.deleteInstance();
     const mockValueNoteViewInstance = (ValueNoteView as jest.Mock<ValueNoteView>).mock.instances[0];

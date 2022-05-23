@@ -122,6 +122,13 @@
           left: -0.83rem;
           transform: rotate(90deg);
         }
+        &_show {
+          display: flex;
+          visibility: visible;
+        }
+        &_hide {
+          visibility: hidden;
+        }
       }
       & .adslider__handler {
         left: -0.6875rem;

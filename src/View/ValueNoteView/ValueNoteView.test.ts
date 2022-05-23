@@ -6,7 +6,7 @@ describe('valueNoteView', () => {
 
   beforeEach(() => {
     parent = document.createElement('div');
-    valueNoteView = new ValueNoteView(parent);
+    valueNoteView = new ValueNoteView(parent, false);
   });
 
   test('Function render: should create note element', () => {
@@ -104,11 +104,6 @@ describe('valueNoteView', () => {
       parent.firstElementChild.firstElementChild.textContent = '50';
     }
     expect(valueNoteView.getValue()).toBe(50);
-  });
-
-  test('Function addClassToNoteElement: should check if noteElement contains class', () => {
-    valueNoteView.addClassToNoteElement('test');
-    expect(valueNoteView.noteElement.classList.contains('test')).toBe(true);
   });
 
   test('Function calcPos: should return center of handler position for vertical view', () => {

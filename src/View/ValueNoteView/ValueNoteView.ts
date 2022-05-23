@@ -5,9 +5,9 @@ class ValueNoteView extends EventObserver {
 
   private valueElement!: HTMLElement;
 
-  constructor(parent: HTMLElement) {
+  constructor(parent: HTMLElement, isCommonValueNote: boolean) {
     super();
-    this.render(parent);
+    this.render(parent, isCommonValueNote);
   }
 
   public setValue(value: number): void {
@@ -72,22 +72,17 @@ class ValueNoteView extends EventObserver {
       : parseInt(getComputedStyle(this.noteElement).left, 10);
   }
 
-  public addClassToNoteElement(className: string): void {
-    this.noteElement.classList.add(className);
-  }
-
-  public removeClassToNoteElement(className: string): void {
-    this.noteElement.classList.remove(className);
-  }
-
   public removeNoteElement(): void {
     this.noteElement.remove();
   }
 
-  private render(parent: HTMLElement): void {
+  private render(parent: HTMLElement, isCommonValueNote: boolean): void {
     this.noteElement = document.createElement('div');
     this.valueElement = document.createElement('p');
     this.noteElement.classList.add('adslider__note');
+    if (isCommonValueNote) {
+      this.noteElement.classList.add('adslider__note_common');
+    }
     this.valueElement.classList.add('adslider__value');
     this.noteElement.append(this.valueElement);
     parent.append(this.noteElement);

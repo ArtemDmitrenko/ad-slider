@@ -88,10 +88,6 @@ class HandlerView extends EventObserver {
     return this.valueNoteView.getValue();
   }
 
-  public addClassToValueNoteElement(className: string): void {
-    this.valueNoteView.addClassToNoteElement(className);
-  }
-
   public deleteInstance(): void {
     this.handler.remove();
     this.valueNoteView.removeNoteElement();
@@ -101,7 +97,7 @@ class HandlerView extends EventObserver {
     this.handler = document.createElement('div');
     this.handler.classList.add('adslider__handler');
     parent.append(this.handler);
-    this.valueNoteView = new ValueNoteView(parent);
+    this.valueNoteView = new ValueNoteView(parent, false);
     this.handler.addEventListener('mousedown', this.handleHandlerMouseDown);
   }
 

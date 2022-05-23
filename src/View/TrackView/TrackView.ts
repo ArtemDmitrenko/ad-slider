@@ -378,19 +378,16 @@ class TrackView extends EventObserver {
     if (this.valueNoteViewCommon) {
       this.updateCommonNoteView(isVertical);
     } else {
-      this.valueNoteViewCommon = new ValueNoteView(this.track);
-      this.valueNoteViewCommon.addClassToNoteElement('adslider__note_common');
+      this.valueNoteViewCommon = new ValueNoteView(this.track, true);
       this.updateCommonNoteView(isVertical);
     }
   }
 
   private showCommonValueNote(hasValueNote: boolean): void {
     if (hasValueNote && this.valueNoteViewCommon) {
-      this.valueNoteViewCommon.removeClassToNoteElement('adslider__note_hide');
-      this.valueNoteViewCommon.addClassToNoteElement('adslider__note_show');
+      this.valueNoteViewCommon.showValueNote(true);
     } else if (this.valueNoteViewCommon) {
-      this.valueNoteViewCommon.removeClassToNoteElement('adslider__note_show');
-      this.valueNoteViewCommon.addClassToNoteElement('adslider__note_hide');
+      this.valueNoteViewCommon.showValueNote(false);
     }
   }
 
