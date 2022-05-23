@@ -24,8 +24,8 @@ class ValueNoteView extends EventObserver {
     this.valueElement.textContent = `${valFrom} - ${valTo}`;
   }
 
-  public showValueNote(data: boolean): void {
-    if (data) {
+  public showValueNote(hasValueNote: boolean): void {
+    if (hasValueNote) {
       this.noteElement.classList.remove('adslider__note_hide');
       this.noteElement.classList.add('adslider__note_show');
     } else {

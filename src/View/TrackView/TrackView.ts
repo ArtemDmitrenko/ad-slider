@@ -384,8 +384,8 @@ class TrackView extends EventObserver {
     }
   }
 
-  private showCommonValueNote(data: boolean): void {
-    if (data && this.valueNoteViewCommon) {
+  private showCommonValueNote(hasValueNote: boolean): void {
+    if (hasValueNote && this.valueNoteViewCommon) {
       this.valueNoteViewCommon.removeClassToNoteElement('adslider__note_hide');
       this.valueNoteViewCommon.addClassToNoteElement('adslider__note_show');
     } else if (this.valueNoteViewCommon) {

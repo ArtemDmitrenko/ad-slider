@@ -5,8 +5,6 @@ import ValueNoteView from '../ValueNoteView/ValueNoteView';
 class HandlerView extends EventObserver {
   private handler!: HTMLElement;
 
-  private parent!: HTMLElement;
-
   private handlerPos!: number;
 
   private valueNoteView!: ValueNoteView;
@@ -100,10 +98,9 @@ class HandlerView extends EventObserver {
   }
 
   private render(parent: HTMLElement): void {
-    this.parent = parent;
     this.handler = document.createElement('div');
     this.handler.classList.add('adslider__handler');
-    this.parent.append(this.handler);
+    parent.append(this.handler);
     this.valueNoteView = new ValueNoteView(parent);
     this.handler.addEventListener('mousedown', this.handleHandlerMouseDown);
   }
