@@ -15,7 +15,9 @@ import Presenter from './Presenter/Presenter';
       if ($(this).data('inited')) {
         $.error('Plugin has already been initialized on this selector!');
       } else {
-        const presenter = new Presenter(container, options);
+        const dataOptions = $(container).data();
+        const resultOptions = $.extend(dataOptions, options);
+        const presenter = new Presenter(container, resultOptions);
         $(this).data({
           presenter, inited: true,
         });
@@ -31,8 +33,12 @@ import Presenter from './Presenter/Presenter';
     },
   };
 
-  function adslider(this: typeof $, options: IConfig): void;
-  function adslider(this: typeof $, methodName: keyof SliderMethods, options: IConfig): void;
+  function adslider(this: typeof $, options: IConfig): JQueryStatic;
+  function adslider(
+      this: typeof $,
+      methodName: keyof SliderMethods,
+      options: IConfig
+    ): JQueryStatic;
   function adslider(this: typeof $, methodName: keyof SliderMethods): IConfig;
 
   // eslint-disable-next-line consistent-return
@@ -40,17 +46,19 @@ import Presenter from './Presenter/Presenter';
     this: typeof $,
     arg1: keyof SliderMethods | IConfig,
     arg2?: IConfig,
-  ): void | IConfig {
+  ): void | IConfig | JQueryStatic {
     if (typeof arg1 === 'string') {
       if (arg1 === 'update' && arg2) {
-        return methods.update.call(this, arg2);
+        methods.update.call(this, arg2);
+        return this;
       }
       if (arg1 === 'getOptions' && !arg2) {
         return methods.getOptions.call(this);
       }
     } else if (typeof arg1 === 'object' && !arg2) {
       const el = $(this)[0];
-      return methods.init.call(this, el, arg1);
+      methods.init.call(this, el, arg1);
+      return this;
     }
     $.error(`Method ${arg1} does not exist on jQuery.tooltip`);
   }
