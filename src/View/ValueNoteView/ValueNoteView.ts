@@ -32,19 +32,11 @@ class ValueNoteView {
   }
 
   public calcPos(options: {
-    handlerBottomPos: string,
-    handlerHeight: string,
-    handlerLeftPos: string,
-    handlerWidth: string,
-    isVertical: boolean
+    handlerPos: string,
+    handlerSize: number,
   }): number {
-    const {
-      handlerBottomPos, handlerHeight, handlerLeftPos, handlerWidth, isVertical,
-    } = options;
-    if (isVertical) {
-      return parseInt(handlerBottomPos, 10) + parseInt(handlerHeight, 10) / 2;
-    }
-    return parseInt(handlerLeftPos, 10) + parseInt(handlerWidth, 10) / 2;
+    const { handlerPos, handlerSize } = options;
+    return parseInt(handlerPos, 10) + handlerSize / 2;
   }
 
   public setPos(value: number, isVertical: boolean): void {

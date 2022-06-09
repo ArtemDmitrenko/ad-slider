@@ -83,11 +83,12 @@ class HandlerView extends EventObserver<Events> {
 
   public setValueNotePos(isVertical: boolean): void {
     const options = {
-      handlerBottomPos: getComputedStyle(this.handler).bottom,
-      handlerHeight: getComputedStyle(this.handler).height,
-      handlerLeftPos: getComputedStyle(this.handler).left,
-      handlerWidth: getComputedStyle(this.handler).width,
-      isVertical,
+      handlerPos: isVertical
+        ? this.handler.style.bottom
+        : this.handler.style.left,
+      handlerSize: isVertical
+        ? this.handler.offsetHeight
+        : this.handler.offsetWidth,
     };
     const valueNoteViewPos = this.valueNoteView.calcPos(options);
     this.valueNoteView.setPos(valueNoteViewPos, isVertical);
