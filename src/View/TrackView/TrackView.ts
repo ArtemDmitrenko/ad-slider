@@ -229,7 +229,9 @@ class TrackView extends EventObserver<Events> {
     } else {
       this.leadHandler = handler;
     }
-    const newPos = type === 'mousedown' && shift ? this.calcNewPos(shift, clientX, clientY) : this.calcNewPos(this.handlerShift, clientX, clientY);
+    const newPos = type === 'mousedown' && shift
+      ? this.calcNewPos(shift, clientX, clientY)
+      : this.calcNewPos(this.handlerShift, clientX, clientY);
     const edge: number = this.getEdge(this.leadHandler);
     const checkedNewPos = this.checkNewPos(newPos);
     const relPosition = checkedNewPos / edge;
