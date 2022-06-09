@@ -8,7 +8,7 @@ import ValueNoteView from '../ValueNoteView/ValueNoteView';
 type ChangePosDataType = {
   relPosition: number;
   isFromValueChanging: boolean
-};
+}
 
 type Events = {
   [EventTypes.CHANGE_POSITION]: ChangePosDataType

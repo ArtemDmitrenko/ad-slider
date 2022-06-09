@@ -5,30 +5,13 @@ import ValueNoteView from '../ValueNoteView/ValueNoteView';
 type MouseDownDataType = {
   eventProps: { clientX: number; clientY: number };
   handler: HTMLElement
-};
-
-type HandlerViewClass = {
-  getLength: (isVertical: boolean) => number;
-  getHandler: () => HTMLElement;
-  getPos: (isVertical: boolean) => number;
-  calcPos: (arg: {
-      edge: number;
-      value: number;
-      limits: { min: number; max: number };
-    }) => void;
-  setPos: (isVertical: boolean) => void;
-  setValueForNote: (value: number) => void;
-  showValueNote: (isValueShown: boolean) => void;
-  setValueNotePos: (isVertical: boolean) => void;
-  getValueNotePos: (isVertical: boolean) => number;
-  getValueNoteSize: (isVertical: boolean) => number;
-  getValueOfNote: () => number;
-  deleteInstance: () => void;
 }
 
 type MouseMoveDataType = {
+  shift?: number,
   eventProps: { clientX: number; clientY: number; type: string };
-  handler: HandlerViewClass;
+  // eslint-disable-next-line no-use-before-define
+  handler: HandlerView;
 };
 
 type Events = {
