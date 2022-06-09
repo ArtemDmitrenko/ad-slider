@@ -15,20 +15,17 @@ interface IConfig {
   onChange?: (data: IConfig) => void;
 }
 
-type Any = number | string | boolean;
-
 interface IUsersConfig {
-
   limits?: {
-    min?: Any;
-    max?: Any;
+    min?: unknown;
+    max?: unknown;
   };
-  hasValueNote?: Any;
-  step?: Any;
-  isVertical?: Any;
-  isDouble?: Any;
-  from?: Any | null;
-  to?: Any;
+  hasValueNote?: unknown;
+  step?: unknown;
+  isVertical?: unknown;
+  isDouble?: unknown;
+  from?: unknown;
+  to?: unknown;
   onChange?: (data: IConfig) => void;
 }
 
