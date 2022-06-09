@@ -3,7 +3,7 @@ type Observer<T> = (args: T) => void;
 type Events<T> = { [K in keyof T]: Observer<T[K]>[] };
 
 class EventObserver<T extends Record<string, unknown>> {
-  public observers: Events<T>;
+  private observers: Events<T>;
 
   constructor() {
     this.observers = {} as Events<T>;
@@ -20,7 +20,7 @@ class EventObserver<T extends Record<string, unknown>> {
     }
   }
 
-  public broadcast<K extends keyof T>(event: K, data: T[K]): void {
+  protected broadcast<K extends keyof T>(event: K, data: T[K]): void {
     if (this.observers[event] === undefined) {
       throw new Error('There is no such observer in the list!');
     }
