@@ -1,11 +1,15 @@
-class EventObserver {
-  public observers: { [event: string]: Function[] };
+type Observer<T> = (args: T) => void;
+
+type Events<T> = { [K in keyof T]: Observer<T[K]>[] };
+
+class EventObserver<T extends Record<string, unknown>> {
+  public observers: Events<T>;
 
   constructor() {
-    this.observers = {};
+    this.observers = {} as Events<T>;
   }
 
-  public addObserver(event: string, newObserver: Function): void {
+  public addObserver<K extends keyof T>(event: K, newObserver: Observer<T[K]>): void {
     if (this.observers[event]) {
       if (this.observers[event].includes(newObserver)) {
         throw new Error('Observer is already in the list!');
@@ -16,7 +20,7 @@ class EventObserver {
     }
   }
 
-  public broadcast(event: string, data?: unknown): void {
+  public broadcast<K extends keyof T>(event: K, data: T[K]): void {
     if (this.observers[event] === undefined) {
       throw new Error('There is no such observer in the list!');
     }

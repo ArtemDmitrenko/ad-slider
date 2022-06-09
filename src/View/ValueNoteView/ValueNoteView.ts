@@ -1,12 +1,9 @@
-import EventObserver from '../../EventObserver/EventObserver';
-
-class ValueNoteView extends EventObserver {
+class ValueNoteView {
   public noteElement!: HTMLElement;
 
   private valueElement!: HTMLElement;
 
   constructor(parent: HTMLElement, isCommonValueNote: boolean) {
-    super();
     this.render(parent, isCommonValueNote);
   }
 

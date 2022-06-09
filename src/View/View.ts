@@ -2,7 +2,16 @@ import TrackView from './TrackView/TrackView';
 import EventObserver from '../EventObserver/EventObserver';
 import EventTypes from '../EventObserver/eventTypes';
 
-class View extends EventObserver {
+type ChangePosDataType = {
+  relPosition: number;
+  isFromValueChanging: boolean
+};
+
+type Events = {
+  [EventTypes.CHANGE_POSITION]: ChangePosDataType
+}
+
+class View extends EventObserver<Events> {
   private el!: HTMLElement | null;
 
   private trackView!: TrackView;

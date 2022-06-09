@@ -1,7 +1,6 @@
 import { IConfig } from '../../Model/Model';
-import EventObserver from '../../EventObserver/EventObserver';
 
-class ScaleView extends EventObserver {
+class ScaleView {
   private parent!: HTMLElement;
 
   private scale!: HTMLElement;
@@ -9,7 +8,6 @@ class ScaleView extends EventObserver {
   private signArray: Array<HTMLElement> = [];
 
   constructor(parent: HTMLElement) {
-    super();
     this.render(parent);
   }
 

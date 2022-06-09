@@ -32,7 +32,23 @@ interface IUsersConfig {
   onChange?: (data: IConfig) => void;
 }
 
-class Model extends EventObserver {
+type SetPosDataType = {
+  isDouble: boolean;
+  isFromValueChanging: boolean;
+  hasValueNote: boolean
+};
+type CalcPosDataType = {
+  limits: { min: number; max: number };
+  isFromValueChanging: boolean;
+  value: number
+};
+
+type Events = {
+  [EventTypes.CALC_POSITION]: CalcPosDataType;
+  [EventTypes.SET_POSITION]: SetPosDataType
+}
+
+class Model extends EventObserver<Events> {
   public options!: IConfig;
 
   constructor(options: IUsersConfig) {

@@ -5,7 +5,16 @@ import HandlerView from '../HandlerView/HandlerView';
 import ScaleView from '../ScaleView/ScaleView';
 import ValueNoteView from '../ValueNoteView/ValueNoteView';
 
-class TrackView extends EventObserver {
+type ChangePosDataType = {
+  relPosition: number;
+  isFromValueChanging: boolean
+};
+
+type Events = {
+  [EventTypes.CHANGE_POSITION]: ChangePosDataType
+}
+
+class TrackView extends EventObserver<Events> {
   public track!: HTMLElement;
 
   private barView!: BarView;
@@ -195,7 +204,6 @@ class TrackView extends EventObserver {
   }
 
   private handleHandlerMouseMove = (data: {
-    shift: number,
     eventProps: {
       clientX: number,
       clientY: number,
@@ -207,7 +215,7 @@ class TrackView extends EventObserver {
   }
 
   private changeHandlerPosition = (data: {
-    shift: number,
+    shift?: number,
     eventProps: {
       clientX: number,
       clientY: number,
@@ -221,7 +229,7 @@ class TrackView extends EventObserver {
     } else {
       this.leadHandler = handler;
     }
-    const newPos = type === 'mousedown' ? this.calcNewPos(shift, clientX, clientY) : this.calcNewPos(this.handlerShift, clientX, clientY);
+    const newPos = type === 'mousedown' && shift ? this.calcNewPos(shift, clientX, clientY) : this.calcNewPos(this.handlerShift, clientX, clientY);
     const edge: number = this.getEdge(this.leadHandler);
     const checkedNewPos = this.checkNewPos(newPos);
     const relPosition = checkedNewPos / edge;

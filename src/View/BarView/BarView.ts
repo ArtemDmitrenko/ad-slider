@@ -1,10 +1,7 @@
-import EventObserver from '../../EventObserver/EventObserver';
-
-class BarView extends EventObserver {
+class BarView {
   private bar!: HTMLElement;
 
   constructor(parent: HTMLElement) {
-    super();
     this.render(parent);
   }
 

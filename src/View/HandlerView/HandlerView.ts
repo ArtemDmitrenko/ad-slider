@@ -2,7 +2,41 @@ import EventObserver from '../../EventObserver/EventObserver';
 import EventTypes from '../../EventObserver/eventTypes';
 import ValueNoteView from '../ValueNoteView/ValueNoteView';
 
-class HandlerView extends EventObserver {
+type MouseDownDataType = {
+  eventProps: { clientX: number; clientY: number };
+  handler: HTMLElement
+};
+
+type HandlerViewClass = {
+  getLength: (isVertical: boolean) => number;
+  getHandler: () => HTMLElement;
+  getPos: (isVertical: boolean) => number;
+  calcPos: (arg: {
+      edge: number;
+      value: number;
+      limits: { min: number; max: number };
+    }) => void;
+  setPos: (isVertical: boolean) => void;
+  setValueForNote: (value: number) => void;
+  showValueNote: (isValueShown: boolean) => void;
+  setValueNotePos: (isVertical: boolean) => void;
+  getValueNotePos: (isVertical: boolean) => number;
+  getValueNoteSize: (isVertical: boolean) => number;
+  getValueOfNote: () => number;
+  deleteInstance: () => void;
+}
+
+type MouseMoveDataType = {
+  eventProps: { clientX: number; clientY: number; type: string };
+  handler: HandlerViewClass;
+};
+
+type Events = {
+  [EventTypes.HANDLER_MOUSEDOWN_EVENT]: MouseDownDataType;
+  [EventTypes.HANDLER_MOUSEMOVE_EVENT]: MouseMoveDataType
+}
+
+class HandlerView extends EventObserver<Events> {
   private handler!: HTMLElement;
 
   private handlerPos!: number;
@@ -121,7 +155,6 @@ class HandlerView extends EventObserver {
   private handleHandlerMouseMove = (e: MouseEvent) => {
     const { clientX, clientY, type } = e;
     const data = {
-      shift: null,
       eventProps: { clientX, clientY, type },
       handler: this,
     };
