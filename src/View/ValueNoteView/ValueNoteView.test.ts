@@ -106,26 +106,12 @@ describe('valueNoteView', () => {
     expect(valueNoteView.getValue()).toBe(50);
   });
 
-  test('Function calcPos: should return center of handler position for vertical view', () => {
+  test('Function calcPos: should return center of handler position', () => {
     const options = {
-      handlerBottomPos: '20px',
-      handlerHeight: '30px',
-      handlerLeftPos: '40px',
-      handlerWidth: '50px',
-      isVertical: true,
+      handlerPos: '20px',
+      handlerSize: 30,
     };
     expect(valueNoteView.calcPos(options)).toBe(35);
-  });
-
-  test('Function calcPos: should return center of handler position for horizontal view', () => {
-    const options = {
-      handlerBottomPos: '20px',
-      handlerHeight: '30px',
-      handlerLeftPos: '40px',
-      handlerWidth: '50px',
-      isVertical: false,
-    };
-    expect(valueNoteView.calcPos(options)).toBe(65);
   });
 
   test('Function removeNoteElement: should remove noteElement', () => {

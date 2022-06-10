@@ -148,7 +148,6 @@ describe('handlerViewTo', () => {
     });
 
     expect(mockHandleHandlerMousemove).toHaveBeenCalledWith({
-      shift: null,
       eventProps: {
         clientX: 144,
         clientY: 134,
